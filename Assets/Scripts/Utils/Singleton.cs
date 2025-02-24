@@ -7,7 +7,8 @@ namespace Utils
         private static T _instance;
         private static readonly object _lock = new object();
         private static bool _applicationIsQuitting = false;
-
+        public static bool HasInstance => _applicationIsQuitting == false && _instance != null;
+        public static T TryGetInstance() => HasInstance ? Instance : null;
         public static T Instance
         {
             get
