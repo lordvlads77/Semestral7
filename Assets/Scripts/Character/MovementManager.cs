@@ -32,6 +32,12 @@ namespace Character
         [SerializeField] private StateManager stateManager;
         public Animator anim;
 
+        #region Camera
+        private Camera _cam;
+        private ThirdPersonCameraMovement _cm;
+        private Vector3 camFwd;
+        #endregion
+
         private void Awake()
         {
             anim = GetComponent<Animator>();
@@ -50,7 +56,22 @@ namespace Character
             HandleActions();
             stateManager.UpdateMovementState(this);
         }
-        
+
+        private void FixedUpdate()
+        {
+            camFwd = Vector3.Scale(_cam.transform.forward, new Vector3(1,1,1)).normalized;
+            Vector3 canFlatFwd = Vector3.Scale(_cam.transform.forward, new Vector3(1, 0, 1)).normalized;
+            Vector3 flatRight = new Vector3(_cam.transform.right.x, 0, _cam.transform.right.z);
+            
+            Vector3 m_CharForward = Vector3.Scale(canFlatFwd, new Vector3(1,0,1)).normalized;
+            Vector3 m_charRight = Vector3.Scale(flatRight, new Vector3(1, 0, 1)).normalized;
+
+            if (_cm.type == ThirdPersonCameraMovement.CAMERA_TYPE.FREE_LOOK)
+            {
+                _cam.transform.position += _velocity * Time.deltaTime;
+            }
+        }
+
         public void SwitchMovementState(MovementState state)
         {
             stateManager.EnterMovementState(state, this);
