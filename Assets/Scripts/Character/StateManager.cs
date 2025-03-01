@@ -107,7 +107,8 @@ namespace Character
 
         private void UpdateWalkState(MovementManager movement)
         {
-            if (Input.GetKey(KeyCode.LeftShift)) ExitMovementState(movement, MovementState.Run);
+            if (Input.GetKey(KeyCode.LeftShift) && (movement.horizontalInput != 0 || movement.verticalInput != 0))
+                ExitMovementState(movement, MovementState.Run);
             if (Input.GetKeyDown(KeyCode.LeftControl)) ExitMovementState(movement, MovementState.Crouch);
         }
 
