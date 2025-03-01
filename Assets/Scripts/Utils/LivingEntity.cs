@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,20 +5,12 @@ using Random = UnityEngine.Random;
 
 namespace Utils
 {
-    public enum GameState
-    {
-        Joining,
-        Playing,
-        Paused,
-        GameOver
-    }
-    
     public class LivingEntity : MonoBehaviour
     {
-        public delegate void GameStateChange(GameState state);
+        public delegate void GameStateChange(GameStates state);
         public event GameStateChange OnGameStateChange;
 
-        public void ChangeGameState(GameState state)
+        public void ChangeGameState(GameStates state)
         {
             gameState = state;
             OnGameStateChange?.Invoke(state);
@@ -37,13 +28,13 @@ namespace Utils
         [SerializeField] private int armorClass = 1;
         [SerializeField] private int armorDurability = 3;
         
-        [HideInInspector] private float _health;
+        private float _health;
         [HideInInspector] public bool isDead;
         [HideInInspector] public bool canTakeDamage = true;
-        [HideInInspector] public GameState gameState;
+        [HideInInspector] public GameStates gameState;
 
         protected Coroutine DamageImmunityCoroutine;
-        private List<ParticleSystem> _particleSystems = new List<ParticleSystem>();
+        private readonly List<ParticleSystem> _particleSystems = new List<ParticleSystem>();
 
         public float GetHealth() { return _health; }
         public float GetMaxHealth() { return maxHealth; }
@@ -155,7 +146,7 @@ namespace Utils
         protected virtual void Die()
         {
             // So... what happens when the entity dies? 
-            // I could try a skinned mesh particle system that could look cool, but idk...
+            // I could try a skinned mesh particle system that could look cool, but I don't know...
             // What are we making? 
         }
         
