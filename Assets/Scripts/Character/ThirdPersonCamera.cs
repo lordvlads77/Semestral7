@@ -8,7 +8,6 @@ namespace Character
     public class ThirdPersonCamera : MonoBehaviour
     {
         public Camera cam;
-
         public CameraTypes type = CameraTypes.FreeLook;
 
         [SerializeField][Range(0.1f, 2.0f)]
@@ -40,12 +39,12 @@ namespace Character
             private float minVerticalAngle;
             [SerializeField]
             private float cameraDistance;
-            //private Vector3 rotationOrigin;
+            private Vector3 _rotationOrigin;
 
-            /*public void SetRotationOrigin(Vector3 o)
+            public void SetRotationOrigin(Vector3 o)
             {
-                rotationOrigin = o;
-            }*/ // This was not used for anything and since I didn't know what it was for... I commented it out
+                _rotationOrigin = o;
+            } // This was not used for anything and since I didn't know what it was for... I commented it out
 
             public float GetCameraDistance()
             {
@@ -67,14 +66,17 @@ namespace Character
     
         private void Awake()
         {
-            if (cam) cam = Camera.main;
-
+            if (!cam) cam = Camera.main;
             if (type == CameraTypes.Locked && cam) {
                 cam.transform.parent = transform;
             }
 
             _trueLookAt = transform.Find("LookAtTransform");
-            //settings.SetRotationOrigin(transform.position + Vector3.up);
+            if(!_trueLookAt) _trueLookAt = new GameObject("LookAtTransform").transform;
+            if (!lookAt) {
+                lookAt = GameObject.FindWithTag("Player").transform;
+            }
+            settings.SetRotationOrigin(transform.position + Vector3.up);
         }
 
 
@@ -90,8 +92,8 @@ namespace Character
             float v = Input.GetAxis("Mouse Y");
 
             // Settings
-            h = (invertXAxis) ? h : (-h);
-            v = (invertYAxis) ? (-v) : v;
+            h = (invertXAxis)? h : (-h);
+            v = (invertYAxis)? (-v) : v;
 
             // Orbit the camera around the character
             if (h != 0)
@@ -107,12 +109,9 @@ namespace Character
                 maxAngle = ((float)Math.PI / 2) - maxAngle;
                 minAngle = ((float)Math.PI / 2) + minAngle;
             
-            
                 _tTheta += v * sensitivity * Time.deltaTime;
                 _tTheta = Mathf.Clamp(_tTheta, 0, 1);
-            
                 _theta = Mathf.Lerp(maxAngle, minAngle, _tTheta);
-            
             }
         
             float x = lookAt.transform.position.x + (float) (settings.GetCameraDistance() * Math.Sin(_theta) * Math.Cos(_alpha));
@@ -122,9 +121,7 @@ namespace Character
             Vector3 newCameraPosition = new Vector3(x, y , z);
             Vector3 offsetCameraPosition = newCameraPosition + settings.GetOffset().x * cam.transform.right + settings.GetOffset().y * cam.transform.up;
             cam.transform.position = offsetCameraPosition;
-
             _trueLookAt.transform.position = lookAt.transform.position + +settings.GetOffset().x * cam.transform.right + settings.GetOffset().y * cam.transform.up;
-
             cam.transform.LookAt(_trueLookAt);
         }
 
@@ -132,12 +129,10 @@ namespace Character
         {
             double originTheta = Math.PI / 2;
             double originAlpha = -Math.PI / 2;
-            if (!cam) cam = Camera.main;
             if(!_trueLookAt) _trueLookAt = transform.Find("LookAtTransform");
             float camDistance = settings.GetCameraDistance();
             if (lookAt)
             {
-                if (!cam) return;
                 Vector3 newCameraPosition = lookAt.transform.position +
                                             new Vector3(camDistance * (float)(Math.Sin(originTheta) * Math.Cos(originAlpha)),
                                                 camDistance * (float)(Math.Cos(originTheta)),
@@ -148,8 +143,6 @@ namespace Character
                 cam.transform.LookAt(_trueLookAt);
             }
         }
-
-    
 
         public Camera GetCamera() { return cam ? cam : Camera.main; }
 

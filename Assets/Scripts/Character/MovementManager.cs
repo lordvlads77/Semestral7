@@ -49,6 +49,9 @@ namespace Character
             anim = GetComponent<Animator>();
             controller = GetComponent<CharacterController>();
             stateManager.EnterMovementState(MovementState.Walk, this);
+            _cam = Camera.main;
+            if (_cam) _cm = _cam.GetComponent<ThirdPersonCamera>();
+            if (!_cm) _cm = GetComponent<ThirdPersonCamera>(); // You had the script here, right?
         }
         
         private void Update()
