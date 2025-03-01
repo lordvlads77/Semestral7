@@ -533,12 +533,6 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 1
---- !u!4 &696978618 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4284723482524610, guid: c1bf78096101892488e2d81d47664125,
-    type: 3}
-  m_PrefabInstance: {fileID: 2061569425}
-  m_PrefabAsset: {fileID: 0}
 --- !u!143 &828392809
 CharacterController:
   m_ObjectHideFlags: 0
@@ -714,7 +708,7 @@ MonoBehaviour:
   sensitivity: 2
   invertXAxis: 1
   invertYAxis: 1
-  lookAt: {fileID: 696978618}
+  lookAt: {fileID: 2061569439}
   settings:
     offsetX: 0
     offsetY: 0

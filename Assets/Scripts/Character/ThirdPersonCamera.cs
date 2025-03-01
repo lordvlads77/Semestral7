@@ -70,7 +70,7 @@ namespace Character
             if (type == CameraTypes.Locked && cam) {
                 cam.transform.parent = transform;
             }
-
+            Cursor.visible = false;
             _trueLookAt = transform.Find("LookAtTransform");
             if(!_trueLookAt) _trueLookAt = new GameObject("LookAtTransform").transform;
             if (!lookAt) {
@@ -80,7 +80,7 @@ namespace Character
         }
 
 
-        private void FixedUpdate()
+        private void LateUpdate() // FixedUpdate → LateUpdate (This prevents jittering / choppy movement)
         {
             OrbitSphericalCoords();
         }
