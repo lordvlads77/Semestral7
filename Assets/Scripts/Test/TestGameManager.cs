@@ -1,51 +1,46 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Utils;
 
 namespace test
 {
-    using consts;
     /// <summary>
     /// This script only to test the game manager
     /// </summary>
     public sealed class TestGameManager : MonoBehaviour
     {
-        [SerializeField] private GameStates gameStates = GameStates.IDLE;
+        [SerializeField] private GameStates gameStates = GameStates.Joining;
 
-        private void onGameStateChange(GameStates state)
+        private void OnGameStateChange(GameStates state)
         {
             gameStates = state;
-
-        }
-
-        // Start is called before the first frame update
-        void Start()
-        {
         }
 
         private void OnEnable()
         {
-            GameManager.Instance.subscirbe(onGameStateChange);
-            onGameStateChange(GameManager.Instance.gameState);
+            GameManager.Instance.Subscribe(OnGameStateChange);
+            OnGameStateChange(GameManager.Instance.GameState);
         }
-
 
         private void OnDisable()
         {
-            GameManager.TryGetInstance()?.unsubscirbe(onGameStateChange);
+            GameManager.TryGetInstance()?.Unsubscribe(OnGameStateChange);
         }
 
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.R))
             {
+                #if UNITY_EDITOR
                 Debug.Log("Pressed R");
-                GameManager.Instance.setGameState(GameStates.IDLE);
+                #endif
+                GameManager.Instance.SetGameState(GameStates.Playing);
             }
             else if (Input.GetKeyDown(KeyCode.E))
             {
+                #if UNITY_EDITOR
                 Debug.Log("Pressed E");
-                GameManager.Instance.setGameState(GameStates.PAUSE);
+                #endif 
+                GameManager.Instance.SetGameState(GameStates.Paused);
             }
 
         }
