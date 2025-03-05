@@ -326,6 +326,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3492640222222709288}
   - component: {fileID: 864826854873603138}
+  - component: {fileID: 4467901374961038486}
   m_Layer: 0
   m_Name: Training_Dummy
   m_TagString: Untagged
@@ -371,6 +372,28 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &4467901374961038486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8196564893783427960}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55cfa6c7a3d23c94b85febdd6dd56c14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dmgParticles:
+  - {fileID: 3104916853003571433, guid: e8b652848777dab47afdd50a040605b5, type: 3}
+  criticalDmgParticles: []
+  maxHealth: 100
+  dmgImmunityTime: 0.05
+  armorClass: 1
+  armorDurability: 3
+  isDead: 0
+  canTakeDamage: 1
+  gameState: 0
 --- !u!1 &8778969410018664351
 GameObject:
   m_ObjectHideFlags: 0
