@@ -54,7 +54,9 @@ namespace Utils
             {
                 isDead = true;
                 Die();
-                PlayParticleEffect(criticalDmgParticles[Random.Range(0, criticalDmgParticles.Length)], hitPoint, hitDirection);
+                if (criticalDmgParticles.Length > 0) { 
+                    PlayParticleEffect(criticalDmgParticles[Random.Range(0, criticalDmgParticles.Length)], hitPoint, hitDirection);
+                }
             }
             else
             {
@@ -122,6 +124,7 @@ namespace Utils
             {
                 system = Instantiate(particlePrefab, position, Quaternion.LookRotation(-direction));
                 _particleSystems.Add(system);
+                system.gameObject.SetActive(true);
             }
             else
             {
@@ -137,7 +140,7 @@ namespace Utils
         {
             foreach (ParticleSystem ps in _particleSystems)
             {
-                if (!ps.gameObject.activeInHierarchy && ps.name == prefab.name)
+                if (!ps.gameObject.activeInHierarchy && (ps.name == prefab.name || ps.name == prefab.name + "(Clone)"))
                     return ps;
             }
             return null;
