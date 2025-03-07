@@ -6,6 +6,7 @@ public sealed class TestDummy : MonoBehaviour
 {
     Dummy dummy = null;
     [SerializeField] bool IsDummyBeingTested = false;
+    [SerializeField] Vector3 HitDirection = Vector3.forward;
     void Start()
     {
         dummy = GetComponent<Dummy>();
@@ -21,7 +22,7 @@ public sealed class TestDummy : MonoBehaviour
         {
             EDebug.Log("Pressed right shift");
             Transform d_transform = dummy.transform;
-            dummy.TakeDamage(10, d_transform.position, Vector3.forward);
+            dummy.TakeDamage(10, d_transform.position, HitDirection);
         }
     }
 }
