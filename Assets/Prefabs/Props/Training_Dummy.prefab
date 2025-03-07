@@ -386,7 +386,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dmgParticles:
   - {fileID: 3104916853003571433, guid: e8b652848777dab47afdd50a040605b5, type: 3}
-  criticalDmgParticles: []
+  criticalDmgParticles:
+  - {fileID: 3104916853003571433, guid: 0541075591277094f92b6b73fd9c1f3c, type: 3}
   maxHealth: 100
   dmgImmunityTime: 0.05
   armorClass: 1
