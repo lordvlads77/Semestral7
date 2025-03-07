@@ -21,6 +21,10 @@ namespace Character
 
         public Transform lookAt;
         private Transform _trueLookAt;
+        
+        public Transform lockTarget;
+        private bool isLocked;
+
 
         private double _theta = Math.PI / 2;
         private float _tTheta = 0.5f;
@@ -77,7 +81,7 @@ namespace Character
         
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Tab)) // O cualquier tecla que prefieras
+            if (_input.ZTarget)
             {
                 ToggleLockTarget();
             }
