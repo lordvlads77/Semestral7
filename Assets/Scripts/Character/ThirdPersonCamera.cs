@@ -19,8 +19,6 @@ namespace Character
 
         public Transform lookAt;
         private Transform _trueLookAt;
-        public Transform lockTarget;
-        private bool isLocked;
 
         #region SphericalCoordinates
         private double _theta = Math.PI / 2;
@@ -80,48 +78,11 @@ namespace Character
             }
             settings.SetRotationOrigin(transform.position + Vector3.up);
         }
-        
-        void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Tab)) // O cualquier tecla que prefieras
-            {
-                ToggleLockTarget();
-            }
-        }
-        void ToggleLockTarget()
-        {
-            if (isLocked)
-            {
-                isLocked = false;
-                lockTarget = null;
-            }
-            else
-            {
-                FindClosestTarget();
-            }
-        }
-        void FindClosestTarget()
-        {
-            float maxDistance = 10f; // Ajusta según necesites
-            Collider[] enemies = Physics.OverlapSphere(transform.position, maxDistance, LayerMask.GetMask("Enemy"));
-    
-            if (enemies.Length > 0)
-            {
-                lockTarget = enemies[0].transform; // Puedes mejorar esto para elegir el más cercano
-                isLocked = true;
-            }
-        }
+
 
         private void LateUpdate() // FixedUpdate → LateUpdate (This prevents jittering / choppy movement)
         {
-            if (isLocked && lockTarget)
-            {
-                cam.transform.LookAt(lockTarget.position);
-            }
-            else
-            {
-                OrbitSphericalCoords(); // Comportamiento normal de la cámara
-            }
+            OrbitSphericalCoords();
         }
 
         private void OrbitSphericalCoords()

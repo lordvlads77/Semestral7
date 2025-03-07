@@ -156,10 +156,10 @@ MonoBehaviour:
   canTakeDamage: 1
   gameState: 0
   currentMovementSpeed: 0
-  WalkSpeeds: {x: 1.5, y: 1, z: 0.8}
-  RunSpeeds: {x: 6, y: 4, z: 4}
-  SprintSpeeds: {x: 5, y: 6, z: 4}
-  CrouchSpeeds: {x: 1, y: 0.75, z: 0.75}
+  walkSpeeds: {x: 1.5, y: 1, z: 0.8}
+  runSpeeds: {x: 6, y: 4, z: 4}
+  sprintSpeeds: {x: 5, y: 6, z: 4}
+  crouchSpeeds: {x: 1, y: 0.75, z: 0.75}
   groundYOffset: 0
   groundLayer:
     serializedVersion: 2
@@ -533,12 +533,6 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 1
---- !u!4 &696978618 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4284723482524610, guid: c1bf78096101892488e2d81d47664125,
-    type: 3}
-  m_PrefabInstance: {fileID: 2061569425}
-  m_PrefabAsset: {fileID: 0}
 --- !u!143 &828392809
 CharacterController:
   m_ObjectHideFlags: 0
@@ -709,12 +703,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 380bd7dab17e32140a1a9c912003fd4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cam: {fileID: 330585545}
+  cam: {fileID: 330585545}
   type: 0
   sensitivity: 2
   invertXAxis: 1
   invertYAxis: 1
-  lookAt: {fileID: 696978618}
+  lookAt: {fileID: 2061569439}
   settings:
     offsetX: 0
     offsetY: 0
