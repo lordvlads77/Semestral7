@@ -26,17 +26,16 @@ public class WeaponSystem : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        HalberdKeybind();
-        SwordKeybind();
+        
     }
 
-    void UsingSword()
+    public void UsingSword()
     {
         //Add Animation Calling Here
         //Add VFX Calling Here if applicable
@@ -44,7 +43,7 @@ public class WeaponSystem : MonoBehaviour
         sword.SetActive(true);
     }
 
-    void UsingHalberd()
+    public void UsingHalberd()
     {
         //Add Animation Calling Here
         //Add VFX Calling Here if applicable
