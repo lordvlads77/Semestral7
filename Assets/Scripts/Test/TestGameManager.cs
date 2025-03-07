@@ -26,7 +26,7 @@ namespace test
             GameManager.TryGetInstance()?.Unsubscribe(OnGameStateChange);
         }
 
-        void Update()
+        /*void Update()
         {
             if (Input.GetKeyDown(KeyCode.R))
             {
@@ -43,6 +43,6 @@ namespace test
                 GameManager.Instance.SetGameState(GameStates.Paused);
             }
 
-        }
+        }*/
     }
 }

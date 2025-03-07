@@ -7,6 +7,8 @@ namespace Character
 {
     public class ThirdPersonCamera : MonoBehaviour
     {
+        private Input.Actions _input;
+        
         public Camera cam;
         public CameraTypes type = CameraTypes.FreeLook;
 
@@ -19,12 +21,10 @@ namespace Character
 
         public Transform lookAt;
         private Transform _trueLookAt;
-
-        #region SphericalCoordinates
+        
         private double _theta = Math.PI / 2;
         private float _tTheta = 0.5f;
         private double _alpha = -Math.PI / 2;
-
     
         [Serializable]
         public struct CameraSettings
@@ -39,12 +39,6 @@ namespace Character
             private float minVerticalAngle;
             [SerializeField]
             private float cameraDistance;
-            private Vector3 _rotationOrigin;
-
-            public void SetRotationOrigin(Vector3 o)
-            {
-                _rotationOrigin = o;
-            } // This was not used for anything and since I didn't know what it was for... I commented it out
 
             public float GetCameraDistance()
             {
@@ -55,9 +49,9 @@ namespace Character
         
             public Vector2 GetLimitVerticalAnglesRadians(){ return new Vector2(maxVerticalAngle * (float)Math.PI / 180.0f, (minVerticalAngle * (float)Math.PI / 180.0f));}
         }
+        
         [SerializeField]
         private CameraSettings settings;
-        #endregion
 
         public CameraSettings GetCameraSettings()
         {
@@ -66,6 +60,8 @@ namespace Character
     
         private void Awake()
         {
+            _input = gameObject.GetComponent<Input.Actions>();
+            if (!_input) _input = gameObject.AddComponent<Input.Actions>();
             if (!cam) cam = Camera.main;
             if (type == CameraTypes.Locked && cam) {
                 cam.transform.parent = transform;
@@ -76,7 +72,6 @@ namespace Character
             if (!lookAt) {
                 lookAt = GameObject.FindWithTag("Player").transform;
             }
-            settings.SetRotationOrigin(transform.position + Vector3.up);
         }
 
 
@@ -88,8 +83,9 @@ namespace Character
         private void OrbitSphericalCoords()
         {
             // Read input
-            float h = Input.GetAxis("Mouse X");
-            float v = Input.GetAxis("Mouse Y");
+            float h = _input.Camera.x;
+            float v = _input.Camera.y;
+            Debug.Log("h: " + h + " v: " + v);
 
             // Settings
             h = (invertXAxis)? h : (-h);
