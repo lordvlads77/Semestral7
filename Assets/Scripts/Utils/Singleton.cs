@@ -24,13 +24,28 @@ namespace Utils
                 {
                     if (_instance == null)
                     {
-                        _instance = FindObjectOfType<T>();
+                        _instance = (T)FindObjectOfType(typeof(T));
 
+                        if (FindObjectsOfType(typeof(T)).Length > 1)
+                        {
+                            Debug.LogError("[Singleton] Something went really wrong " + typeof(T));
+                            return _instance;
+                        }
                         if (_instance == null)
                         {
-                            GameObject singletonObject = new GameObject();
-                            singletonObject.hideFlags = HideFlags.HideAndDontSave;
-                            _instance = singletonObject.AddComponent<T>();
+                            GameObject singleton = new GameObject();
+                            _instance = singleton.AddComponent<T>();
+                            singleton.name = "(singleton) " + typeof(T).ToString();
+                            DontDestroyOnLoad(singleton);
+                            
+                            Debug.Log("[Singleton] An instance of " + typeof(T) +
+                                      " is needed in the scene, so '" + singleton +
+                                      "' was created with DontDestroyOnLoad.");
+                        }
+                        else
+                        {
+                            Debug.Log("[Singleton] Using instance already created: " +
+                                      _instance.gameObject.name);
                         }
                     }
 
@@ -45,19 +60,19 @@ namespace Utils
             {
                 _instance = this as T;
                 DontDestroyOnLoad(gameObject);
+                OnAwake();
             }
             else
             {
                 Destroy(gameObject);
             }
         }
+        
+        protected virtual void OnAwake() { }
 
         private void OnDestroy()
         {
-            if (_instance == this)
-            {
-                _instance = null;
-            }
+            _applicationIsQuitting = true;
         }
 
         private void OnApplicationQuit()

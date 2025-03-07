@@ -24,10 +24,13 @@ namespace Character
         public FightingState CurrentFightingState { get; private set; }
         
         private Animator _animator;
+        private Input.Actions _input;
         
         private void Awake()
         {
             _animator = GetComponent<Animator>();
+            _input = gameObject.GetComponent<Input.Actions>();
+            if (!_input) _input = gameObject.AddComponent<Input.Actions>();
         }
         
         private bool CheckIfDead(MovementManager movement)
@@ -96,8 +99,8 @@ namespace Character
         
         private void UpdateCrouchState(MovementManager movement)
         {
-            if (Input.GetKeyDown(KeyCode.LeftShift)) ExitMovementState(movement, MovementState.Run);
-            if (Input.GetKeyDown(KeyCode.LeftControl)) ExitMovementState(movement, MovementState.Walk);
+            if (_input.LeftBumper) ExitMovementState(movement, MovementState.Run);
+            if (_input.RightBumper) ExitMovementState(movement, MovementState.Walk);
         }
 
         private void EnterWalkState(MovementManager movement)
@@ -107,9 +110,9 @@ namespace Character
 
         private void UpdateWalkState(MovementManager movement)
         {
-            if (Input.GetKey(KeyCode.LeftShift) && (movement.horizontalInput != 0 || movement.verticalInput != 0))
+            if ((_input.LeftBumper) && (movement.horizontalInput != 0 || movement.verticalInput != 0))
                 ExitMovementState(movement, MovementState.Run);
-            if (Input.GetKeyDown(KeyCode.LeftControl)) ExitMovementState(movement, MovementState.Crouch);
+            if (_input.RightBumper) ExitMovementState(movement, MovementState.Crouch);
         }
 
         private void EnterRunState(MovementManager movement)
@@ -120,8 +123,8 @@ namespace Character
         private void UpdateRunState(MovementManager movement)
         {
             if (movement.dir.magnitude < 0.1f) ExitMovementState(movement, MovementState.Crouch);
-            if (Input.GetKeyUp(KeyCode.LeftShift)) ExitMovementState(movement, MovementState.Walk);
-            if (Input.GetKeyDown(KeyCode.LeftControl)) ExitMovementState(movement, MovementState.Crouch);
+            if (_input.LeftBumper) ExitMovementState(movement, MovementState.Walk);
+            if (_input.RightBumper) ExitMovementState(movement, MovementState.Crouch);
         }
         
         private void EnterSprintState(MovementManager movement)
@@ -133,8 +136,8 @@ namespace Character
         private void UpdateSprintState(MovementManager movement)
         {
             if (movement.dir.magnitude < 0.1f) ExitMovementState(movement, MovementState.Crouch);
-            if (Input.GetKeyUp(KeyCode.LeftShift)) ExitMovementState(movement, MovementState.Walk);
-            if (Input.GetKeyDown(KeyCode.LeftControl)) ExitMovementState(movement, MovementState.Crouch);
+            if (_input.LeftBumper) ExitMovementState(movement, MovementState.Walk);
+            if (_input.RightBumper) ExitMovementState(movement, MovementState.Crouch);
         }
 
         private void EnterDeadState(MovementManager movement)
