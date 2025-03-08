@@ -35,12 +35,19 @@ public class WeaponSystem : MonoBehaviour
         
     }
 
+    public void Unarmed()
+    {
+        sword.SetActive(false);
+        halberd.SetActive(false);
+    }
+
     public void UsingSword()
     {
         //Add Animation Calling Here
         //Add VFX Calling Here if applicable
         //Add SFX Calling Here
         sword.SetActive(true);
+        halberd.SetActive(false);
     }
 
     public void UsingHalberd()
@@ -49,9 +56,10 @@ public class WeaponSystem : MonoBehaviour
         //Add VFX Calling Here if applicable
         //Add SFX Calling Here
         halberd.SetActive(true);
+        sword.SetActive(false);
     }
 
-    #region Keybinds
+   /* #region Keybinds
 
         void SwordKeybind()
         {
@@ -70,5 +78,5 @@ public class WeaponSystem : MonoBehaviour
             }
         }
 
-#endregion
+#endregion*/
 }

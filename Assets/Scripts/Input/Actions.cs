@@ -22,6 +22,10 @@ namespace Input
         public Vector2 Camera { get; private set; }
         
         public WeaponType CurrentWeapon { get; private set; }
+        public bool WeaponUp { get; private set; }
+        public bool WeaponLeft { get; private set; }
+        public bool WeaponRight { get; private set; }
+        public bool WeaponDown { get; private set; }
         
         public bool UpButton { get; private set; }
         public bool Jump { get; private set; }
@@ -42,6 +46,10 @@ namespace Input
             _inputActions = new PlaInputActions();
             Crouch = false;
             Pause = false;
+            WeaponUp = false;
+            WeaponLeft = false;
+            WeaponRight = false;
+            WeaponDown = false;
             CurrentWeapon = WeaponType.Unarmed;
         }
 
@@ -164,15 +172,15 @@ namespace Input
         #region ZTargetInput
         private void OnZTargetStarted(InputAction.CallbackContext context)
         {
-            ZTarget = true;
+            ZTarget = context.ReadValueAsButton();
         }
         private void OnZTargetHeld(InputAction.CallbackContext context)
         {
-            ZTarget = true;
+            ZTarget = context.ReadValueAsButton();
         }
         private void OnZTargetCanceled(InputAction.CallbackContext context)
         {
-            ZTarget = false;
+            ZTarget = context.ReadValueAsButton();
         }
         #endregion
         
@@ -195,18 +203,22 @@ namespace Input
         private void OnWeaponUpToggled(InputAction.CallbackContext context)
         {
             CurrentWeapon = (CurrentWeapon==WeaponType.NamePending1)? WeaponType.Unarmed : WeaponType.NamePending1;
+            WeaponUp = !WeaponUp;
         }
         private void OnWeaponLeftToggled(InputAction.CallbackContext context)
         {
             CurrentWeapon = (CurrentWeapon==WeaponType.NamePending2)? WeaponType.Unarmed : WeaponType.NamePending2;
+            WeaponLeft = !WeaponLeft;
         }
         private void OnWeaponRightToggled(InputAction.CallbackContext context)
         {
             CurrentWeapon = (CurrentWeapon==WeaponType.NamePending3)? WeaponType.Unarmed : WeaponType.NamePending3;
+            WeaponRight = !WeaponRight;
         }
         private void OnWeaponDownToggled(InputAction.CallbackContext context)
         {
             CurrentWeapon = (CurrentWeapon==WeaponType.NamePending4)? WeaponType.Unarmed : WeaponType.NamePending4;
+            WeaponDown = !WeaponDown;
         }
         #endregion
         

@@ -1,26 +1,32 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class TestingWeapons : MonoBehaviour
+namespace Character
 {
-    // Start is called before the first frame update
-    void Start()
+    public class TestingWeapons : MonoBehaviour
     {
+        private Input.Actions _input;
         
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.U))
+        private void Awake()
         {
-            WeaponSystem.Instance.UsingSword();
+            _input = gameObject.GetComponent<Input.Actions>();
+            if (!_input) _input = gameObject.AddComponent<Input.Actions>();
         }
 
-        if (Input.GetKeyDown(KeyCode.I))
+        private void Update()
         {
-            WeaponSystem.Instance.UsingHalberd();
+            switch (_input.CurrentWeapon)
+            {
+                default:
+                case Input.WeaponType.Unarmed:
+                    WeaponSystem.Instance.Unarmed();
+                    break;
+                case Input.WeaponType.NamePending1:
+                    WeaponSystem.Instance.UsingSword();
+                    break;
+                case Input.WeaponType.NamePending2:
+                    WeaponSystem.Instance.UsingHalberd();
+                    break;
+            }
         }
     }
 }

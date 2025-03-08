@@ -18,11 +18,11 @@ public sealed class TestDummy : MonoBehaviour
     {
         if(!IsDummyBeingTested) { return; }
 
-        if (Input.GetKeyDown(KeyCode.RightShift))
+        /*if (Input.GetKeyDown(KeyCode.RightShift))
         {
             EDebug.Log("Pressed right shift");
             Transform d_transform = dummy.transform;
             dummy.TakeDamage(10, d_transform.position, HitDirection);
-        }
+        }*/
     }
 }
