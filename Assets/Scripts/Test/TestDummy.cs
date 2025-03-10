@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Entity;
 using UnityEngine;
 
 public sealed class TestDummy : MonoBehaviour
@@ -13,8 +14,7 @@ public sealed class TestDummy : MonoBehaviour
         EDebug.Assert(dummy != null, "Attach me to a object with the Dummy script please");
     }
 
-    // Update is called once per frame
-    void Update()
+    /*void Update()
     {
         if(!IsDummyBeingTested) { return; }
 
@@ -23,6 +23,6 @@ public sealed class TestDummy : MonoBehaviour
             EDebug.Log("Pressed right shift");
             Transform d_transform = dummy.transform;
             dummy.TakeDamage(10, d_transform.position, HitDirection);
-        }*/
-    }
+        }
+    }*/
 }

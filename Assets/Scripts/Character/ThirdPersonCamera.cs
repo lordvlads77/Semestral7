@@ -64,8 +64,9 @@ namespace Character
     
         private void Awake()
         {
-            _input = gameObject.GetComponent<Input.Actions>();
-            if (!_input) _input = gameObject.AddComponent<Input.Actions>();
+            _input = Input.Actions.Instance;
+            if (_input == null) _input = gameObject.GetComponent<Input.Actions>();
+            if (_input == null) _input = gameObject.AddComponent<Input.Actions>();
             if (!cam) cam = Camera.main;
             if (type == CameraTypes.Locked && cam) {
                 cam.transform.parent = transform;

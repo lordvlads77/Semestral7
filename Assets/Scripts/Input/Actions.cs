@@ -5,27 +5,25 @@ using Utils;
 
 namespace Input
 {
-    public enum WeaponType
-    {
-        NamePending1,
-        NamePending2,
-        NamePending3,
-        NamePending4,
-        Unarmed
-    }
-        
-    public class Actions : MonoBehaviour //: Singleton<IInput> // Input Interface
+    [DefaultExecutionOrder(-10)]
+    public class Actions : Singleton<Actions> // Input Interface
     {
         private PlaInputActions _inputActions;
         
         public Vector2 Movement { get; private set; }
         public Vector2 Camera { get; private set; }
         
+        [Tooltip("Use this if you want your script to check for this in a specific function (Not recommended for updating or iterating methods)")]
         public WeaponType CurrentWeapon { get; private set; }
         public bool WeaponUp { get; private set; }
+        public event Action OnWeaponUpToggledEvent;
         public bool WeaponLeft { get; private set; }
+        public event Action OnWeaponLeftToggledEvent;
         public bool WeaponRight { get; private set; }
+        public event Action OnWeaponRightToggledEvent;
         public bool WeaponDown { get; private set; }
+        public event Action OnWeaponDownToggledEvent;
+        // If possible, subscribe to the events, if not, use the public properties
         
         public bool UpButton { get; private set; }
         public bool Jump { get; private set; }
@@ -41,7 +39,7 @@ namespace Input
         public bool RightTrigger { get; private set; }
         public bool Pause { get; private set; }
         
-        protected void Awake()
+        protected override void OnAwake()
         {
             _inputActions = new PlaInputActions();
             Crouch = false;
@@ -51,6 +49,7 @@ namespace Input
             WeaponRight = false;
             WeaponDown = false;
             CurrentWeapon = WeaponType.Unarmed;
+            EDebug.Log("Input Actions ► Initialized");
         }
 
         private void OnEnable()
@@ -202,12 +201,12 @@ namespace Input
         #region WeaponInput
         private void OnWeaponUpToggled(InputAction.CallbackContext context)
         {
-            CurrentWeapon = (CurrentWeapon==WeaponType.NamePending1)? WeaponType.Unarmed : WeaponType.NamePending1;
+            CurrentWeapon = (CurrentWeapon==WeaponType.LightSword)? WeaponType.Unarmed : WeaponType.LightSword;
             WeaponUp = !WeaponUp;
         }
         private void OnWeaponLeftToggled(InputAction.CallbackContext context)
         {
-            CurrentWeapon = (CurrentWeapon==WeaponType.NamePending2)? WeaponType.Unarmed : WeaponType.NamePending2;
+            CurrentWeapon = (CurrentWeapon==WeaponType.GreatSword)? WeaponType.Unarmed : WeaponType.GreatSword;
             WeaponLeft = !WeaponLeft;
         }
         private void OnWeaponRightToggled(InputAction.CallbackContext context)

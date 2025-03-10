@@ -1,4 +1,5 @@
 using UnityEngine;
+using Utils;
 
 namespace Character
 {
@@ -8,12 +9,18 @@ namespace Character
         
         private void Awake()
         {
-            _input = gameObject.GetComponent<Input.Actions>();
-            if (!_input) _input = gameObject.AddComponent<Input.Actions>();
+            _input = Input.Actions.Instance;
+            if (_input == null) _input = gameObject.GetComponent<Input.Actions>();
+            if (_input == null) _input = gameObject.AddComponent<Input.Actions>();
         }
 
-        private void Update()
+        private void Cosa(LivingEntity entity)
         {
+            if (entity.Weapon == WeaponType.Unarmed) return;
+        }
+
+        /*private void Update() Got rid of this for now... 
+        {                       I'm moving the weapon types so that they're compatible with all Entities
             switch (_input.CurrentWeapon)
             {
                 default:
@@ -27,6 +34,6 @@ namespace Character
                     WeaponSystem.Instance.UsingHalberd();
                     break;
             }
-        }
+        }*/
     }
 }

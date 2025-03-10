@@ -49,8 +49,9 @@ namespace Character
             controller = GetComponent<CharacterController>();
             stateManager.EnterMovementState(MovementState.Walk, this);
             _cam = Camera.main;
-            _input = gameObject.GetComponent<Input.Actions>();
-            if (!_input) _input = gameObject.AddComponent<Input.Actions>();
+            _input = Input.Actions.Instance;
+            if (_input == null) _input = gameObject.GetComponent<Input.Actions>();
+            if (_input == null) _input = gameObject.AddComponent<Input.Actions>();
             if (_cam) _cm = _cam.GetComponent<ThirdPersonCamera>();
             if (!_cm) _cm = GetComponent<ThirdPersonCamera>(); // You had the script here, right?
             _input.OnCrouchToggledEvent += ToggleCrouch;

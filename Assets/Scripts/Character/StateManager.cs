@@ -29,8 +29,9 @@ namespace Character
         private void Awake()
         {
             _animator = GetComponent<Animator>();
-            _input = gameObject.GetComponent<Input.Actions>();
-            if (!_input) _input = gameObject.AddComponent<Input.Actions>();
+            _input = Input.Actions.Instance;
+            if (_input == null) _input = gameObject.GetComponent<Input.Actions>();
+            if (_input == null) _input = gameObject.AddComponent<Input.Actions>();
         }
         
         private bool CheckIfDead(MovementManager movement)
