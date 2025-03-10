@@ -30,6 +30,7 @@ namespace Input
         public bool LeftButton { get; private set; }
         
         public bool Attack { get; private set; }
+        public event Action OnAttackTriggeredEvent;
         public bool Crouch { get; private set; }
         public event Action OnCrouchToggledEvent;
         public bool RightStickButton { get; private set; }
@@ -156,15 +157,16 @@ namespace Input
         #region AttackInput
         private void OnAttackStarted(InputAction.CallbackContext context)
         {
-            Attack = true;
+            Attack = context.ReadValueAsButton();
+            OnAttackTriggeredEvent?.Invoke();
         }
         private void OnAttackHeld(InputAction.CallbackContext context)
         {
-            Attack = true;
+            Attack = context.ReadValueAsButton();
         }
         private void OnAttackCanceled(InputAction.CallbackContext context)
         {
-            Attack = false;
+            Attack = context.ReadValueAsButton();
         }
         #endregion
         
