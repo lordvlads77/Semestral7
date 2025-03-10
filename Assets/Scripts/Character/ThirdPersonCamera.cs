@@ -23,7 +23,7 @@ namespace Character
         private Transform _trueLookAt;
         
         public Transform lockTarget;
-        private bool isLocked;
+        //private bool isLocked;
 
 
         private double _theta = Math.PI / 2;
@@ -64,8 +64,9 @@ namespace Character
     
         private void Awake()
         {
-            _input = gameObject.GetComponent<Input.Actions>();
-            if (!_input) _input = gameObject.AddComponent<Input.Actions>();
+            _input = Input.Actions.Instance;
+            if (_input == null) _input = gameObject.GetComponent<Input.Actions>();
+            if (_input == null) _input = gameObject.AddComponent<Input.Actions>();
             if (!cam) cam = Camera.main;
             if (type == CameraTypes.Locked && cam) {
                 cam.transform.parent = transform;
@@ -81,12 +82,20 @@ namespace Character
         
         void Update()
         {
-            if (_input.ZTarget)
+            /*if (_input.ZTarget)
             {
                 ToggleLockTarget();
+            }*/
+            if (_input.ZTarget && !lockTarget)
+            {
+                /*lockTarget = null;
+            }
+            else
+            {*/
+                FindClosestTarget();
             }
         }
-        void ToggleLockTarget()
+        /*void ToggleLockTarget()
         {
             if (isLocked)
             {
@@ -97,7 +106,7 @@ namespace Character
             {
                 FindClosestTarget();
             }
-        }
+        }*/
 
         void FindClosestTarget()
         {
@@ -107,19 +116,12 @@ namespace Character
             if (enemies.Length > 0)
             {
                 lockTarget = enemies[0].transform; // Puedes mejorar esto para elegir el más cercano
-                isLocked = true;
+                //isLocked = true;
             }
         }
         private void LateUpdate() // FixedUpdate → LateUpdate (This prevents jittering / choppy movement)
         {
-            if (isLocked && lockTarget)
-            {
-                cam.transform.LookAt(lockTarget.position);
-            }
-            else
-            {
-                OrbitSphericalCoords(); // Comportamiento normal de la cámara
-            }
+            OrbitSphericalCoords();
         }
 
         private void OrbitSphericalCoords()
@@ -127,7 +129,7 @@ namespace Character
             // Read input
             float h = _input.Camera.x;
             float v = _input.Camera.y;
-            Debug.Log("h: " + h + " v: " + v);
+            // Debug.Log("h: " + h + " v: " + v);
 
             // Settings
             h = (invertXAxis)? h : (-h);
@@ -160,7 +162,15 @@ namespace Character
             Vector3 offsetCameraPosition = newCameraPosition + settings.GetOffset().x * cam.transform.right + settings.GetOffset().y * cam.transform.up;
             cam.transform.position = offsetCameraPosition;
             _trueLookAt.transform.position = lookAt.transform.position + +settings.GetOffset().x * cam.transform.right + settings.GetOffset().y * cam.transform.up;
-            cam.transform.LookAt(_trueLookAt);
+            if (_input.ZTarget && lockTarget)
+            {
+                cam.transform.LookAt(lockTarget.position);
+            } 
+            else
+            {
+                lockTarget = null;
+                cam.transform.LookAt(_trueLookAt);
+            }
         }
 
         public void SetCameraToOrigin()

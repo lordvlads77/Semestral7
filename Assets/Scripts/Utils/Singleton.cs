@@ -68,7 +68,7 @@ namespace Utils
             }
         }
         
-        protected virtual void OnAwake() { }
+        protected virtual void OnAwake() { EDebug.Log(gameObject.name + " ► Initialized"); }
 
         private void OnDestroy()
         {

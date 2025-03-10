@@ -1,26 +1,39 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Utils;
 
-public class TestingWeapons : MonoBehaviour
+namespace Character
 {
-    // Start is called before the first frame update
-    void Start()
+    public class TestingWeapons : MonoBehaviour
     {
+        private Input.Actions _input;
         
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.U))
+        private void Awake()
         {
-            WeaponSystem.Instance.UsingSword();
+            _input = Input.Actions.Instance;
+            if (_input == null) _input = gameObject.GetComponent<Input.Actions>();
+            if (_input == null) _input = gameObject.AddComponent<Input.Actions>();
         }
 
-        if (Input.GetKeyDown(KeyCode.I))
+        private void Cosa(LivingEntity entity)
         {
-            WeaponSystem.Instance.UsingHalberd();
+            if (entity.Weapon == WeaponType.Unarmed) return;
         }
+
+        /*private void Update() Got rid of this for now... 
+        {                       I'm moving the weapon types so that they're compatible with all Entities
+            switch (_input.CurrentWeapon)
+            {
+                default:
+                case Input.WeaponType.Unarmed:
+                    WeaponSystem.Instance.Unarmed();
+                    break;
+                case Input.WeaponType.NamePending1:
+                    WeaponSystem.Instance.UsingSword();
+                    break;
+                case Input.WeaponType.NamePending2:
+                    WeaponSystem.Instance.UsingHalberd();
+                    break;
+            }
+        }*/
     }
 }

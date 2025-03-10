@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Utils;
 
-public class WeaponSystem : MonoBehaviour
+public class WeaponSystem : Singleton<WeaponSystem>
 {
     public static WeaponSystem Instance { get; private set; }
     [Header("Sword GameObject Variable")] 
@@ -14,7 +15,7 @@ public class WeaponSystem : MonoBehaviour
     [FormerlySerializedAs("polearm")] [FormerlySerializedAs("_polearm")] [SerializeField]
     private GameObject halberd = default;
 
-    private void Awake()
+    protected override void OnAwake()
     {
         Instance = this;
         if (Instance!= this)
@@ -23,16 +24,10 @@ public class WeaponSystem : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
-    void Start()
+    public void Unarmed()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        sword.SetActive(false);
+        halberd.SetActive(false);
     }
 
     public void UsingSword()
@@ -41,6 +36,7 @@ public class WeaponSystem : MonoBehaviour
         //Add VFX Calling Here if applicable
         //Add SFX Calling Here
         sword.SetActive(true);
+        halberd.SetActive(false);
     }
 
     public void UsingHalberd()
@@ -49,26 +45,7 @@ public class WeaponSystem : MonoBehaviour
         //Add VFX Calling Here if applicable
         //Add SFX Calling Here
         halberd.SetActive(true);
+        sword.SetActive(false);
     }
 
-    #region Keybinds
-
-        void SwordKeybind()
-        {
-            //TODO: Change this for New Input Sys when it's implemented
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                UsingSword();
-            }
-        }
-
-        void HalberdKeybind()
-        {
-            if (Input.GetKeyDown(KeyCode.Z))
-            {
-                UsingHalberd();
-            }
-        }
-
-#endregion
 }
