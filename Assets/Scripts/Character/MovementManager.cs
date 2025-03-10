@@ -11,8 +11,6 @@ namespace Character
         private static readonly int AnimAttack = Animator.StringToHash("Attack");
         private static readonly int AnimGrounded = Animator.StringToHash("Grounded");
         // Added those fields to avoid string lookups in the animator (Slightly better performance)
-        
-        private Input.Actions _input;
 
         [Header("Movement Settings")]
         [Tooltip("The current speed, it changes based on the character state (Not hidden in inspector for debugging)")]
@@ -49,17 +47,17 @@ namespace Character
             controller = GetComponent<CharacterController>();
             stateManager.EnterMovementState(MovementState.Walk, this);
             _cam = Camera.main;
-            _input = Input.Actions.Instance;
-            if (_input == null) _input = gameObject.GetComponent<Input.Actions>();
-            if (_input == null) _input = gameObject.AddComponent<Input.Actions>();
+            IInput = Input.Actions.Instance;
+            if (IInput == null) IInput = gameObject.GetComponent<Input.Actions>();
+            if (IInput == null) IInput = gameObject.AddComponent<Input.Actions>();
             if (_cam) _cm = _cam.GetComponent<ThirdPersonCamera>();
             if (!_cm) _cm = GetComponent<ThirdPersonCamera>(); // You had the script here, right?
-            _input.OnCrouchToggledEvent += ToggleCrouch;
+            IInput.OnCrouchToggledEvent += ToggleCrouch;
         }
         
         private void OnDestroy()
         {
-            _input.OnCrouchToggledEvent -= ToggleCrouch;
+            IInput.OnCrouchToggledEvent -= ToggleCrouch;
         }
         
         private void Update()
@@ -87,12 +85,12 @@ namespace Character
         
         private void HandleActions() // This method will be refactored later (Inputs n shit)
         {
-            if (_input.Jump && IsGrounded())
+            if (IInput.Jump && IsGrounded())
             {
                 Jump();
             }
                 
-            if (_input.Attack)
+            if (IInput.Attack)
             {
                 Punch();
             }
@@ -100,15 +98,15 @@ namespace Character
         
         private void GetDirectionAndMove()
         {
-            horizontalInput = _input.Movement.x;
-            verticalInput = _input.Movement.y;
+            horizontalInput = IInput.Movement.x;
+            verticalInput = IInput.Movement.y;
             anim.SetFloat(AnimVInput, verticalInput);
             anim.SetFloat(AnimHInput, horizontalInput);
             Vector3[] camVec = MathUtils.CanonBasis(_cam.transform);
             dir = (camVec[0] * verticalInput + camVec[1] * horizontalInput).normalized;
 
             Vector3 speeds = walkSpeeds;
-            if (_input.LeftBumper)
+            if (IInput.LeftBumper)
                 speeds = runSpeeds;
             else if (stateManager.CurrentMovementState == MovementState.Crouch)
                 speeds = crouchSpeeds;
@@ -181,12 +179,12 @@ namespace Character
 
         public void StartUnarmedCombat()
         {
-            
+            // Should put away the weapons, change stance 
         }
         
         public void StartSwordAndShieldCombat()
         {
-            
+            // Should take out the weapons, change stance 
         }
         
     }

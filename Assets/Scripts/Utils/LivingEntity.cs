@@ -37,7 +37,7 @@ namespace Utils
 
         protected Coroutine DamageImmunityCoroutine;
         private readonly List<ParticleSystem> _particleSystems = new List<ParticleSystem>();
-        private Input.Actions _input;
+        protected Input.Actions IInput = default;
 
         private Action _wLTHandler;
         private Action _wUTHandler;
@@ -55,19 +55,19 @@ namespace Utils
             _health = maxHealth;
             Weapon = WeaponType.Unarmed;
             if (!isPlayer) return;
-            _input = Input.Actions.Instance;
-            if (_input == null) _input = gameObject.GetComponent<Input.Actions>();
-            if (_input == null) _input = gameObject.AddComponent<Input.Actions>();
-            if (_input != null)
+            IInput = Input.Actions.Instance;
+            if (IInput == null) IInput = gameObject.GetComponent<Input.Actions>();
+            if (IInput == null) IInput = gameObject.AddComponent<Input.Actions>();
+            if (IInput != null)
             {
                 _wLTHandler = () => ChangeWeapon(WeaponType.LightSword);
                 _wUTHandler = () => ChangeWeapon(WeaponType.GreatSword);
                 _wRTHandler = () => ChangeWeapon(WeaponType.NamePending3);
                 _wDTHandler = () => ChangeWeapon(WeaponType.NamePending4);
-                _input.OnWeaponLeftToggledEvent += _wLTHandler;
-                _input.OnWeaponUpToggledEvent += _wUTHandler;
-                _input.OnWeaponRightToggledEvent += _wRTHandler;
-                _input.OnWeaponDownToggledEvent += _wDTHandler;
+                IInput.OnWeaponLeftToggledEvent += _wLTHandler;
+                IInput.OnWeaponUpToggledEvent += _wUTHandler;
+                IInput.OnWeaponRightToggledEvent += _wRTHandler;
+                IInput.OnWeaponDownToggledEvent += _wDTHandler;
             }
         }
         
@@ -88,14 +88,14 @@ namespace Utils
         private void Unsubscribe()
         {
             if (!isPlayer) return;
-            if(_input == null) return;
-            _input.OnWeaponLeftToggledEvent -= _wLTHandler;
-            _input.OnWeaponUpToggledEvent -= _wUTHandler;
-            _input.OnWeaponRightToggledEvent -= _wRTHandler;
-            _input.OnWeaponDownToggledEvent -= _wDTHandler;
+            if(IInput == null) return;
+            IInput.OnWeaponLeftToggledEvent -= _wLTHandler;
+            IInput.OnWeaponUpToggledEvent -= _wUTHandler;
+            IInput.OnWeaponRightToggledEvent -= _wRTHandler;
+            IInput.OnWeaponDownToggledEvent -= _wDTHandler;
         }
 
-        protected virtual void TakeDamage(float damage, Vector3 hitPoint, Vector3 hitDirection, float armorPiercing = 0f)
+        public virtual void TakeDamage(float damage, Vector3 hitPoint, Vector3 hitDirection, float armorPiercing = 0f)
         {
             float damageReduction = GetDamageReduction(armorPiercing);
             float finalDamage = damage * (1 - damageReduction);
