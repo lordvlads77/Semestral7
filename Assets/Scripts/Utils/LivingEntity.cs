@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,6 +18,7 @@ namespace Utils
         }   
         
         [Header("Living Entity Variables")]
+        public bool isPlayer;
         [Tooltip("The particle systems that will play when the entity takes damage (Will be skipped if none are present)")]
         public ParticleSystem[] dmgParticles;
         [Tooltip("The particle systems that will play when the entity takes LETHAL damage (Will be skipped if none are present)")]
@@ -35,13 +37,62 @@ namespace Utils
 
         protected Coroutine DamageImmunityCoroutine;
         private readonly List<ParticleSystem> _particleSystems = new List<ParticleSystem>();
+        protected Input.Actions IInput = default;
+
+        private Action _wLTHandler;
+        private Action _wUTHandler;
+        private Action _wRTHandler;
+        private Action _wDTHandler;
 
         public float GetHealth() { return _health; }
         public float GetMaxHealth() { return maxHealth; }
+        public int GetArmorClass() { return armorClass; }
+        public int GetArmorDurability() { return armorDurability; }
+        public WeaponType Weapon { get; private set; }
         
         private void Awake()
         {
             _health = maxHealth;
+            Weapon = WeaponType.Unarmed;
+            if (!isPlayer) return;
+            IInput = Input.Actions.Instance;
+            if (IInput == null) IInput = gameObject.GetComponent<Input.Actions>();
+            if (IInput == null) IInput = gameObject.AddComponent<Input.Actions>();
+            if (IInput != null)
+            {
+                _wLTHandler = () => ChangeWeapon(WeaponType.LightSword);
+                _wUTHandler = () => ChangeWeapon(WeaponType.GreatSword);
+                _wRTHandler = () => ChangeWeapon(WeaponType.NamePending3);
+                _wDTHandler = () => ChangeWeapon(WeaponType.NamePending4);
+                IInput.OnWeaponLeftToggledEvent += _wLTHandler;
+                IInput.OnWeaponUpToggledEvent += _wUTHandler;
+                IInput.OnWeaponRightToggledEvent += _wRTHandler;
+                IInput.OnWeaponDownToggledEvent += _wDTHandler;
+            }
+        }
+        
+        private void OnDestroy()
+        {
+            Unsubscribe();
+        }
+        private void OnDisable()
+        {
+            Unsubscribe();
+        }
+        
+        private void ChangeWeapon(WeaponType weapon)
+        {
+            Weapon = (Weapon == weapon)? WeaponType.Unarmed : weapon;
+        }
+
+        private void Unsubscribe()
+        {
+            if (!isPlayer) return;
+            if(IInput == null) return;
+            IInput.OnWeaponLeftToggledEvent -= _wLTHandler;
+            IInput.OnWeaponUpToggledEvent -= _wUTHandler;
+            IInput.OnWeaponRightToggledEvent -= _wRTHandler;
+            IInput.OnWeaponDownToggledEvent -= _wDTHandler;
         }
 
         public virtual void TakeDamage(float damage, Vector3 hitPoint, Vector3 hitDirection, float armorPiercing = 0f)
@@ -49,28 +100,25 @@ namespace Utils
             float damageReduction = GetDamageReduction(armorPiercing);
             float finalDamage = damage * (1 - damageReduction);
             _health -= finalDamage;
-
             if (_health <= 0 && !isDead)
             {
                 isDead = true;
                 Die();
-                if (criticalDmgParticles.Length > 0) { 
+                if (criticalDmgParticles.Length > 0) 
                     PlayParticleEffect(criticalDmgParticles[Random.Range(0, criticalDmgParticles.Length)], hitPoint, hitDirection);
-                }
+                else
+                    Debug.LogWarning("criticalDmgParticles array is empty.");
             }
             else
             {
                 if (DamageImmunityCoroutine != null)
                     StopCoroutine(DamageImmunityCoroutine);
-
                 DamageImmunityCoroutine = StartCoroutine(DamageImmunity());
-
                 if (dmgParticles.Length > 0)
                     PlayParticleEffect(dmgParticles[Random.Range(0, dmgParticles.Length)], hitPoint, hitDirection);
                 else
                     Debug.LogWarning("dmgParticles array is empty.");
             }
-
             if (armorClass > 1) ReduceArmorDurability();
         }
         

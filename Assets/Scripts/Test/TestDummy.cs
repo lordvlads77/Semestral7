@@ -1,28 +1,42 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
+using Entity;
 using UnityEngine;
+using Utils;
 
 public sealed class TestDummy : MonoBehaviour
 {
-    Dummy dummy = null;
-    [SerializeField] bool IsDummyBeingTested = false;
-    [SerializeField] Vector3 HitDirection = Vector3.forward;
-    void Start()
+    private Dummy _dummy = default;
+    [SerializeField] private bool isDummyBeingTested = false;
+    [SerializeField] public Vector3 hitDirection = Vector3.forward;
+    public event Action OnHit;
+    
+    private void Start()
     {
-        dummy = GetComponent<Dummy>();
-        EDebug.Assert(dummy != null, "Attach me to a object with the Dummy script please");
+        _dummy = GetComponent<Dummy>();
+        EDebug.Assert(_dummy != null, "Attach me to a object with the Dummy script please");
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnEnable()
     {
-        if(!IsDummyBeingTested) { return; }
-
-        if (Input.GetKeyDown(KeyCode.RightShift))
+        if (isDummyBeingTested)
         {
-            EDebug.Log("Pressed right shift");
-            Transform d_transform = dummy.transform;
-            dummy.TakeDamage(10, d_transform.position, HitDirection);
+            OnHit += () =>
+            {
+                _dummy.TakeDamage(10, _dummy.transform.position, hitDirection);
+                Animator animator = this.GetComponent<Animator>();
+                animator.SetTrigger("Hit");
+            };
+            
+            Input.Actions.Instance.OnAttackTriggeredEvent += OnHit;
         }
     }
+    
+    private void OnDisable()
+    {
+        if (isDummyBeingTested)
+        {
+            Input.Actions.Instance.OnAttackTriggeredEvent -= OnHit;
+        }
+    }
+
 }

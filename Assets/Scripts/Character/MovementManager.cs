@@ -37,21 +37,27 @@ namespace Character
     
         [SerializeField] private StateManager stateManager;
         public Animator anim;
-
-        #region Camera
+        
         private Camera _cam;
         private ThirdPersonCamera _cm;
-        private Vector3 _camFwd; // The variable is updated once per frame but never used
-        #endregion
-
+        
         private void Awake()
         {
             anim = GetComponent<Animator>();
             controller = GetComponent<CharacterController>();
             stateManager.EnterMovementState(MovementState.Walk, this);
             _cam = Camera.main;
+            IInput = Input.Actions.Instance;
+            if (IInput == null) IInput = gameObject.GetComponent<Input.Actions>();
+            if (IInput == null) IInput = gameObject.AddComponent<Input.Actions>();
             if (_cam) _cm = _cam.GetComponent<ThirdPersonCamera>();
             if (!_cm) _cm = GetComponent<ThirdPersonCamera>(); // You had the script here, right?
+            IInput.OnCrouchToggledEvent += ToggleCrouch;
+        }
+        
+        private void OnDestroy()
+        {
+            IInput.OnCrouchToggledEvent -= ToggleCrouch;
         }
         
         private void Update()
@@ -68,17 +74,8 @@ namespace Character
 
         private void FixedUpdate()
         {
-            _camFwd = Vector3.Scale(_cam.transform.forward, new Vector3(1,1,1)).normalized; // This should probably be done only once on Awake... just saying
-            Vector3 canFlatFwd = Vector3.Scale(_cam.transform.forward, new Vector3(1, 0, 1)).normalized;
-            Vector3 flatRight = new Vector3(_cam.transform.right.x, 0, _cam.transform.right.z);
-            
-            Vector3 m_CharForward = Vector3.Scale(canFlatFwd, new Vector3(1,0,1)).normalized;
-            Vector3 m_charRight = Vector3.Scale(flatRight, new Vector3(1, 0, 1)).normalized; // What are these?
-
             if (_cm.type == CameraTypes.FreeLook)
-            {
                 _cam.transform.position += _velocity * Time.deltaTime;
-            }
         }
 
         public void SwitchMovementState(MovementState state)
@@ -88,17 +85,12 @@ namespace Character
         
         private void HandleActions() // This method will be refactored later (Inputs n shit)
         {
-            if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
+            if (IInput.Jump && IsGrounded())
             {
                 Jump();
             }
-
-            if (Input.GetKeyDown(KeyCode.LeftControl))
-            {
-                ToggleCrouch();
-            }
-
-            if (Input.GetMouseButtonDown(0))
+                
+            if (IInput.Attack)
             {
                 Punch();
             }
@@ -106,15 +98,15 @@ namespace Character
         
         private void GetDirectionAndMove()
         {
-            horizontalInput = Input.GetAxis("Horizontal");
-            verticalInput = Input.GetAxis("Vertical");
+            horizontalInput = IInput.Movement.x;
+            verticalInput = IInput.Movement.y;
             anim.SetFloat(AnimVInput, verticalInput);
             anim.SetFloat(AnimHInput, horizontalInput);
-            Transform vec = this.transform;
-            dir = (vec.forward * verticalInput + vec.right * horizontalInput).normalized;
+            Vector3[] camVec = MathUtils.CanonBasis(_cam.transform);
+            dir = (camVec[0] * verticalInput + camVec[1] * horizontalInput).normalized;
 
             Vector3 speeds = walkSpeeds;
-            if (Input.GetKey(KeyCode.LeftShift))
+            if (IInput.LeftBumper)
                 speeds = runSpeeds;
             else if (stateManager.CurrentMovementState == MovementState.Crouch)
                 speeds = crouchSpeeds;
@@ -133,6 +125,9 @@ namespace Character
                 currentMovementSpeed = sideSpeed;
             if (verticalInput != 0 && horizontalInput != 0)
                 currentMovementSpeed = Mathf.Lerp(currentMovementSpeed, sideSpeed, 0.5f);
+            
+            if (dir.magnitude > 0)
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(camVec[0]), Time.deltaTime * 10f);
             
             controller.Move(dir * (currentMovementSpeed * Time.deltaTime));
         }
@@ -184,12 +179,12 @@ namespace Character
 
         public void StartUnarmedCombat()
         {
-            
+            // Should put away the weapons, change stance 
         }
         
         public void StartSwordAndShieldCombat()
         {
-            
+            // Should take out the weapons, change stance 
         }
         
     }
