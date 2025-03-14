@@ -2246,8 +2246,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48d70b0f66556394bbed22eae962ddae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dmgParticles: []
-  criticalDmgParticles: []
+  isPlayer: 0
+  dmgParticles:
+  - {fileID: 3104916853003571433, guid: e8b652848777dab47afdd50a040605b5, type: 3}
+  criticalDmgParticles:
+  - {fileID: 3104916853003571433, guid: 0541075591277094f92b6b73fd9c1f3c, type: 3}
   maxHealth: 100
   dmgImmunityTime: 0.05
   armorClass: 1
@@ -2302,6 +2305,7 @@ MonoBehaviour:
   invertXAxis: 1
   invertYAxis: 1
   lookAt: {fileID: 2146246077666209436}
+  lockTarget: {fileID: 0}
   settings:
     offsetX: 0
     offsetY: 0
