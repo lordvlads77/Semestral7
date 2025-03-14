@@ -8,6 +8,7 @@ namespace Utils
         Playing,
         Paused,
         GameOver,
+        Idle,
     }
 
     public enum CameraTypes
