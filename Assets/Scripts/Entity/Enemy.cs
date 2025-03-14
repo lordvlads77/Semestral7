@@ -9,6 +9,7 @@ namespace Entity
     [RequireComponent(typeof(NavMeshAgent))]
     public class Enemy : LivingEntity
     {
+        [Header("AI Components")]
         [SerializeField] NavMeshAgent agent;
         [SerializeField] LivingEntity player;
 
@@ -49,6 +50,9 @@ namespace Entity
 
         private void Update()
         {
+            if (gameState != GameStates.Playing) { return; }
+
+
             Vector3 PlayerPosition = player.transform.position;
             GoToDestination(PlayerPosition);
             float distance = Vector3.Distance(PlayerPosition, agent.transform.position);
@@ -69,6 +73,17 @@ namespace Entity
             }
         }
 
+        private void OnEnable()
+        {
+            GameManager.Instance.Subscribe(OnStateChange);
+            OnStateChange(GameManager.Instance.GameState);
+        }
+
+        private void OnDisable()
+        {
+            GameManager.TryGetInstance()?.Unsubscribe(OnStateChange);
+        }
+
         /// <summary>
         /// Tell's the enemy were to go
         /// </summary>
@@ -87,6 +102,16 @@ namespace Entity
             GoToDestination(destination.position);
         }
 
+        protected override void Die()
+        {
+            base.Die();
+            gameObject.SetActive(false);
+        }
+
+        public void OnStateChange(GameStates state)
+        {
+            gameState = state;
+        }
     }
 
 }
