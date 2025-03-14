@@ -53,6 +53,7 @@ namespace Character
             if (_cam) _cm = _cam.GetComponent<ThirdPersonCamera>();
             if (!_cm) _cm = GetComponent<ThirdPersonCamera>(); // You had the script here, right?
             IInput.OnCrouchToggledEvent += ToggleCrouch;
+            SetHealth(GetMaxHealth());
         }
         
         private void OnDestroy()
