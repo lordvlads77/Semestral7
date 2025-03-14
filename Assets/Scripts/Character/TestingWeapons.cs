@@ -28,10 +28,10 @@ namespace Character
                     WeaponSystem.Instance.Unarmed();
                     break;
                 case Input.WeaponType.NamePending1:
-                    WeaponSystem.Instance.UsingSword();
+                    WeaponSystem.Instance.WithdrawOneHandedWeapon();
                     break;
                 case Input.WeaponType.NamePending2:
-                    WeaponSystem.Instance.UsingHalberd();
+                    WeaponSystem.Instance.WithdrawTwoHandedWeapon();
                     break;
             }
         }*/
