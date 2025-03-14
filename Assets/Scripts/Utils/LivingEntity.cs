@@ -24,13 +24,13 @@ namespace Utils
         [Tooltip("The particle systems that will play when the entity takes LETHAL damage (Will be skipped if none are present)")]
         public ParticleSystem[] criticalDmgParticles;
         [Tooltip("The entity's maximum health")]
-        [SerializeField] private float maxHealth = 100f;
+        [SerializeField] public float maxHealth = 100f;
         [Tooltip("For how long is the entity immune to damage after taking some?")]
         [SerializeField] private float dmgImmunityTime = 0.05f;
         [SerializeField] private int armorClass = 1;
         [SerializeField] private int armorDurability = 3;
         
-        private float _health;
+        public float _health;
         [HideInInspector] public bool isDead;
         [HideInInspector] public bool canTakeDamage = true;
         [HideInInspector] public GameStates gameState;

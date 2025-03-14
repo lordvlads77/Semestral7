@@ -24,6 +24,9 @@ namespace Character
         
         public Transform lockTarget;
         //private bool isLocked;
+        
+        public GameObject lockIndicatorPrefab; // Asigna un prefab desde el Inspector
+        private GameObject _lockIndicator;
 
 
         private double _theta = Math.PI / 2;
@@ -94,6 +97,10 @@ namespace Character
             {*/
                 FindClosestTarget();
             }
+            if (lockTarget == null && _lockIndicator != null)
+            {
+                _lockIndicator.SetActive(false);
+            }
         }
         /*void ToggleLockTarget()
         {
@@ -117,11 +124,25 @@ namespace Character
             {
                 lockTarget = enemies[0].transform; // Puedes mejorar esto para elegir el más cercano
                 //isLocked = true;
+                if (_lockIndicator == null && lockIndicatorPrefab != null)
+                {
+                    _lockIndicator = Instantiate(lockIndicatorPrefab);
+                }
             }
         }
         private void LateUpdate() // FixedUpdate → LateUpdate (This prevents jittering / choppy movement)
         {
             OrbitSphericalCoords();
+            
+            if (lockTarget && _lockIndicator)
+            {
+                _lockIndicator.transform.position = lockTarget.position + Vector3.up; // Ajusta la altura según el modelo
+                _lockIndicator.SetActive(true);
+            }
+            else if (_lockIndicator)
+            {
+                _lockIndicator.SetActive(false);
+            }
         }
 
         private void OrbitSphericalCoords()
@@ -164,12 +185,13 @@ namespace Character
             _trueLookAt.transform.position = lookAt.transform.position + +settings.GetOffset().x * cam.transform.right + settings.GetOffset().y * cam.transform.up;
             if (_input.ZTarget && lockTarget)
             {
-                cam.transform.LookAt(lockTarget.position);
+                Quaternion targetRotation = Quaternion.LookRotation(lockTarget.position - cam.transform.position);
+                cam.transform.rotation = Quaternion.Slerp(cam.transform.rotation, targetRotation, Time.deltaTime * 5f);
             } 
             else
             {
-                lockTarget = null;
-                cam.transform.LookAt(_trueLookAt);
+                Quaternion targetRotation = Quaternion.LookRotation(_trueLookAt.position - cam.transform.position);
+                cam.transform.rotation = Quaternion.Slerp(cam.transform.rotation, targetRotation, Time.deltaTime * 5f);
             }
         }
 

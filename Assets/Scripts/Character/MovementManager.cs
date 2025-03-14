@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using Utils;
 
@@ -41,6 +42,8 @@ namespace Character
         private Camera _cam;
         private ThirdPersonCamera _cm;
         
+        
+
         private void Awake()
         {
             anim = GetComponent<Animator>();
@@ -53,6 +56,8 @@ namespace Character
             if (_cam) _cm = _cam.GetComponent<ThirdPersonCamera>();
             if (!_cm) _cm = GetComponent<ThirdPersonCamera>(); // You had the script here, right?
             IInput.OnCrouchToggledEvent += ToggleCrouch;
+            maxHealth = 100f;
+            _health = maxHealth;
         }
         
         private void OnDestroy()
