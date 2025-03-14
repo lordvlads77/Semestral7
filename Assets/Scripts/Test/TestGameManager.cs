@@ -10,20 +10,39 @@ namespace test
     {
         [SerializeField] private GameStates gameStates = GameStates.Joining;
 
-        private void OnGameStateChange(GameStates state)
+        public void Start()
         {
-            gameStates = state;
+            GameManager.Instance.SetGameState(stateToChangeTo);
         }
 
         private void OnEnable()
         {
             GameManager.Instance.Subscribe(OnGameStateChange);
-            OnGameStateChange(GameManager.Instance.GameState);
+            //OnGameStateChange(GameManager.Instance.GameState);
         }
 
         private void OnDisable()
         {
             GameManager.TryGetInstance()?.Unsubscribe(OnGameStateChange);
+        }
+
+        public void ChangeState(GameStates state)
+        {
+            GameManager.Instance.SetGameState(state);
+        }
+
+        private void OnGameStateChange(GameStates state)
+        {
+            gameStates = state;
+        }
+
+        [Header("Context Menu Item change game state")]
+        [ContextMenuItem("Change game state", nameof(EditorStateChange))]
+        [SerializeField] public GameStates stateToChangeTo = GameStates.Idle;
+
+        public void EditorStateChange()
+        {
+            gameStates = stateToChangeTo;
         }
 
         /*void Update()
