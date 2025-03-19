@@ -10,12 +10,15 @@ namespace Utils
     {
         public delegate void GameStateChange(GameStates state);
         public event GameStateChange OnGameStateChange;
+        public string entityName;
 
         public void ChangeGameState(GameStates state)
         {
             gameState = state;
             OnGameStateChange?.Invoke(state);
-        }   
+        }
+
+        private float _mood = 0;
         
         [Header("Living Entity Variables")]
         public bool isPlayer;
@@ -29,6 +32,7 @@ namespace Utils
         [SerializeField] private float dmgImmunityTime = 0.05f;
         [SerializeField] private int armorClass = 1;
         [SerializeField] private int armorDurability = 3;
+        [SerializeField] private DamageType damageTypeResistance;
         
         private float _health;
         [HideInInspector] public bool isDead;
@@ -48,6 +52,8 @@ namespace Utils
         public float GetMaxHealth() { return maxHealth; }
         public int GetArmorClass() { return armorClass; }
         public int GetArmorDurability() { return armorDurability; }
+        public float GetMood() { return _mood; }
+        public DamageType GetDmgTypeResistance() { return damageTypeResistance; }
         public WeaponType Weapon { get; private set; }
         
         private void Awake()
@@ -84,6 +90,11 @@ namespace Utils
         {
             Weapon = (Weapon == weapon)? WeaponType.Unarmed : weapon;
         }
+        
+        public void ChangeMood(float amount)
+        {
+            _mood = Mathf.Clamp(_mood + amount, -10, 10);
+        }
 
         private void Unsubscribe()
         {
@@ -95,10 +106,12 @@ namespace Utils
             IInput.OnWeaponDownToggledEvent -= _wDTHandler;
         }
 
-        public virtual void TakeDamage(float damage, Vector3 hitPoint, Vector3 hitDirection, float armorPiercing = 0f)
+        public virtual void TakeDamage(Vector3 hitPoint, Vector3 hitDirection, DamageType dmgType, DamageType resType,
+            float damage, float knockBack, float stagger, float armorPenetration, float critRate, float critDmg)
         {
-            float damageReduction = GetDamageReduction(armorPiercing);
+            float damageReduction = GetDamageReduction(armorPenetration);
             float finalDamage = damage * (1 - damageReduction);
+            if (Random.value < critRate) finalDamage *= critDmg; // Rand -> 0 - 1 The higher the critRate, the higher the chance of crit
             _health -= finalDamage;
             if (_health <= 0 && !isDead)
             {
@@ -118,6 +131,11 @@ namespace Utils
                     PlayParticleEffect(dmgParticles[Random.Range(0, dmgParticles.Length)], hitPoint, hitDirection);
                 else
                     Debug.LogWarning("dmgParticles array is empty.");
+            }
+            // Create knockBack logic here some time later
+            if (stagger > 0)
+            {
+                // Same with the stagger stuff
             }
             if (armorClass > 1) ReduceArmorDurability();
         }
