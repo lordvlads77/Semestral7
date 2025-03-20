@@ -5,6 +5,7 @@ using UnityEngine;
 using Utils;
 using Input;
 using Character;
+using Scriptables;
 using UnityEngine.Serialization;
 
 public class CombatSystem : Singleton<CombatSystem>
@@ -16,7 +17,16 @@ public class CombatSystem : Singleton<CombatSystem>
     [Header("Hit Point Var")]
     [SerializeField] private Vector3 _hitPoint = default;
     [SerializeField] private int _dmgDealt = default;
-    
+    [SerializeField] private LivingEntity _player = default;
+    [SerializeField] private WeaponStats _weaponStats;
+
+    protected override void OnAwake()
+    {
+        if (_player == null)
+        {
+            _player = GameObject.FindWithTag("Player").GetComponent<LivingEntity>();
+        }
+    }
 
     private void Start()
     {
@@ -28,7 +38,13 @@ public class CombatSystem : Singleton<CombatSystem>
     {
         if (_WeaponObject.CompareTag("Enemy"))
         {
-            //LivingEntity.TakeDamage(_dmgDealt, _hitPoint, Vector3.forward);
+            LivingEntity _enemy = other.GetComponent<LivingEntity>();
+            if (_enemy == null)
+            {
+                EDebug.LogError("Errooor");
+                return;
+            }
+            CombatUtils.Attack(_player, other.GetComponent<LivingEntity>(), _weaponStats  );
         }
     }
     

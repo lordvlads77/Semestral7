@@ -1,3 +1,5 @@
+using System;
+using Input;
 using UnityEngine;
 using Utils;
 
@@ -19,6 +21,25 @@ namespace Character
             if (entity.Weapon == WeaponType.Unarmed) return;
         }
 
+        private void OnEnable()
+        {
+            _input.OnAttackTriggeredEvent += WeaponHeavy;
+        }
+
+        private void WeaponHeavy()
+        {
+            WeaponSystem.Instance.WithdrawTwoHandedWeapon();
+        }
+
+        private void OnDisable()
+        {
+            _input.OnAttackTriggeredEvent -= WeaponHeavy;
+        }
+
+        private void OnDestroy()
+        {
+            _input.OnAttackTriggeredEvent -= WeaponHeavy;
+        }
         /*private void Update() Got rid of this for now... 
         {                       I'm moving the weapon types so that they're compatible with all Entities
             switch (_input.CurrentWeapon)
