@@ -1,3 +1,4 @@
+using Controllers;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Utils;
@@ -30,7 +31,7 @@ namespace Character
 
         public void WithdrawOneHandedWeapon()
         {
-            //Add Animation Calling Here
+            AnimationController.Instance.OneHandWeaponWithdraw(animator);
             //Add VFX Calling Here if applicable
             //Add SFX Calling Here
             oneHandedWeapon.SetActive(true);

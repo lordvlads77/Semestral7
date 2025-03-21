@@ -23,22 +23,30 @@ namespace Character
 
         private void OnEnable()
         {
-            _input.OnAttackTriggeredEvent += WeaponHeavy;
+            _input.OnAttackTriggeredEvent += WithdrawWeaponHeavy;
+            _input.OnWeaponLeftToggledEvent += WithdrawWeaponLight;
         }
 
-        private void WeaponHeavy()
+        private void WithdrawWeaponHeavy()
         {
             WeaponSystem.Instance.WithdrawTwoHandedWeapon();
+        }
+        
+        private void WithdrawWeaponLight()
+        {
+            WeaponSystem.Instance.WithdrawOneHandedWeapon();
         }
 
         private void OnDisable()
         {
-            _input.OnAttackTriggeredEvent -= WeaponHeavy;
+            _input.OnAttackTriggeredEvent -= WithdrawWeaponHeavy;
+            _input.OnWeaponLeftToggledEvent -= WithdrawWeaponLight;
         }
 
         private void OnDestroy()
         {
-            _input.OnAttackTriggeredEvent -= WeaponHeavy;
+            _input.OnAttackTriggeredEvent -= WithdrawWeaponHeavy;
+            _input.OnWeaponLeftToggledEvent -= WithdrawWeaponLight;
         }
         /*private void Update() Got rid of this for now... 
         {                       I'm moving the weapon types so that they're compatible with all Entities
