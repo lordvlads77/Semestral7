@@ -26,6 +26,13 @@ namespace Utils
         Unarmed
     }
     
+    public enum ENEMY_TYPE
+    {
+        None = 0,
+        CHASER = 1,
+        THROWER = 2,
+    }
+
     public static class MathUtils
     {
         public static Vector3[] CanonBasis(Transform trans)
