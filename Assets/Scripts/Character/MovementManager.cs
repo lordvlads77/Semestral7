@@ -76,7 +76,7 @@ namespace Character
             HandleActions();
             stateManager.UpdateMovementState(this);
         }
-
+        
         private void FixedUpdate()
         {
             if (_cm.type == CameraTypes.FreeLook)
@@ -152,6 +152,11 @@ namespace Character
         {
             anim.SetTrigger(AnimAttack);
         }
+        public void IncreaseMaxHealth(float amount)
+        {
+            maxHealth += amount;
+            _health = maxHealth; // Opcional: Restaura la vida al nuevo máximo
+        }
         
         private bool IsGrounded()
         {
@@ -181,7 +186,7 @@ namespace Character
             Gizmos.color = Color.red;
             Gizmos.DrawSphere(_spherePos, controller.radius - 0.05f);
         }
-
+        
         public void StartUnarmedCombat()
         {
             // Should put away the weapons, change stance 

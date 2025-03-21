@@ -27,8 +27,8 @@ namespace Utils
         [SerializeField] public float maxHealth = 100f;
         [Tooltip("For how long is the entity immune to damage after taking some?")]
         [SerializeField] private float dmgImmunityTime = 0.05f;
-        [SerializeField] private int armorClass = 1;
-        [SerializeField] private int armorDurability = 3;
+        [SerializeField] public int armorClass = 1;
+        [SerializeField] public int armorDurability = 3;
         
         public float _health;
         [HideInInspector] public bool isDead;
