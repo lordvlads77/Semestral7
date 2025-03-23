@@ -52,6 +52,28 @@ namespace Utils
         Light
     }
 
+    public enum DamageType
+    {
+        Physical,
+        Fire,
+        Ice,
+        Poison,
+        Electric,
+        Dark,
+        Light
+    }
+
+    public enum DamageType
+    {
+        Physical,
+        Fire,
+        Ice,
+        Poison,
+        Electric,
+        Dark,
+        Light
+    }
+
     public static class MathUtils
     {
         public static Vector3[] CanonBasis(Transform trans)
