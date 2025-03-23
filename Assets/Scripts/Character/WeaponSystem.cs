@@ -35,6 +35,7 @@ namespace Character
             //Add VFX Calling Here if applicable
             //Add SFX Calling Here
             oneHandedWeapon.SetActive(true);
+            EDebug.Log("Holo");
         }
         
         public void SheathOneHandedWeapon()
