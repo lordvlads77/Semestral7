@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Scriptables;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -8,15 +9,11 @@ namespace Utils
 {
     public class LivingEntity : MonoBehaviour
     {
-        public delegate void GameStateChange(GameStates state);
-        public event GameStateChange OnGameStateChange;
+        public string entityName;
+        public DialogOptions dialogOptions;
+        public NameCustomization nameCustomization;
+        public CustomDialogSprites dialogSprites;
 
-        public void ChangeGameState(GameStates state)
-        {
-            gameState = state;
-            OnGameStateChange?.Invoke(state);
-        }   
-        
         [Header("Living Entity Variables")]
         public bool isPlayer;
         [Tooltip("The particle systems that will play when the entity takes damage (Will be skipped if none are present)")]
@@ -29,15 +26,17 @@ namespace Utils
         [SerializeField] private float dmgImmunityTime = 0.05f;
         [SerializeField] private int armorClass = 1;
         [SerializeField] private int armorDurability = 3;
+        [SerializeField] private DamageType damageTypeResistance;
         
         private float _health;
+        private float _mood;
         [HideInInspector] public bool isDead;
         [HideInInspector] public bool canTakeDamage = true;
         [HideInInspector] public GameStates gameState;
 
-        protected Coroutine DamageImmunityCoroutine;
+        private Coroutine _damageImmunityCoroutine;
         private readonly List<ParticleSystem> _particleSystems = new List<ParticleSystem>();
-        protected Input.Actions IInput = default;
+        protected Input.Actions IInput;
 
         private Action _wLTHandler;
         private Action _wUTHandler;
@@ -48,27 +47,36 @@ namespace Utils
         public float GetMaxHealth() { return maxHealth; }
         public int GetArmorClass() { return armorClass; }
         public int GetArmorDurability() { return armorDurability; }
+        public float GetMood() { return _mood; }
+        public DamageType GetDmgTypeResistance() { return damageTypeResistance; }
         public WeaponType Weapon { get; private set; }
+        public Boolean HasCustomName() { return !string.IsNullOrEmpty(entityName); }
+
+        public Boolean HasCustomSprites()
+        {
+            bool hasSprites = true;
+            if (dialogSprites == null) return false;
+            if (dialogSprites.dialogBox == null) hasSprites = false;
+            if (dialogSprites.dialogOption == null) hasSprites = false;
+            if (dialogSprites.nameDivider == null) hasSprites = false;
+            return hasSprites;
+        }
         
         private void Awake()
         {
             _health = maxHealth;
             Weapon = WeaponType.Unarmed;
             if (!isPlayer) return;
-            IInput = Input.Actions.Instance;
-            if (IInput == null) IInput = gameObject.GetComponent<Input.Actions>();
-            if (IInput == null) IInput = gameObject.AddComponent<Input.Actions>();
-            if (IInput != null)
-            {
-                _wLTHandler = () => ChangeWeapon(WeaponType.LightSword);
-                _wUTHandler = () => ChangeWeapon(WeaponType.GreatSword);
-                _wRTHandler = () => ChangeWeapon(WeaponType.NamePending3);
-                _wDTHandler = () => ChangeWeapon(WeaponType.NamePending4);
-                IInput.OnWeaponLeftToggledEvent += _wLTHandler;
-                IInput.OnWeaponUpToggledEvent += _wUTHandler;
-                IInput.OnWeaponRightToggledEvent += _wRTHandler;
-                IInput.OnWeaponDownToggledEvent += _wDTHandler;
-            }
+            
+            IInput = (Input.Actions.Instance != null)? Input.Actions.Instance : MiscUtils.CreateGameManager().gameObject.GetComponent<Input.Actions>();
+            _wLTHandler = () => ChangeWeapon(WeaponType.LightSword);
+            _wUTHandler = () => ChangeWeapon(WeaponType.GreatSword);
+            _wRTHandler = () => ChangeWeapon(WeaponType.NamePending3);
+            _wDTHandler = () => ChangeWeapon(WeaponType.NamePending4);
+            IInput.OnWeaponLeftToggledEvent += _wLTHandler;
+            IInput.OnWeaponUpToggledEvent += _wUTHandler;
+            IInput.OnWeaponRightToggledEvent += _wRTHandler;
+            IInput.OnWeaponDownToggledEvent += _wDTHandler;
         }
         
         private void OnDestroy()
@@ -84,6 +92,11 @@ namespace Utils
         {
             Weapon = (Weapon == weapon)? WeaponType.Unarmed : weapon;
         }
+        
+        public void ChangeMood(float amount)
+        {
+            _mood = Mathf.Clamp(_mood + amount, -10, 10);
+        }
 
         private void Unsubscribe()
         {
@@ -95,10 +108,12 @@ namespace Utils
             IInput.OnWeaponDownToggledEvent -= _wDTHandler;
         }
 
-        public virtual void TakeDamage(float damage, Vector3 hitPoint, Vector3 hitDirection, float armorPiercing = 0f)
+        public virtual void TakeDamage(Vector3 hitPoint, Vector3 hitDirection, DamageType dmgType, DamageType resType,
+            float damage, float knockBack, float stagger, float armorPenetration, float critRate, float critDmg)
         {
-            float damageReduction = GetDamageReduction(armorPiercing);
+            float damageReduction = GetDamageReduction(armorPenetration);
             float finalDamage = damage * (1 - damageReduction);
+            if (Random.value < critRate) finalDamage *= critDmg; // Rand -> 0 - 1 The higher the critRate, the higher the chance of crit
             _health -= finalDamage;
             if (_health <= 0 && !isDead)
             {
@@ -111,13 +126,18 @@ namespace Utils
             }
             else
             {
-                if (DamageImmunityCoroutine != null)
-                    StopCoroutine(DamageImmunityCoroutine);
-                DamageImmunityCoroutine = StartCoroutine(DamageImmunity());
+                if (_damageImmunityCoroutine != null)
+                    StopCoroutine(_damageImmunityCoroutine);
+                _damageImmunityCoroutine = StartCoroutine(DamageImmunity());
                 if (dmgParticles.Length > 0)
                     PlayParticleEffect(dmgParticles[Random.Range(0, dmgParticles.Length)], hitPoint, hitDirection);
                 else
                     Debug.LogWarning("dmgParticles array is empty.");
+            }
+            // Create knockBack logic here some time later
+            if (stagger > 0)
+            {
+                // Same with the stagger stuff
             }
             if (armorClass > 1) ReduceArmorDurability();
         }

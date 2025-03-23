@@ -82,31 +82,11 @@ namespace Character
         
         void Update()
         {
-            /*if (_input.ZTarget)
-            {
-                ToggleLockTarget();
-            }*/
             if (_input.ZTarget && !lockTarget)
             {
-                /*lockTarget = null;
-            }
-            else
-            {*/
                 FindClosestTarget();
             }
         }
-        /*void ToggleLockTarget()
-        {
-            if (isLocked)
-            {
-                isLocked = false;
-                lockTarget = null;
-            }
-            else
-            {
-                FindClosestTarget();
-            }
-        }*/
 
         void FindClosestTarget()
         {
@@ -129,7 +109,6 @@ namespace Character
             // Read input
             float h = _input.Camera.x;
             float v = _input.Camera.y;
-            // Debug.Log("h: " + h + " v: " + v);
 
             // Settings
             h = (invertXAxis)? h : (-h);
