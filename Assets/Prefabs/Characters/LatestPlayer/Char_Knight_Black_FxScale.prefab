@@ -2352,11 +2352,13 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 48d70b0f66556394bbed22eae962ddae, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  entityName: 
+  m_EditorClassIdentifier:
+  entityName:
   isPlayer: 0
-  dmgParticles: []
-  criticalDmgParticles: []
+  dmgParticles:
+  - {fileID: 3104916853003571433, guid: e8b652848777dab47afdd50a040605b5, type: 3}
+  criticalDmgParticles:
+  - {fileID: 3104916853003571433, guid: 0541075591277094f92b6b73fd9c1f3c, type: 3}
   maxHealth: 100
   dmgImmunityTime: 0.05
   armorClass: 1

@@ -13,6 +13,7 @@ namespace Utils
         Paused,
         Chatting,
         GameOver,
+        Idle,
     }
 
     public enum CameraTypes
@@ -29,7 +30,7 @@ namespace Utils
         NamePending4,
         Unarmed
     }
-    
+
     public enum DamageType
     {
         Physical,
@@ -39,8 +40,15 @@ namespace Utils
         Electric,
         Dark,
         Light
-    }
+    } 
     
+    public enum ENEMY_TYPE
+    {
+        None = 0,
+        CHASER = 1,
+        THROWER = 2,
+    }
+
     public static class MathUtils
     {
         public static Vector3[] CanonBasis(Transform trans)
