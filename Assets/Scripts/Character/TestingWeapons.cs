@@ -24,6 +24,7 @@ namespace Character
         private void OnEnable()
         {
             _input.OnAttackTriggeredEvent += WeaponHeavy;
+            //TODO: REMOVE THIS
         }
 
         private void WeaponHeavy()
