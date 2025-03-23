@@ -29,7 +29,18 @@ namespace Utils
         NamePending4,
         Unarmed
     }
-    
+
+    public enum ENEMY_TYPE
+    {
+        Physical,
+        Fire,
+        Ice,
+        Poison,
+        Electric,
+        Dark,
+        Light
+    }
+
     public enum DamageType
     {
         Physical,
@@ -40,7 +51,7 @@ namespace Utils
         Dark,
         Light
     }
-    
+
     public static class MathUtils
     {
         public static Vector3[] CanonBasis(Transform trans)
