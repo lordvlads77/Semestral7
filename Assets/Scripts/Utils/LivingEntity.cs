@@ -220,6 +220,20 @@ namespace Utils
             // I could try a skinned mesh particle system that could look cool, but I don't know...
             // What are we making? 
         }
+
+        /// <summary>
+        /// Sets health but no beyond maxHealth
+        /// </summary>
+        /// <param name="health"></param>
+        public void SetHealth(float health)
+        {
+            if(health > maxHealth)
+            {
+                _health = maxHealth;
+                return;
+            }
+            _health = health;
+        }
         
     }
 }

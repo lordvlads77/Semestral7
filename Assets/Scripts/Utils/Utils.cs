@@ -13,6 +13,7 @@ namespace Utils
         Paused,
         Chatting,
         GameOver,
+        Idle,
     }
 
     public enum CameraTypes
@@ -39,6 +40,13 @@ namespace Utils
         Electric,
         Dark,
         Light
+    } 
+    
+    public enum ENEMY_TYPE
+    {
+        None = 0,
+        CHASER = 1,
+        THROWER = 2,
     }
 
     public static class MathUtils
