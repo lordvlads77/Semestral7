@@ -11,6 +11,7 @@ namespace Utils
         Joining,
         Playing,
         Paused,
+        Chatting,
         GameOver,
     }
 
@@ -54,7 +55,7 @@ namespace Utils
     
     public static class CombatUtils
     {
-        public static void Attack(LivingEntity attacker, LivingEntity target, WeaponStats weaponStats)
+        public static void Attack(LivingEntity attacker, LivingEntity target)
         {
             if (attacker == null || target == null)
             {
@@ -62,7 +63,7 @@ namespace Utils
                 return;
             }
             WeaponType weapon = attacker.Weapon;
-            WeaponStatistics stats = weaponStats.GetWeaponStats(weapon);
+            WeaponStatistics stats = GameManager.Instance.weaponStats.GetWeaponStats(weapon);
             if (stats == null)
             {
                 EDebug.LogError($"WeaponStats not found for WeaponType: {weapon}");
@@ -80,6 +81,40 @@ namespace Utils
                 stats.critRate,
                 stats.critDamage
             );
+        }
+    }
+
+    public static class MiscUtils
+    {
+        public static String GetRandomName(RandomNames randomNames, NameCustomization nameCustomization)
+        {
+            return randomNames.GetRandomName(
+                nameCustomization.isMale,
+                nameCustomization.includeName,
+                nameCustomization.includeLastName,
+                nameCustomization.includeNickname,
+                nameCustomization.includeTitle,
+                nameCustomization.startsWithTitle,
+                nameCustomization.replaceNameWithNickname,
+                nameCustomization.lastNameThenName,
+                nameCustomization.useTitleDividers
+            );
+        }
+        
+        public static GameManager CreateGameManager()
+        {
+            GameManager gm = GameManager.Instance;
+            if (gm == null)
+            {
+                GameObject newGm = new GameObject("GameManager");
+                newGm.transform.position = new Vector3(0, 10 ,0);
+                newGm.AddComponent<GameManager>();
+                newGm.AddComponent<Input.Actions>();
+                UnityEngine.Object.Instantiate(newGm);
+                EDebug.Log("GameManager was not found, a new one was created.");
+                gm = newGm.GetComponent<GameManager>();
+            }
+            return gm;
         }
     }
     
@@ -113,6 +148,37 @@ namespace Utils
         [Range(0,1)] public float armorPenetration;  //Percentage of armor ignored
         [Range(0,1)] public float critRate;          //Chance of landing a critical hit
         [Range(1,5)] public float critDamage;        //Multiplier for critical hits
+    }
+
+    [Serializable] public class NameCustomization
+    {
+        public bool isMale;
+        public bool includeName;
+        public bool includeLastName;
+        public bool includeNickname;
+        public bool includeTitle;
+        public bool startsWithTitle;
+        public bool replaceNameWithNickname;
+        public bool lastNameThenName;
+        public bool useTitleDividers;
+    }
+    
+    [Serializable] public class CanvasPrefabs
+    {
+        [Header("Canvas Sprites")]
+        public RandomSprite[] canvasSprites;
+        [Header("NPC Stuffs")]
+        public Canvas npcCanvas;
+        public GameObject npcOption;
+        // Add more as needed! 
+        // (I'd like it if you added a header for each category)
+    }
+
+    [Serializable] public class CustomDialogSprites
+    {
+        public Sprite dialogBox;
+        public Sprite dialogOption;
+        public Sprite nameDivider;
     }
     
 }

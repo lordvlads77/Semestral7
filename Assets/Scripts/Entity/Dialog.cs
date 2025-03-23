@@ -7,32 +7,68 @@ namespace Entity
 {
     public class Dialog : MonoBehaviour
     {
-        private LivingEntity _selfEntity;
-        private float _mood;
-        
-        [SerializeField] private DialogOptions dialogOptions;
-        [SerializeField] private GameObject dialogCanvas;
-        [SerializeField] private Text dialogText;
-        [SerializeField] private Button[] responseButtons;
-        
+        private Canvas _npcCanvas;
+
         private void Awake()
         {
-            _selfEntity = GetComponent<LivingEntity>();
-            _mood = _selfEntity.GetMood();
-        }
-        
-        public void StartDialog()
-        {
-            if (dialogOptions != null && dialogOptions.dialogOptions.Count > 0)
+            GameManager gm = (GameManager.Instance != null)? GameManager.Instance : MiscUtils.CreateGameManager();
+            _npcCanvas = gm.NpcCanvas;
+            if (_npcCanvas == null)
             {
-                DisplayDialog(dialogOptions.dialogOptions[0]);
+                EDebug.Log("New canvas is being created...");
+                _npcCanvas = gm.CreateNpcCanvas();
             }
         }
-        
-        private void DisplayDialog(DialogOption dialogOption)
+
+        public void StartDialog(LivingEntity npc)
         {
-            dialogCanvas.SetActive(true);
+            if (npc == null)
+            {
+                EDebug.LogError("NPC is null.");
+                return;
+            }
+            DialogOptions dialogOptions = npc.dialogOptions;
+            if (dialogOptions != null && dialogOptions.dialogOptions.Count > 0)
+            {
+                DisplayDialog(npc, dialogOptions.dialogOptions[0]);
+            }
+            else EDebug.LogError("DialogOptions are null or empty.");
+        }
+
+        public void StopDialog()
+        {
+            if (_npcCanvas == null) return;
+            _npcCanvas.gameObject.SetActive(false);
+        }
+        
+        private void DisplayDialog(LivingEntity npc, DialogOption dialogOption)
+        {
+            if (_npcCanvas == null)
+            {
+                EDebug.LogError("NPC Canvas is not assigned.");
+                return;
+            }
+            Text dialogText = _npcCanvas.GetComponentInChildren<Text>();
+            Text npcName = _npcCanvas.GetComponentInChildren<Text>();
+            Button[] responseButtons = _npcCanvas.GetComponentsInChildren<Button>();
+            Text[] responseText = _npcCanvas.GetComponentsInChildren<Text>();
+            
+            if (dialogText == null || npcName == null || responseButtons == null || responseText == null)
+            {
+                EDebug.LogError("One or more UI components are not assigned.");
+                return;
+            }
             dialogText.text = dialogOption.npcDialog;
+            npcName.text = npc.HasCustomName()? npc.entityName : MiscUtils.GetRandomName(
+                GameManager.Instance.randomNames, npc.nameCustomization);
+            
+
+            for (int i = 0; i < responseText.Length; i++)
+            {
+                responseText[i].text = dialogOption.userResponses[i].response;
+            }
+           
+            _npcCanvas.gameObject.SetActive(true);
 
             for (int i = 0; i < responseButtons.Length; i++)
             {
@@ -42,7 +78,8 @@ namespace Entity
                     responseButtons[i].GetComponentInChildren<Text>().text = dialogOption.userResponses[i].response;
                     int index = i; // Capture the index for the lambda
                     responseButtons[i].onClick.RemoveAllListeners();
-                    responseButtons[i].onClick.AddListener(() => OnResponseSelected(dialogOption.userResponses[index]));
+                    responseButtons[i].onClick.AddListener(() => OnResponseSelected(
+                        npc, dialogOption.userResponses[index]));
                 }
                 else
                 {
@@ -51,18 +88,15 @@ namespace Entity
             }
         }
         
-        private void OnResponseSelected(ResponseOption responseOption)
+        private void OnResponseSelected(LivingEntity npc, ResponseOption responseOption)
         {
             responseOption.OnResponse();
-            _selfEntity.ChangeMood(responseOption.moodChange);
+            npc.ChangeMood(responseOption.moodChange);
             if (responseOption.nextDialog != null)
             {
-                DisplayDialog(responseOption.nextDialog);
+                DisplayDialog(npc, responseOption.nextDialog);
             }
-            else
-            {
-                dialogCanvas.SetActive(false);
-            }
+            else StopDialog();
         }
         
     }
