@@ -1,52 +1,40 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Utils;
-using Input;
-using Character;
 using Scriptables;
+using UnityEngine;
 using UnityEngine.Serialization;
+using Utils;
 
-public class CombatSystem : Singleton<CombatSystem>
+namespace Character
 {
-    [FormerlySerializedAs("_EnemyObject")]
-    [Header("Weapon Object Ref")]
-    [SerializeField] private GameObject _WeaponObject = default;
-    [FormerlySerializedAs("_hitdir")]
-    [Header("Hit Point Var")]
-    [SerializeField] private Vector3 _hitPoint = default;
-    [SerializeField] private int _dmgDealt = default;
-    [SerializeField] private LivingEntity _player = default;
-    [SerializeField] private WeaponStats _weaponStats;
-
-    protected override void OnAwake()
+    public class CombatSystem : Singleton<CombatSystem>
     {
-        if (_player == null)
+        [FormerlySerializedAs("_EnemyObject")]
+        [Header("Weapon Object Ref")]
+        [SerializeField] private GameObject weaponObject = default;
+        [FormerlySerializedAs("_hitdir")]
+        [Header("Hit Point Var")]
+        [SerializeField] private LivingEntity player = default;
+
+        protected override void OnAwake()
         {
-            _player = GameObject.FindWithTag("Player").GetComponent<LivingEntity>();
-        }
-    }
-
-    private void Start()
-    {
-        _hitPoint = Vector3.forward;
-    }
-
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (_WeaponObject.CompareTag("Enemy"))
-        {
-            LivingEntity _enemy = other.GetComponent<LivingEntity>();
-            if (_enemy == null)
+            if (player == null)
             {
-                EDebug.LogError("Errooor");
-                return;
+                player = GameObject.FindWithTag("Player").GetComponent<LivingEntity>();
             }
-            CombatUtils.Attack(_player, other.GetComponent<LivingEntity>(), _weaponStats  );
         }
-    }
     
-    //public override  TakeDamage(float damage, Vector3 hitPoint, Vector3 hitDirection)
+        private void OnTriggerEnter(Collider other)
+        {
+            if (weaponObject.CompareTag("Enemy"))
+            {
+                LivingEntity enemy = other.GetComponent<LivingEntity>();
+                if (enemy == null)
+                {
+                    EDebug.LogError("No LivingEntity component found on " + other.name + " (Enemy)");
+                    return;
+                }
+                CombatUtils.Attack(player, enemy);
+            }
+        }
+    
+    }
 }

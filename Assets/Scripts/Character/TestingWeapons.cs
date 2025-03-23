@@ -40,21 +40,6 @@ namespace Character
         {
             _input.OnAttackTriggeredEvent -= WeaponHeavy;
         }
-        /*private void Update() Got rid of this for now... 
-        {                       I'm moving the weapon types so that they're compatible with all Entities
-            switch (_input.CurrentWeapon)
-            {
-                default:
-                case Input.WeaponType.Unarmed:
-                    WeaponSystem.Instance.Unarmed();
-                    break;
-                case Input.WeaponType.NamePending1:
-                    WeaponSystem.Instance.WithdrawOneHandedWeapon();
-                    break;
-                case Input.WeaponType.NamePending2:
-                    WeaponSystem.Instance.WithdrawTwoHandedWeapon();
-                    break;
-            }
-        }*/
+        
     }
 }
