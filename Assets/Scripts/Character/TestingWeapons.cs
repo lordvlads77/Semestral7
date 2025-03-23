@@ -12,13 +12,19 @@ namespace Character
         private void Awake()
         {
             _input = Input.Actions.Instance;
-            if (_input == null) _input = gameObject.GetComponent<Input.Actions>();
-            if (_input == null) _input = gameObject.AddComponent<Input.Actions>();
         }
 
-        private void Cosa(LivingEntity entity)
+        private void GreatSwordUse(LivingEntity entity)
         {
-            if (entity.Weapon == WeaponType.Unarmed) return;
+            if (entity.Weapon == WeaponType.GreatSword) return;
+        }
+
+        private void LightSwordUse(LivingEntity entity)
+        {
+            if (entity.Weapon == WeaponType.LightSword)
+            {
+                return;
+            }
         }
 
         private void OnEnable()

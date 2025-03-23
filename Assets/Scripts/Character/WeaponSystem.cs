@@ -19,9 +19,9 @@ namespace Character
         private GameObject twoHandedWeapon = default;
         [Header("Two Handed Weapon in Hands")]
         [SerializeField] private GameObject twoHandedHand = default;
-        
+
         [Header("Animator Reference")]
-        private Animator animator = default;
+        [SerializeField] private Animator animator = default;
     
         public void Unarmed()
         {
@@ -39,7 +39,7 @@ namespace Character
         
         public void SheathOneHandedWeapon()
         {
-            //Add Animation Calling Here
+            AnimationController.Instance.OneHandWeaponSheath(animator);
             //Add VFX Calling Here if applicable
             //Add SFX Calling Here
             oneHandedWeapon.SetActive(false);

@@ -570,6 +570,7 @@ MonoBehaviour:
   oneHandedWeapon: {fileID: 1996710984978505154}
   twoHandedWeapon: {fileID: 6252273708626101226}
   twoHandedHand: {fileID: 580664377}
+  animator: {fileID: 1267598858}
 --- !u!4 &1202280675
 Transform:
   m_ObjectHideFlags: 0
@@ -585,6 +586,12 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &1267598858 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 4333506671907191469, guid: 94cd54f3e49f0224684d2023ea43391f,
+    type: 3}
+  m_PrefabInstance: {fileID: 4325116912432689114}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1564776592
 GameObject:
   m_ObjectHideFlags: 0
