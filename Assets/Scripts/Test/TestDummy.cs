@@ -22,7 +22,6 @@ public sealed class TestDummy : MonoBehaviour
         {
             OnHit += () =>
             {
-                _dummy.TakeDamage(10, _dummy.transform.position, hitDirection);
                 Animator animator = this.GetComponent<Animator>();
                 animator.SetTrigger("Hit");
             };

@@ -1,36 +1,40 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using Scriptables;
 using UnityEngine;
-using Utils;
-using Input;
-using Character;
 using UnityEngine.Serialization;
+using Utils;
 
-public class CombatSystem : Singleton<CombatSystem>
+namespace Character
 {
-    [FormerlySerializedAs("_EnemyObject")]
-    [Header("Weapon Object Ref")]
-    [SerializeField] private GameObject _WeaponObject = default;
-    [FormerlySerializedAs("_hitdir")]
-    [Header("Hit Point Var")]
-    [SerializeField] private Vector3 _hitPoint = default;
-    [SerializeField] private int _dmgDealt = default;
-    
-
-    private void Start()
+    public class CombatSystem : Singleton<CombatSystem>
     {
-        _hitPoint = Vector3.forward;
-    }
+        [FormerlySerializedAs("_EnemyObject")]
+        [Header("Weapon Object Ref")]
+        [SerializeField] private GameObject weaponObject = default;
+        [FormerlySerializedAs("_hitdir")]
+        [Header("Hit Point Var")]
+        [SerializeField] private LivingEntity player = default;
 
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (_WeaponObject.CompareTag("Enemy"))
+        protected override void OnAwake()
         {
-            //LivingEntity.TakeDamage(_dmgDealt, _hitPoint, Vector3.forward);
+            if (player == null)
+            {
+                player = GameObject.FindWithTag("Player").GetComponent<LivingEntity>();
+            }
         }
-    }
     
-    //public override  TakeDamage(float damage, Vector3 hitPoint, Vector3 hitDirection)
+        private void OnTriggerEnter(Collider other)
+        {
+            if (weaponObject.CompareTag("Enemy"))
+            {
+                LivingEntity enemy = other.GetComponent<LivingEntity>();
+                if (enemy == null)
+                {
+                    EDebug.LogError("No LivingEntity component found on " + other.name + " (Enemy)");
+                    return;
+                }
+                Utils.CombatUtils.Attack(player, enemy);
+            }
+        }
+    
+    }
 }

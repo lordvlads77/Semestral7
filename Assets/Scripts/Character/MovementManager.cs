@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Utils;
 
@@ -47,16 +48,27 @@ namespace Character
             controller = GetComponent<CharacterController>();
             stateManager.EnterMovementState(MovementState.Walk, this);
             _cam = Camera.main;
-            IInput = Input.Actions.Instance;
-            if (IInput == null) IInput = gameObject.GetComponent<Input.Actions>();
-            if (IInput == null) IInput = gameObject.AddComponent<Input.Actions>();
+            IInput = (Input.Actions.Instance != null)? Input.Actions.Instance : MiscUtils.CreateGameManager().gameObject.GetComponent<Input.Actions>();
             if (_cam) _cm = _cam.GetComponent<ThirdPersonCamera>();
-            if (!_cm) _cm = GetComponent<ThirdPersonCamera>(); // You had the script here, right?
-            IInput.OnCrouchToggledEvent += ToggleCrouch;
+            if (!_cm) _cm = GetComponent<ThirdPersonCamera>(); // You had the script here, right
             SetHealth(GetMaxHealth());
         }
         
+        private void OnEnable()
+        {
+            IInput.OnCrouchToggledEvent += ToggleCrouch;
+            IInput.OnAttackTriggeredEvent += Punch;
+        }
         private void OnDestroy()
+        {
+            UnSubscribe();
+        }
+        private void OnDisable()
+        {
+            UnSubscribe();
+        }
+        
+        private void UnSubscribe()
         {
             IInput.OnCrouchToggledEvent -= ToggleCrouch;
         }
@@ -89,11 +101,6 @@ namespace Character
             if (IInput.Jump && IsGrounded())
             {
                 Jump();
-            }
-                
-            if (IInput.Attack)
-            {
-                Punch();
             }
         }
         
@@ -146,7 +153,18 @@ namespace Character
         
         private void Punch()
         {
+            if (stateManager.CurrentFightingState == FightingState.NonCombat && NpcCloseBy())
+            {
+                // Start the dialogue thing
+            }
+
             anim.SetTrigger(AnimAttack);
+        }
+        
+        private Boolean NpcCloseBy()
+        {
+            // Check if there is an NPC close by
+            return false;
         }
         
         private bool IsGrounded()

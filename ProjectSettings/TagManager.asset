@@ -4,6 +4,7 @@
 TagManager:
   serializedVersion: 2
   tags:
+  - Interest
   - Enemy
   layers:
   - Default
@@ -13,9 +14,9 @@ TagManager:
   - Water
   - UI
   - Player
-  - 
-  - 
+  - Interest
   - Ground
+  - 
   - 
   - 
   - 
