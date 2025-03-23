@@ -30,61 +30,6 @@ namespace Utils
         Unarmed
     }
 
-    public enum ENEMY_TYPE
-    {
-        Physical,
-        Fire,
-        Ice,
-        Poison,
-        Electric,
-        Dark,
-        Light
-    }
-
-    public enum DamageType
-    {
-        Physical,
-        Fire,
-        Ice,
-        Poison,
-        Electric,
-        Dark,
-        Light
-    }
-
-    public enum DamageType
-    {
-        Physical,
-        Fire,
-        Ice,
-        Poison,
-        Electric,
-        Dark,
-        Light
-    }
-
-    public enum DamageType
-    {
-        Physical,
-        Fire,
-        Ice,
-        Poison,
-        Electric,
-        Dark,
-        Light
-    }
-
-    public enum DamageType
-    {
-        Physical,
-        Fire,
-        Ice,
-        Poison,
-        Electric,
-        Dark,
-        Light
-    }
-
     public enum DamageType
     {
         Physical,
