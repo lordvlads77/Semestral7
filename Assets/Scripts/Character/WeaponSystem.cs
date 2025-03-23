@@ -1,3 +1,4 @@
+using Controllers;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Utils;
@@ -18,9 +19,9 @@ namespace Character
         private GameObject twoHandedWeapon = default;
         [Header("Two Handed Weapon in Hands")]
         [SerializeField] private GameObject twoHandedHand = default;
-        
+
         [Header("Animator Reference")]
-        private Animator animator = default;
+        [SerializeField] private Animator animator = default;
     
         public void Unarmed()
         {
@@ -30,7 +31,7 @@ namespace Character
 
         public void WithdrawOneHandedWeapon()
         {
-            //Add Animation Calling Here
+            AnimationController.Instance.OneHandWeaponWithdraw(animator);
             //Add VFX Calling Here if applicable
             //Add SFX Calling Here
             oneHandedWeapon.SetActive(true);
@@ -38,7 +39,7 @@ namespace Character
         
         public void SheathOneHandedWeapon()
         {
-            //Add Animation Calling Here
+            AnimationController.Instance.OneHandWeaponSheath(animator);
             //Add VFX Calling Here if applicable
             //Add SFX Calling Here
             oneHandedWeapon.SetActive(false);

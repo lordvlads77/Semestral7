@@ -12,33 +12,47 @@ namespace Character
         private void Awake()
         {
             _input = Input.Actions.Instance;
-            if (_input == null) _input = gameObject.GetComponent<Input.Actions>();
-            if (_input == null) _input = gameObject.AddComponent<Input.Actions>();
         }
 
-        private void Cosa(LivingEntity entity)
+        private void GreatSwordUse(LivingEntity entity)
         {
-            if (entity.Weapon == WeaponType.Unarmed) return;
+            if (entity.Weapon == WeaponType.GreatSword) return;
+        }
+
+        private void LightSwordUse(LivingEntity entity)
+        {
+            if (entity.Weapon == WeaponType.LightSword)
+            {
+                return;
+            }
         }
 
         private void OnEnable()
         {
-            _input.OnAttackTriggeredEvent += WeaponHeavy;
+            _input.OnAttackTriggeredEvent += WithdrawWeaponHeavy;
+            _input.OnWeaponLeftToggledEvent += WithdrawWeaponLight;
         }
 
-        private void WeaponHeavy()
+        private void WithdrawWeaponHeavy()
         {
             WeaponSystem.Instance.WithdrawTwoHandedWeapon();
+        }
+        
+        private void WithdrawWeaponLight()
+        {
+            WeaponSystem.Instance.WithdrawOneHandedWeapon();
         }
 
         private void OnDisable()
         {
-            _input.OnAttackTriggeredEvent -= WeaponHeavy;
+            _input.OnAttackTriggeredEvent -= WithdrawWeaponHeavy;
+            _input.OnWeaponLeftToggledEvent -= WithdrawWeaponLight;
         }
 
         private void OnDestroy()
         {
-            _input.OnAttackTriggeredEvent -= WeaponHeavy;
+            _input.OnAttackTriggeredEvent -= WithdrawWeaponHeavy;
+            _input.OnWeaponLeftToggledEvent -= WithdrawWeaponLight;
         }
         
     }
