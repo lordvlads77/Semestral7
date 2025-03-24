@@ -1,15 +1,27 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Utils;
 
-public class AnimationController : Singleton<AnimationController>
+namespace Controllers
 {
-    private readonly int _2HWeaponWithdraw = Animator.StringToHash("2HWeaponWithdraw");
-    
-    public void TwoHandsWeaponWithdraw(Animator animator)
+    public class AnimationController : Singleton<AnimationController>
     {
-        animator.SetBool(_2HWeaponWithdraw, true);
+        private readonly int _2HWeaponWithdraw = Animator.StringToHash("2HWeaponWithdraw");
+        private readonly int _1HWeaponWithdraw = Animator.StringToHash("1HWeaponWithdraw");
+        private readonly int _1HWeaponSheath = Animator.StringToHash("1HWeaponSheath");
+
+        public void TwoHandsWeaponWithdraw(Animator animator)
+        {
+            animator.SetTrigger(_2HWeaponWithdraw);
+        }
+
+        public void OneHandWeaponWithdraw(Animator animator)
+        {
+            animator.SetTrigger(_1HWeaponWithdraw);
+        }
+        
+        public void OneHandWeaponSheath(Animator animator)
+        {
+            animator.SetTrigger(_1HWeaponSheath);
+        }
     }
 }
