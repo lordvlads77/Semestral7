@@ -16,12 +16,12 @@ namespace Controllers
 
         public void OneHandWeaponWithdraw(Animator animator)
         {
-            animator.SetBool(_1HWeaponWithdraw, true);
+            animator.SetTrigger(_1HWeaponWithdraw);
         }
         
         public void OneHandWeaponSheath(Animator animator)
         {
-            animator.SetBool(_1HWeaponSheath, true);
+            animator.SetTrigger(_1HWeaponSheath);
         }
     }
 }
