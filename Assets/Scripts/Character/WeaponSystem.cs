@@ -34,6 +34,11 @@ namespace Character
             //Add VFX Calling Here if applicable
             //Add SFX Calling Here
             oneHandedWeapon.SetActive(true);
+            if (twoHandedHand.activeInHierarchy)
+            {
+                twoHandedHand.SetActive(false);
+                EDebug.Log("You already have a weapon equipped");
+            }
         }
         
         public void SheathOneHandedWeapon()
@@ -51,6 +56,11 @@ namespace Character
             //Add SFX Calling Here
             twoHandedWeapon.SetActive(false);
             twoHandedHand.SetActive(true);
+            if (oneHandedWeapon.activeInHierarchy)
+            {
+                oneHandedWeapon.SetActive(false);
+                EDebug.Log("You already have a weapon equipped");
+            }
         }
         
         public void SheathTwoHandedWeapon()
