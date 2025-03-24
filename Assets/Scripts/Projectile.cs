@@ -16,6 +16,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] float currentMovementTime = 0.0f;
     public float damage = 2.5f;
     [SerializeField] private GameStates gameState = GameStates.Playing;
+    [SerializeField] private DamageType damageType = DamageType.Physical;
 
 
     private Rigidbody body;
@@ -41,7 +42,7 @@ public class Projectile : MonoBehaviour
 
         if (distance - 0.4 < bodyCollider.radius)
         {
-            player.TakeDamage(damage, transform.position, direction);
+            CombatUtils.ProjectileDamage(player, transform.position, direction, this);
             gameObject.SetActive(false);
             return;
         }
@@ -94,4 +95,6 @@ public class Projectile : MonoBehaviour
                 break;
         }
     }
+
+    public DamageType getDamageType => damageType;
 }
