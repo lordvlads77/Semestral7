@@ -11,7 +11,7 @@ namespace Entity
     {
 
         [Header("Enemy type")]
-        [SerializeField] private ENEMY_TYPE type;
+        [SerializeField] private EnemyType type;
         [Header("AI Components")]
         [SerializeField] NavMeshAgent agent;
         [SerializeField] LivingEntity player;
@@ -72,7 +72,7 @@ namespace Entity
             {
                 Vector3 direction = PlayerPosition - transform.position;
                 timeInsdeAttackRange = 0.0f;
-                player.TakeDamage(damage, transform.position, direction);
+                //player.TakeDamage(damage, transform.position, direction);
             }
         }
 

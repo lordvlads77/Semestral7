@@ -30,6 +30,7 @@ namespace Utils
         
         private float _health;
         private float _mood;
+        public bool isInDialog;
         [HideInInspector] public bool isDead;
         [HideInInspector] public bool canTakeDamage = true;
         [HideInInspector] public GameStates gameState;

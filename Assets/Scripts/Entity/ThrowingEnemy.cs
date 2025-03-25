@@ -6,10 +6,10 @@ using Utils;
 
 namespace Entity
 {
-    public sealed class ThrowingEnemy : Utils.LivingEntity
+    public sealed class ThrowingEnemy : LivingEntity
     {
         [Header("Enemy type")]
-        [SerializeField] private ENEMY_TYPE type;
+        [SerializeField] private EnemyType type;
         [Header("AI Components")]
         [SerializeField] NavMeshAgent agent;
         [SerializeField] LivingEntity player;
@@ -66,7 +66,6 @@ namespace Entity
         void Update()
         {
             if (gameState != GameStates.Playing) { return; }
-
 
             float distance = Vector3.Distance(player.transform.position, transform.position);
             EDebug.Log("Distance from Enemy" + distance);

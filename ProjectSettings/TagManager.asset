@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Interest
   - Enemy
+  - NPC
   layers:
   - Default
   - TransparentFX

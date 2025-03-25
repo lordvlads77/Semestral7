@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Utils;
 
@@ -28,7 +29,6 @@ namespace Character
         [SerializeField] private LayerMask groundLayer;
         [SerializeField, Range(5f, 15f)] private float gravity = 9.81f;
         [SerializeField] private float jumpHeight = 2f;
-    
         [HideInInspector] public Vector3 dir;
         [HideInInspector] public float horizontalInput, verticalInput;
     
@@ -153,18 +153,12 @@ namespace Character
         
         private void Punch()
         {
-            if (stateManager.CurrentFightingState == FightingState.NonCombat && NpcCloseBy())
+            if (stateManager.CurrentFightingState == FightingState.NonCombat && GameManager.Instance.NpcCloseBy(transform.position))
             {
                 // Start the dialogue thing
             }
 
             anim.SetTrigger(AnimAttack);
-        }
-        
-        private Boolean NpcCloseBy()
-        {
-            // Check if there is an NPC close by
-            return false;
         }
         
         private bool IsGrounded()
@@ -189,10 +183,11 @@ namespace Character
             controller.Move(_velocity * Time.deltaTime);
         }
         
+        private readonly Color _groundCheck = new Color(1f, 0.1f, 0.1f, 0.25f);
         private void OnDrawGizmos()
         {
             if (controller == null) return;
-            Gizmos.color = Color.red;
+            Gizmos.color = _groundCheck;
             Gizmos.DrawSphere(_spherePos, controller.radius - 0.05f);
         }
 

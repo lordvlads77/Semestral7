@@ -42,11 +42,11 @@ namespace Utils
         Light
     } 
     
-    public enum ENEMY_TYPE
+    public enum EnemyType 
     {
         None = 0,
-        CHASER = 1,
-        THROWER = 2,
+        Chaser = 1,
+        Thrower = 2,
     }
 
     public static class MathUtils
@@ -78,7 +78,7 @@ namespace Utils
                 return;
             }
             target.TakeDamage(
-                attacker.transform.position, //Change this later to the actual point of impact
+                attacker.transform.position, //Change this later to the actual point of impact for particles
                 attacker.transform.forward,
                 stats.damageType,
                 target.GetDmgTypeResistance(),
@@ -114,8 +114,8 @@ namespace Utils
             GameManager gm = GameManager.Instance;
             if (gm == null)
             {
-                GameObject newGm = new GameObject("GameManager");
-                newGm.transform.position = new Vector3(0, 10 ,0);
+                GameObject newGm = new GameObject("GameManager")
+                { transform = { position = new Vector3(0, 10 ,0) } };
                 newGm.AddComponent<GameManager>();
                 newGm.AddComponent<Input.Actions>();
                 UnityEngine.Object.Instantiate(newGm);
@@ -178,6 +178,8 @@ namespace Utils
         [Header("NPC Stuffs")]
         public Canvas npcCanvas;
         public GameObject npcOption;
+        public GameObject dialogPrompt;
+        public GameObject promptName;
         // Add more as needed! 
         // (I'd like it if you added a header for each category)
     }

@@ -41,7 +41,7 @@ public class Projectile : MonoBehaviour
 
         if (distance - 0.4 < bodyCollider.radius)
         {
-            player.TakeDamage(damage, transform.position, direction);
+            //player.TakeDamage(damage, transform.position, direction);
             gameObject.SetActive(false);
             return;
         }
