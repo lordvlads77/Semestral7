@@ -68,7 +68,6 @@ namespace Entity
             if (gameState != GameStates.Playing) { return; }
 
             float distance = Vector3.Distance(player.transform.position, transform.position);
-            EDebug.Log("Distance from Enemy" + distance);
             if (distance < attackRange)
             {
                 timeInsdeAttackRange += Time.deltaTime;

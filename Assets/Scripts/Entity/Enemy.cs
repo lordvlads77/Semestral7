@@ -72,7 +72,7 @@ namespace Entity
             {
                 Vector3 direction = PlayerPosition - transform.position;
                 timeInsdeAttackRange = 0.0f;
-                //player.TakeDamage(damage, transform.position, direction);
+                CombatUtils.Attack(this, player);
             }
         }
 
