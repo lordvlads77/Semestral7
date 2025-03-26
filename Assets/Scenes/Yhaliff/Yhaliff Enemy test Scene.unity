@@ -310,6 +310,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a7f41c86bc477d44a037f7a2cc94b15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  entityName: 
+  dialogOptions: {fileID: 0}
+  nameCustomization:
+    isMale: 0
+    includeName: 0
+    includeLastName: 0
+    includeNickname: 0
+    includeTitle: 0
+    startsWithTitle: 0
+    replaceNameWithNickname: 0
+    lastNameThenName: 0
+    useTitleDividers: 0
+  dialogSprites:
+    dialogBox: {fileID: 0}
+    dialogOption: {fileID: 0}
+    nameDivider: {fileID: 0}
   isPlayer: 0
   dmgParticles: []
   criticalDmgParticles: []
@@ -317,6 +333,7 @@ MonoBehaviour:
   dmgImmunityTime: 0.05
   armorClass: 1
   armorDurability: 3
+  damageTypeResistance: 0
   isDead: 0
   canTakeDamage: 1
   gameState: 0
@@ -1141,6 +1158,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1004013564
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1004013566}
+  - component: {fileID: 1004013565}
+  m_Layer: 0
+  m_Name: Animation Controller
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1004013565
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1004013564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7c121c5c3c5f4341a831731019d0f70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1004013566
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1004013564}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 4.818548, y: -0.6084641, z: 14.613729}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1044330671
 GameObject:
   m_ObjectHideFlags: 0
@@ -1493,6 +1554,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a7f41c86bc477d44a037f7a2cc94b15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  entityName: 
+  dialogOptions: {fileID: 0}
+  nameCustomization:
+    isMale: 0
+    includeName: 0
+    includeLastName: 0
+    includeNickname: 0
+    includeTitle: 0
+    startsWithTitle: 0
+    replaceNameWithNickname: 0
+    lastNameThenName: 0
+    useTitleDividers: 0
+  dialogSprites:
+    dialogBox: {fileID: 0}
+    dialogOption: {fileID: 0}
+    nameDivider: {fileID: 0}
   isPlayer: 0
   dmgParticles: []
   criticalDmgParticles: []
@@ -1500,6 +1577,7 @@ MonoBehaviour:
   dmgImmunityTime: 0.05
   armorClass: 1
   armorDurability: 3
+  damageTypeResistance: 0
   isDead: 0
   canTakeDamage: 1
   gameState: 0
@@ -2053,3 +2131,4 @@ SceneRoots:
   - {fileID: 619698338}
   - {fileID: 221769209}
   - {fileID: 1677339165}
+  - {fileID: 1004013566}
