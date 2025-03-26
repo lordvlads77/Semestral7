@@ -21,7 +21,7 @@ namespace Character
         [SerializeField] private GameObject twoHandedHand = default;
         
         [Header("Animator Reference")]
-        private Animator animator = default;
+       [field :SerializeField] private Animator animator = default;
     
         public void Unarmed()
         {
