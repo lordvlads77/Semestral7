@@ -44,10 +44,17 @@ namespace Character
         
         public void SheathOneHandedWeapon()
         {
-            AnimationController.Instance.OneHandWeaponSheath(animator);
             //Add VFX Calling Here if applicable
             //Add SFX Calling Here
-            oneHandedWeapon.SetActive(false);
+            if (!oneHandedWeapon.activeInHierarchy)
+            {
+                EDebug.Log("You already Sheathed your weapon");
+            }
+            else
+            {
+                AnimationController.Instance.OneHandWeaponSheath(animator);
+                oneHandedWeapon.SetActive(false);
+            }
         }
 
         public void WithdrawTwoHandedWeapon()
@@ -66,11 +73,12 @@ namespace Character
         
         public void SheathTwoHandedWeapon()
         {
-            //Add Animation Calling Here
+            AnimationController.Instance.TwoHandsWeaponSheath(animator);
             //Add VFX Calling Here if applicable
             //Add SFX Calling Here
             twoHandedHand.SetActive(false);
             twoHandedWeapon.SetActive(true);
+            //TODO: Added the Callbacks for the inputs
         }
 
     }

@@ -8,6 +8,7 @@ namespace Controllers
         private readonly int _2HWeaponWithdraw = Animator.StringToHash("2HWeaponWithdraw");
         private readonly int _1HWeaponWithdraw = Animator.StringToHash("1HWeaponWithdraw");
         private readonly int _1HWeaponSheath = Animator.StringToHash("1HWeaponSheath");
+        private readonly int _2HWeaponSheath = Animator.StringToHash("2HWeaponSheath");
 
         public void TwoHandsWeaponWithdraw(Animator animator)
         {
@@ -22,6 +23,11 @@ namespace Controllers
         public void OneHandWeaponSheath(Animator animator)
         {
             animator.SetTrigger(_1HWeaponSheath);
+        }
+        
+        public void TwoHandsWeaponSheath(Animator animator)
+        {
+            animator.SetTrigger(_2HWeaponSheath);
         }
     }
 }
