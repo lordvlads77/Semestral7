@@ -9,9 +9,6 @@ namespace Entity
     [RequireComponent(typeof(NavMeshAgent))]
     public class Enemy : LivingEntity
     {
-
-        [Header("Enemy type")]
-        [SerializeField] private ENEMY_TYPE type;
         [Header("AI Components")]
         [SerializeField] NavMeshAgent agent;
         [SerializeField] LivingEntity player;

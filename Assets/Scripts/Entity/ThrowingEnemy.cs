@@ -8,8 +8,6 @@ namespace Entity
 {
     public sealed class ThrowingEnemy : Utils.LivingEntity
     {
-        [Header("Enemy type")]
-        [SerializeField] private ENEMY_TYPE type;
         [Header("AI Components")]
         [SerializeField] NavMeshAgent agent;
         [SerializeField] LivingEntity player;
@@ -20,7 +18,6 @@ namespace Entity
         [SerializeField] GameObject prefab;
 
         [Header("Enemy properties")]
-
         [Range(0f, 20f)]
         [SerializeField] float damage = 1.0f;
 
@@ -28,7 +25,6 @@ namespace Entity
         [SerializeField] float speed = 1.0f;
 
         [field: Range(0f, 100f)]
-
         [field: SerializeField]
 
         float health
@@ -56,10 +52,10 @@ namespace Entity
 
             GameObject temp_player = GameObject.FindGameObjectWithTag("Player");
             EDebug.Assert(temp_player != null, "could not find player character", this);
+            Debug.Assert(PreFab != null, "Enemy Needs Prefab to work", this);
             player = temp_player.GetComponent<LivingEntity>();
             agent.speed = speed;
 
-            gameState = GameStates.Playing;
             SetHealth(health);
         }
 
@@ -86,13 +82,25 @@ namespace Entity
 
         }
 
+        private void OnEnable()
+        {
+            GameManager.Instance.Subscribe(OnGameStateChange);
+            gameState = GameManager.Instance.GameState;
+        }
+
+        private void OnDisable()
+        {
+            GameManager.TryGetInstance()?.Unsubscribe(OnGameStateChange);
+        }
+
         public void Attack()
         {
             Projectile final_projectile = Recycle();
 
             Vector3 direction = (player.transform.position - transform.position).normalized;
-            
-            if (final_projectile == null) {
+
+            if (final_projectile == null)
+            {
                 Projectile go = Instantiate(PreFab, transform.position + (direction * 2.0f), Quaternion.identity);
                 go.setDestination(player.transform.position);
                 Spawned.Add(go);
@@ -111,7 +119,7 @@ namespace Entity
             {
                 if (!p.gameObject.activeInHierarchy)
                 {
-                    result = p; 
+                    result = p;
                     break;
                 }
             }
@@ -121,6 +129,11 @@ namespace Entity
         public void Prepare(Projectile pro)
         {
 
+        }
+
+        public void OnGameStateChange(GameStates _newState)
+        {
+            gameState = _newState;
         }
     }
 }
