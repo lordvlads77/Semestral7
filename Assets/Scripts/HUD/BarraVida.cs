@@ -7,12 +7,23 @@ using Utils;
 
 public class BarraVida : MonoBehaviour
 {
+    public Image viada; // Imagen de la barra de vida
+    public Image fondoBarra; // Fondo de la barra de vida
+    [SerializeField] private LivingEntity jugador;
 
-    public Image viada;
+    private float vidaInicial;
+    private Vector2 barraOriginalSize;
+    private Vector2 fondoOriginalSize;
 
-    [SerializeField] LivingEntity jugador;
-    
-
+    private void Start()
+    {
+        if (jugador != null)
+        {
+            vidaInicial = jugador.GetMaxHealth();
+            barraOriginalSize = viada.rectTransform.sizeDelta; // Tamaño original de la barra
+            fondoOriginalSize = fondoBarra.rectTransform.sizeDelta; // Tamaño original del fondo
+        }
+    }
 
     void Update()
     {
@@ -20,6 +31,18 @@ public class BarraVida : MonoBehaviour
         {
             float vidaActual = jugador.GetHealth();
             float maxVida = jugador.GetMaxHealth();
+
+            // Calcular la escala de crecimiento
+            float escala = maxVida / vidaInicial;
+
+            // Expandir el fondo hacia la derecha
+            fondoBarra.rectTransform.sizeDelta = new Vector2(fondoOriginalSize.x * escala, fondoOriginalSize.y);
+
+            // Mantener la barra dentro del fondo (sin moverla)
+            viada.rectTransform.sizeDelta = new Vector2(barraOriginalSize.x * escala, barraOriginalSize.y);
+            viada.rectTransform.anchoredPosition = new Vector2(0, viada.rectTransform.anchoredPosition.y); 
+
+            // Ajustar el fillAmount para la vida actual
             viada.fillAmount = vidaActual / maxVida;
         }
     }

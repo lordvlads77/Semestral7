@@ -97,6 +97,10 @@ namespace Utils
 
         public virtual void TakeDamage(float damage, Vector3 hitPoint, Vector3 hitDirection, float armorPiercing = 0f)
         {
+            if (canTakeDamage)
+            {
+                
+            
             float damageReduction = GetDamageReduction(armorPiercing);
             float finalDamage = damage * (1 - damageReduction);
             _health -= finalDamage;
@@ -121,7 +125,7 @@ namespace Utils
             }
             if (armorClass > 1) ReduceArmorDurability();
         }
-        
+        }
         public virtual void Heal(float amount)
         {
             _health = Mathf.Min(maxHealth, _health + amount);
