@@ -145,5 +145,11 @@ namespace Entity
         {
             gameState = _newState;
         }
+
+
+        protected override void Die()
+        {
+            gameObject.SetActive(false);
+        }
     }
 }

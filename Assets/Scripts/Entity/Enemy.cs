@@ -9,6 +9,10 @@ namespace Entity
     [RequireComponent(typeof(NavMeshAgent))]
     public class Enemy : LivingEntity
     {
+
+        [SerializeField] BoxCollider boxCollider;
+        [SerializeField] Rigidbody body;
+
         [Header("AI Components")]
         [SerializeField] NavMeshAgent agent;
         [SerializeField] LivingEntity player;
@@ -40,11 +44,17 @@ namespace Entity
         private void Start()
         {
             agent = GetComponent<NavMeshAgent>();
-
             GameObject temp_player = GameObject.FindGameObjectWithTag("Player");
             EDebug.Assert(temp_player != null, "could not find player character", this);
             player = temp_player.GetComponent<LivingEntity>();
+
+
+            boxCollider = GetComponentInChildren<BoxCollider>();
+            body = GetComponentInChildren<Rigidbody>();
+
+
             agent.speed = speed;
+
             SetHealth(health);
         }
 
@@ -85,6 +95,16 @@ namespace Entity
             GameManager.TryGetInstance()?.Unsubscribe(OnStateChange);
         }
 
+        private void OnTriggerEnter(Collider other)
+        {
+            EDebug.Log(other, this);
+            EDebug.Log(other.tag, this);
+            if (other.CompareTag("Weapon"))
+            {
+                CombatUtils.Attack(player, this);
+            }
+        }
+
         /// <summary>
         /// Tell's the enemy were to go
         /// </summary>
@@ -113,6 +133,7 @@ namespace Entity
         {
             gameState = state;
         }
+
     }
 
 }
