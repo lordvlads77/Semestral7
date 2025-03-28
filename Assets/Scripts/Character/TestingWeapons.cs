@@ -29,9 +29,10 @@ namespace Character
 
         private void OnEnable()
         {
-            _input.OnAttackTriggeredEvent += WithdrawWeaponHeavy;
+            _input.OnWeaponUpToggledEvent += WithdrawWeaponHeavy;
             _input.OnWeaponLeftToggledEvent += WithdrawWeaponLight;
             _input.OnWeaponRightToggledEvent += SheathWeaponLight;
+            _input.OnWeaponDownToggledEvent += SheathWeaponHeavy;
         }
 
         private void WithdrawWeaponHeavy()
@@ -49,18 +50,25 @@ namespace Character
             WeaponSystem.Instance.SheathOneHandedWeapon();
         }
 
+        private void SheathWeaponHeavy()
+        {
+            WeaponSystem.Instance.SheathTwoHandedWeapon();
+        }
+
         private void OnDisable()
         {
-            _input.OnAttackTriggeredEvent -= WithdrawWeaponHeavy;
+            _input.OnWeaponUpToggledEvent -= WithdrawWeaponHeavy;
             _input.OnWeaponLeftToggledEvent -= WithdrawWeaponLight;
             _input.OnWeaponRightToggledEvent -= SheathWeaponLight;
+            _input.OnWeaponDownToggledEvent -= SheathWeaponHeavy;
         }
 
         private void OnDestroy()
         {
-            _input.OnAttackTriggeredEvent -= WithdrawWeaponHeavy;
+            _input.OnWeaponUpToggledEvent -= WithdrawWeaponHeavy;
             _input.OnWeaponLeftToggledEvent -= WithdrawWeaponLight;
             _input.OnWeaponRightToggledEvent -= SheathWeaponLight;
+            _input.OnWeaponDownToggledEvent -= SheathWeaponHeavy;
         }
         
     }
