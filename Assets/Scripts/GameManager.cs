@@ -20,6 +20,10 @@ public sealed class GameManager : Singleton<GameManager>
     {
         EDebug.Log("GameManager Awake");
         SetGameState(GameStates.Joining);
+        if(weaponStats == null)
+        {
+           weaponStats = Resources.Load<WeaponStats>("Scriptables/DefaultWeaponStats");
+        }
     }
 
     public void Subscribe(Action<GameStates> function)

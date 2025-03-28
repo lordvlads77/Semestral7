@@ -93,6 +93,16 @@ namespace Entity
             GameManager.TryGetInstance()?.Unsubscribe(OnGameStateChange);
         }
 
+        private void OnTriggerEnter(Collider other)
+        {
+            EDebug.Log(other, this);
+            EDebug.Log(other.tag, this);
+            if (other.CompareTag("Weapon"))
+            {
+                CombatUtils.Attack(player, this);
+            }
+        }
+
         public void Attack()
         {
             Projectile final_projectile = Recycle();
