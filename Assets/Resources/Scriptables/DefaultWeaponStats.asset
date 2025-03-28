@@ -38,7 +38,7 @@ MonoBehaviour:
     staggerBuildUp: 0
     armorPenetration: 0
     critRate: 0
-    critDamage: 0
+    critDamage: 1
   namePending4Stats:
     damageType: 0
     damage: 0
@@ -47,7 +47,7 @@ MonoBehaviour:
     staggerBuildUp: 0
     armorPenetration: 0
     critRate: 0
-    critDamage: 0
+    critDamage: 1
   unarmedStats:
     damageType: 0
     damage: 1
