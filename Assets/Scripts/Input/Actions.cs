@@ -205,21 +205,25 @@ namespace Input
         {
             CurrentWeapon = (CurrentWeapon==WeaponType.LightSword)? WeaponType.Unarmed : WeaponType.LightSword;
             WeaponUp = !WeaponUp;
+            OnWeaponUpToggledEvent?.Invoke();
         }
         private void OnWeaponLeftToggled(InputAction.CallbackContext context)
         {
             CurrentWeapon = (CurrentWeapon==WeaponType.GreatSword)? WeaponType.Unarmed : WeaponType.GreatSword;
             WeaponLeft = !WeaponLeft;
+            OnWeaponLeftToggledEvent?.Invoke();
         }
         private void OnWeaponRightToggled(InputAction.CallbackContext context)
         {
             CurrentWeapon = (CurrentWeapon==WeaponType.NamePending3)? WeaponType.Unarmed : WeaponType.NamePending3;
             WeaponRight = !WeaponRight;
+            OnWeaponRightToggledEvent?.Invoke();
         }
         private void OnWeaponDownToggled(InputAction.CallbackContext context)
         {
             CurrentWeapon = (CurrentWeapon==WeaponType.NamePending4)? WeaponType.Unarmed : WeaponType.NamePending4;
             WeaponDown = !WeaponDown;
+            OnWeaponDownToggledEvent?.Invoke();
         }
         #endregion
         

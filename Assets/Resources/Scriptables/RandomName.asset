@@ -1,0 +1,307 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79506d816b3d5134aa339ed135c6fcf1, type: 3}
+  m_Name: RandomName
+  m_EditorClassIdentifier: 
+  mFirstNames:
+  - Alaric
+  - Aldous
+  - Archibald
+  - Arne
+  - Arthur
+  - Bahram
+  - Bard
+  - Bartholomew
+  - Benedict
+  - Bertram
+  - Bjorn
+  - Burchard
+  - Cassian
+  - Cathasach
+  - Charibert
+  - Conrad
+  - Crispin
+  - Cyprian
+  - Daegal
+  - Drogo
+  - Drustan
+  - Dustin
+  - Elric
+  - Emil
+  - Finnian
+  - Florian
+  - Galileo
+  - Gandalf
+  - Gerold
+  - Godfrey
+  - Godwin
+  - Gomes
+  - Gregory
+  - Grimwald
+  - Hamlin
+  - Hawk
+  - Hildebald
+  - Jeremiah
+  - Kazamir
+  - Kenric
+  - Lancaster
+  - Leif
+  - Leoric
+  - Lothar
+  - Lunden
+  - Maurin
+  - Morcant
+  - Neville
+  - Njal
+  - Odel
+  - Orvyn
+  - Osric
+  - Pascal
+  - Piers
+  - Randolf
+  - Ricard
+  - Svend
+  - Theodoric
+  - Torsten
+  - Wilkin
+  - Wolf
+  - Wymond
+  - Zemislav
+  - Fernando
+  - Gerardo
+  - Fransisco
+  - Yahliff
+  - Asmi
+  - Clement
+  - Drew
+  - Felize
+  - Peregrine
+  - Quentin
+  - Rogue
+  - Knuckles
+  fFirstNames:
+  - Adelaide
+  - Amelia
+  - Beatriz
+  - Ella
+  - Erika
+  - Genevieve
+  - Mirabel
+  - Olive
+  - Petra
+  - Regina
+  - Winifred
+  - Annora
+  - Colette
+  - Diamond
+  - Eira
+  - Emmalina
+  - Euphemia
+  - Gregoria
+  - Honora
+  - Jacquette
+  - Odelgarde
+  - Papa
+  - Papahanaumoku
+  - Philomena
+  - Sabina
+  - Sigrid
+  - Thomasina
+  - Ursula
+  - Anika
+  - Bogdana
+  - Celestina
+  - Dorothy
+  - Elisaria
+  - Eydis
+  - Godiva
+  - Gyda
+  - Isabeau
+  - Jehanne
+  - Joan
+  - Raphaelle
+  - Tiffany
+  - Anastasia
+  - Catalina
+  - Cicilia
+  - Filippa
+  - Fiora
+  - Francesca
+  - Ginevra
+  - Helen
+  - Isabetta
+  - Lavinia
+  - Madalena
+  - Nezetta
+  - Serena
+  - Eva
+  - Asmi
+  - Clementine
+  - Drew
+  - Felize
+  - Peregrine
+  - Quentin
+  - Rogue
+  - Stace
+  - Aife
+  - Ailith
+  - Briana
+  - Dina
+  - Kacie
+  - Nakoma
+  - Zarya
+  - Xena
+  - Catherine
+  - Betty
+  - Abigail
+  - Lily
+  lastNames:
+  - Armstrong
+  - Baker
+  - Beaumont
+  - Blackwood
+  - Carpenter
+  - Chamberlain
+  - Davenport
+  - Edwards
+  - Fitzgerald
+  - Godwin
+  - Hawthorne
+  - Irvine
+  - Kendrick
+  - Langley
+  - Mortimer
+  - Neville
+  - "O\u2019Connor"
+  - Pembroke
+  - Quincy
+  - Radcliffe
+  - Sawyer
+  - Thatcher
+  - Underwood
+  - Vale
+  - Wakefield
+  - Whitlock
+  - Xavier
+  - Yardley
+  - Zimmerman
+  - Gifford
+  - Hastings
+  - Irving
+  - Jennings
+  - Kilgore
+  - Lovelace
+  - Marsden
+  - Norwood
+  - Ormsby
+  - Paxton
+  - Quill
+  - Anjou
+  - Bourbon
+  - Capet
+  - "D\u2019Arcy"
+  - Este
+  - Habsburg
+  - Lancaster
+  - Medici
+  - Navarre
+  - Orleans
+  - Plantagenet
+  - Savoy
+  - Tudor
+  - Valois
+  - York
+  - Baratheon
+  - Lannister
+  - Stark
+  - Targaryen
+  - Ambrosius
+  - Drummond
+  - Guinevere
+  - Leodegrance
+  - Morgana
+  - Pendragon
+  - Taliesin
+  - Uther
+  - Vortigern
+  - Winchester
+  - Bedevere
+  - Galahad
+  - Lancelot
+  - Patsy
+  - Tim
+  nickNames:
+  - Blackwater
+  - Cromwell
+  - Dragomir
+  - Falconer
+  - Griffin
+  - Hawksworth
+  - Ironside
+  - Mandrake
+  - Nightingale
+  - Ravenclaw
+  - Stormborn
+  - Thornfield
+  - Valkyrie
+  - Windrider
+  - Wolfsbane
+  - Dragonheart
+  - Ironheart
+  - Kingsbane
+  - Nightwalker
+  - Ragnarok
+  - Stoneheart
+  - Thunderwolf
+  - Viperbane
+  - Wolfslayer
+  titles:
+  - The Drink
+  - The Cup
+  - The Stealthy
+  - The Wealthy
+  - The Curious
+  - The Ugly
+  - The Handsome
+  - The Hater
+  - The Stalker
+  - The Smelly
+  - The Sus
+  - The Poor
+  - The Weeb
+  - The Short
+  - The Tall
+  - The Average
+  - The Slow
+  - The Swift
+  - The Dog Eater
+  - The Drinker
+  - The Drunk
+  - The Fat
+  - The Slim
+  - The Dancer
+  - The Anime Girl Enjoyer
+  - The Anime Girl Enthusiast
+  titleDividersL:
+  - <
+  - '-'
+  - <-
+  - --
+  - <<
+  - -<
+  titleDividersR:
+  - '>'
+  - '-'
+  - ->
+  - --
+  - '>>'
+  - '>-'

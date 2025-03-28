@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57b924d2385697b46aba7f93db9e7f82, type: 3}
+  m_Name: Faded Divider
+  m_EditorClassIdentifier: 
+  sprites:
+  - {fileID: 21300000, guid: 51300481fe087614c9a07f25ae806fb4, type: 3}
+  - {fileID: 21300000, guid: 3b77770345d9e9b459b7b4d2c413653f, type: 3}
+  - {fileID: 21300000, guid: d266d25ad347e274d90de9aa57dcadb9, type: 3}
+  - {fileID: 21300000, guid: d127bc7bd2b56a943af1d270690fb752, type: 3}
+  - {fileID: 21300000, guid: 3cb48632734f18044bbd0d1c10ca433a, type: 3}
+  - {fileID: 21300000, guid: bd1e5b6a61d5ef84bbea0339b3278736, type: 3}
