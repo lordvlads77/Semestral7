@@ -1,4 +1,5 @@
 using System;
+using Controllers;
 using UnityEngine;
 using Utils;
 
@@ -138,6 +139,7 @@ namespace Character
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(camVec[0]), Time.deltaTime * 10f);
             
             controller.Move(dir * (currentMovementSpeed * Time.deltaTime));
+            AnimationController.Instance.CombatWalk1H(anim);
         }
         
         private void Jump()

@@ -17,6 +17,10 @@ namespace Scriptables
 
         private void Awake()
         {
+        }
+
+        private void OnEnable()
+        {
             _weaponStatsDict = new Dictionary<WeaponType, WeaponStatistics>
             {
                 { WeaponType.LightSword, lightSwordStats },
