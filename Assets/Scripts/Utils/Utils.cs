@@ -125,18 +125,17 @@ namespace Utils
             );
         }
 
-        public static GameManager CreateGameManager()
+        public static GameManager GetOrCreateGameManager()
         {
             GameManager gm = GameManager.Instance;
             if (gm == null)
             {
                 GameObject newGm = new GameObject("GameManager")
                 { transform = { position = new Vector3(0, 10 ,0) } };
-                newGm.AddComponent<GameManager>();
+                gm = newGm.AddComponent<GameManager>();
                 newGm.AddComponent<Input.Actions>();
-                UnityEngine.Object.Instantiate(newGm);
+                UnityEngine.Object.DontDestroyOnLoad(newGm);
                 EDebug.Log("GameManager was not found, a new one was created.");
-                gm = newGm.GetComponent<GameManager>();
             }
             return gm;
         }

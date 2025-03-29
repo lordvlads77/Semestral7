@@ -17,7 +17,7 @@ namespace Entity
 
         protected override void OnAwake()
         {
-            _gm = (GameManager.Instance != null)? GameManager.Instance : MiscUtils.CreateGameManager();
+            _gm = this.GetComponent<GameManager>();
             _npcCanvas = _gm.NpcCanvas;
             if (_npcCanvas == null)
             {
@@ -25,6 +25,7 @@ namespace Entity
                 _npcCanvas = _gm.GetOrCreateNpcCanvas();
             }
             _responsePrefab = _gm.canvasPrefabs.npcOption;
+            EDebug.Log("Dialog ► Awake");
         }
 
         public void StartDialog(LivingEntity npc)

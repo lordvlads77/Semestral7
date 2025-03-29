@@ -5,7 +5,7 @@ using Utils;
 
 namespace Input
 {
-    [DefaultExecutionOrder(-10)]
+    //[DefaultExecutionOrder(-10)]
     public class Actions : Singleton<Actions> // Input Interface
     {   // If possible, subscribe to the events, if not, use the public properties
         private PlaInputActions _inputActions;

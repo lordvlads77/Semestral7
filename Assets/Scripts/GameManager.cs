@@ -5,7 +5,7 @@ using Scriptables;
 using UnityEngine;
 using Utils;
 
-[DefaultExecutionOrder(-20)]
+[DefaultExecutionOrder(-25)]
 public sealed class GameManager : Singleton<GameManager>
 {
     private Action<GameStates> _eventHandler;

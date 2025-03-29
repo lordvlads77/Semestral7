@@ -48,7 +48,7 @@ namespace Character
             controller = GetComponent<CharacterController>();
             stateManager.EnterMovementState(MovementState.Walk, this);
             _cam = Camera.main;
-            IInput = (Input.Actions.Instance != null)? Input.Actions.Instance : MiscUtils.CreateGameManager().gameObject.GetComponent<Input.Actions>();
+            IInput = (Input.Actions.Instance != null)? Input.Actions.Instance : MiscUtils.GetOrCreateGameManager().gameObject.GetComponent<Input.Actions>();
             if (_cam) _cm = _cam.GetComponent<ThirdPersonCamera>();
             if (!_cm) _cm = GetComponent<ThirdPersonCamera>(); // You had the script here, right
             SetHealth(GetMaxHealth());

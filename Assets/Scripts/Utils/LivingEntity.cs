@@ -69,7 +69,7 @@ namespace Utils
             Weapon = WeaponType.Unarmed;
             if (!isPlayer) return;
             
-            IInput = (Input.Actions.Instance != null)? Input.Actions.Instance : MiscUtils.CreateGameManager().gameObject.GetComponent<Input.Actions>();
+            IInput = (Input.Actions.Instance != null)? Input.Actions.Instance : MiscUtils.GetOrCreateGameManager().gameObject.GetComponent<Input.Actions>();
             _wLTHandler = () => ChangeWeapon(WeaponType.LightSword);
             _wUTHandler = () => ChangeWeapon(WeaponType.GreatSword);
             _wRTHandler = () => ChangeWeapon(WeaponType.NamePending3);
