@@ -2189,6 +2189,7 @@ GameObject:
   - component: {fileID: 5919060750082035413}
   - component: {fileID: 9111392096366206734}
   - component: {fileID: 1600465438017938595}
+  - component: {fileID: 7110278130612173982}
   m_Layer: 6
   m_Name: Char_Knight_Black_FxScale
   m_TagString: Player
@@ -2354,6 +2355,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   entityName: 
+  dialogOptions: {fileID: 0}
+  nameCustomization:
+    isMale: 0
+    includeName: 0
+    includeLastName: 0
+    includeNickname: 0
+    includeTitle: 0
+    startsWithTitle: 0
+    replaceNameWithNickname: 0
+    lastNameThenName: 0
+    useTitleDividers: 0
+  dialogSprites:
+    dialogBox: {fileID: 0}
+    dialogOption: {fileID: 0}
+    nameDivider: {fileID: 0}
   isPlayer: 0
   dmgParticles: []
   criticalDmgParticles: []
@@ -2431,6 +2447,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1ff17ca2db1360409370eed98c5c261, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7110278130612173982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5367782462016838935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7c121c5c3c5f4341a831731019d0f70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stateManager: {fileID: 5919060750082035413}
 --- !u!1 &5435832799624146110
 GameObject:
   m_ObjectHideFlags: 0

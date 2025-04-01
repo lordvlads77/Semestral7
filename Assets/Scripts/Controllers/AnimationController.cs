@@ -1,3 +1,4 @@
+using Character;
 using UnityEngine;
 using Utils;
 
@@ -9,8 +10,9 @@ namespace Controllers
         private readonly int _1HWeaponWithdraw = Animator.StringToHash("1HWeaponWithdraw");
         private readonly int _1HWeaponSheath = Animator.StringToHash("1HWeaponSheath");
         private readonly int _2HWeaponSheath = Animator.StringToHash("2HWeaponSheath");
-        private readonly int _CombatWalk1H = Animator.StringToHash("CombatWalk1H");
-        private readonly int _speedCombatWalk1H  = Animator.StringToHash("speedCombatWalk");
+        private readonly int _1HAttackSwing = Animator.StringToHash("1HAttackSwing");
+        private readonly int _2HAttackSwing = Animator.StringToHash("2HAttackSwing");
+        [SerializeField] private StateManager stateManager = default;
 
         public void TwoHandsWeaponWithdraw(Animator animator)
         {
@@ -20,26 +22,29 @@ namespace Controllers
         public void OneHandWeaponWithdraw(Animator animator)
         {
             animator.SetTrigger(_1HWeaponWithdraw);
+            stateManager.EnterFightingState(FightingState.OneHandedFighting, GetComponent<MovementManager>());
         }
         
         public void OneHandWeaponSheath(Animator animator)
         {
             animator.SetTrigger(_1HWeaponSheath);
+            stateManager.EnterFightingState(FightingState.NonCombat, GetComponent<MovementManager>());
         }
         
         public void TwoHandsWeaponSheath(Animator animator)
         {
             animator.SetTrigger(_2HWeaponSheath);
         }
-        
-        public void CombatWalk1H(Animator animator)
+
+        public void OneHandAttackSwing(Animator animator)
         {
-            animator.SetBool(_CombatWalk1H, true);
+            animator.SetTrigger(_1HAttackSwing);
         }
         
-        public void NotCombatWalk1H(Animator animator)
+        public void TwoHandAttackSwing(Animator animator)
         {
-            animator.SetBool(_CombatWalk1H, false);
+            animator.SetTrigger(_2HAttackSwing);
         }
+        
     }
 }

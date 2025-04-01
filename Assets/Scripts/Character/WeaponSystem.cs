@@ -58,7 +58,6 @@ namespace Character
             if (_isWeaponInUse)
             {
                 _isWeaponInUse = false;
-                AnimationController.Instance.NotCombatWalk1H(animator);
                 //Add VFX Calling Here if applicable
                 //Add SFX Calling Here
                 if (!oneHandedWeapon.activeInHierarchy)
