@@ -7,6 +7,7 @@ TagManager:
   - Interest
   - Enemy
   - Weapon
+  - Enemy_Body
   layers:
   - Default
   - TransparentFX
