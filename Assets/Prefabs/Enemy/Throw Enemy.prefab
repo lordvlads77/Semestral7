@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8004463596461147608}
-  - component: {fileID: 2811752579961742174}
   - component: {fileID: 4555296126271949194}
   - component: {fileID: 1224721772921910820}
   - component: {fileID: 3299511535411666728}
@@ -36,55 +35,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2811752579961742174
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9048801701731709863}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a7f41c86bc477d44a037f7a2cc94b15, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  entityName: 
-  dialogOptions: {fileID: 0}
-  nameCustomization:
-    isMale: 0
-    includeName: 0
-    includeLastName: 0
-    includeNickname: 0
-    includeTitle: 0
-    startsWithTitle: 0
-    replaceNameWithNickname: 0
-    lastNameThenName: 0
-    useTitleDividers: 0
-  dialogSprites:
-    dialogBox: {fileID: 0}
-    dialogOption: {fileID: 0}
-    nameDivider: {fileID: 0}
-  isPlayer: 0
-  dmgParticles: []
-  criticalDmgParticles: []
-  maxHealth: 100
-  dmgImmunityTime: 0.05
-  armorClass: 1
-  armorDurability: 3
-  damageTypeResistance: 0
-  isDead: 0
-  canTakeDamage: 1
-  gameState: 0
-  agent: {fileID: 0}
-  player: {fileID: 0}
-  prefab: {fileID: 1116390432347759286, guid: 81a15e14825efb94dad47669a2393910, type: 3}
-  damage: 1
-  speed: 1
-  attackCooldown: 1.4
-  attackRange: 10
-  timeInsdeAttackRange: 0
-  PreFab: {fileID: 292851294831566362, guid: 81a15e14825efb94dad47669a2393910, type: 3}
-  Spawned: []
 --- !u!33 &4555296126271949194
 MeshFilter:
   m_ObjectHideFlags: 0

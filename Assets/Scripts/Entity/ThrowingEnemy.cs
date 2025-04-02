@@ -55,6 +55,7 @@ namespace Entity
             Debug.Assert(PreFab != null, "Enemy Needs Prefab to work", this);
             player = temp_player.GetComponent<LivingEntity>();
             agent.speed = speed;
+            agent.updatePosition = false;
 
             SetHealth(health);
         }
@@ -64,9 +65,12 @@ namespace Entity
             if (gameState != GameStates.Playing) { return; }
 
 
-            float distance = Vector3.Distance(player.transform.position, transform.position);
+            Vector3 player_position = player.transform.position;
+            float distance = Vector3.Distance(player_position, transform.position);
             if (distance < attackRange)
             {
+                agent.SetDestination(player_position);
+                FacePlayer();
                 timeInsdeAttackRange += Time.deltaTime;
             }
             else
@@ -150,6 +154,15 @@ namespace Entity
         protected override void Die()
         {
             gameObject.SetActive(false);
+        }
+
+        private void FacePlayer()
+        {
+            var turnTowardNavSteeringTarget = agent.steeringTarget;
+
+            Vector3 direction = (turnTowardNavSteeringTarget - transform.position).normalized;
+            Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5);
         }
     }
 }
