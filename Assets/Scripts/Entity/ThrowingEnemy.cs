@@ -12,7 +12,7 @@ namespace Entity
         [SerializeField] public Animator animator;
 
         private int castAnimationID = Animator.StringToHash("enemy_cast");
-        private int deathAnimationID = Animator.StringToHash("enemy_death");
+        private int deathAnimationID = Animator.StringToHash("enemy_dead");
 
         [Header("AI Components")]
         [SerializeField] NavMeshAgent agent;
@@ -98,6 +98,15 @@ namespace Entity
 
             if (enemyState == ENEMY_STATE.DYING)
             {
+
+                animator.SetBool(deathAnimationID, true);
+                bool is_dead = animator.GetBool("enemy_is_dead");
+                if (is_dead)
+                {
+                    EDebug.Log("We reached here", this);
+                    enemyState = ENEMY_STATE.DEAD;
+                    gameObject.SetActive(false);
+                }
             }
 
         }
