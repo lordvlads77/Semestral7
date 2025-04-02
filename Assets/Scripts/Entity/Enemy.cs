@@ -22,6 +22,8 @@ namespace Entity
         private float realHealth = 10f;
 
         [Header("Enemy properties")]
+
+        [SerializeField] public Utils.ENEMY_STATE enemy_state = Utils.ENEMY_STATE.ALIVE;
         [Range(0f, 20f)]
         [SerializeField] float damage = 1.0f;
         [Range(0f, 5f)]
@@ -39,6 +41,7 @@ namespace Entity
         }
         [SerializeField] float attackCooldown = .4f;
         [SerializeField] float timeInsdeAttackRange = 0f;
+
 
         [Range(0f, 5f)]
         [SerializeField] float attackRange = 1.0f;

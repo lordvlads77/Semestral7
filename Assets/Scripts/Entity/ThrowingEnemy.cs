@@ -12,6 +12,7 @@ namespace Entity
         [SerializeField] public Animator animator;
 
         private int castAnimationID = Animator.StringToHash("enemy_cast");
+        private int deathAnimationID = Animator.StringToHash("enemy_death");
 
         [Header("AI Components")]
         [SerializeField] NavMeshAgent agent;
@@ -23,6 +24,8 @@ namespace Entity
         [SerializeField] GameObject prefab;
 
         [Header("Enemy properties")]
+
+        [SerializeField] public Utils.ENEMY_STATE enemyState = Utils.ENEMY_STATE.ALIVE;
         [Range(0f, 20f)]
         [SerializeField] float damage = 1.0f;
 
@@ -74,7 +77,7 @@ namespace Entity
 
             Vector3 player_position = player.transform.position;
             float distance = Vector3.Distance(player_position, transform.position);
-            if (distance < attackRange)
+            if (distance < attackRange && enemyState == ENEMY_STATE.ALIVE)
             {
                 agent.SetDestination(player_position);
                 FacePlayer();
@@ -84,13 +87,17 @@ namespace Entity
             else
             {
                 timeInsdeAttackRange = 0;
-                //animator.SetBool(castAnimationID, false);
+                animator.SetBool(castAnimationID, false);
             }
 
             if (timeInsdeAttackRange >= attackCooldown)
             {
                 Attack();
                 timeInsdeAttackRange = 0.0f;
+            }
+
+            if (enemyState == ENEMY_STATE.DYING)
+            {
             }
 
         }
@@ -162,7 +169,8 @@ namespace Entity
 
         protected override void Die()
         {
-            gameObject.SetActive(false);
+            enemyState = ENEMY_STATE.DYING;
+            //gameObject.SetActive(false);
         }
 
         private void FacePlayer()
