@@ -8,6 +8,11 @@ namespace Entity
 {
     public sealed class ThrowingEnemy : Utils.LivingEntity
     {
+
+        [SerializeField] public Animator animator;
+
+        private int castAnimationID = Animator.StringToHash("enemy_cast");
+
         [Header("AI Components")]
         [SerializeField] NavMeshAgent agent;
         [SerializeField] LivingEntity player;
@@ -49,6 +54,8 @@ namespace Entity
         void Start()
         {
             agent = GetComponent<NavMeshAgent>();
+            animator = GetComponentInChildren<Animator>();
+
 
             GameObject temp_player = GameObject.FindGameObjectWithTag("Player");
             EDebug.Assert(temp_player != null, "could not find player character", this);
@@ -72,10 +79,12 @@ namespace Entity
                 agent.SetDestination(player_position);
                 FacePlayer();
                 timeInsdeAttackRange += Time.deltaTime;
+                animator.SetBool(castAnimationID, true);
             }
             else
             {
                 timeInsdeAttackRange = 0;
+                //animator.SetBool(castAnimationID, false);
             }
 
             if (timeInsdeAttackRange >= attackCooldown)

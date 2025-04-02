@@ -13,6 +13,8 @@ namespace Entity
         [SerializeField] BoxCollider boxCollider;
         [SerializeField] Rigidbody body;
 
+        [SerializeField] public Animator animator;
+
         [Header("AI Components")]
         [SerializeField] NavMeshAgent agent;
         [SerializeField] LivingEntity player;
@@ -51,6 +53,7 @@ namespace Entity
 
             boxCollider = GetComponentInChildren<BoxCollider>();
             body = GetComponentInChildren<Rigidbody>();
+            animator = GetComponentInChildren<Animator>();
 
 
             agent.speed = speed;
