@@ -71,7 +71,7 @@ MonoBehaviour:
   dmgImmunityTime: 0.05
   armorClass: 1
   armorDurability: 3
-  damageTypeResistance: 0
+  damageTypeResistance: 1
   isDead: 0
   canTakeDamage: 1
   gameState: 0
