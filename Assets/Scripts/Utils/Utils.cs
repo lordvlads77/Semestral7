@@ -49,6 +49,13 @@ namespace Utils
         THROWER = 2,
     }
 
+    public enum ENEMY_STATE
+    {
+        ALIVE = 0,
+        DYING = 1,
+        DEAD = 2,
+    }
+
     public static class MathUtils
     {
         public static Vector3[] CanonBasis(Transform trans)
