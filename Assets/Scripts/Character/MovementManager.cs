@@ -1,5 +1,5 @@
-using System.Collections;
-using Unity.VisualScripting;
+using System;
+using Controllers;
 using UnityEngine;
 using Utils;
 
@@ -43,35 +43,32 @@ namespace Character
         private Camera _cam;
         private ThirdPersonCamera _cm;
         
-        [Header("Dodge Settings")]
-        [SerializeField] private float dodgeSpeed = 10f; // Fuerza de impulso
-        [SerializeField] private float dodgeDuration = 0.5f; // Duración de la esquiva
-        [SerializeField] private float dodgeCooldown = 1f; // Tiempo de espera entre esquivas
-
-        private CharacterController characterController;
-        private Vector3 dodgeDirection;
-        private bool isDodging = false;
-        private bool canDodge = true;
-        private Rigidbody rb;
-        
-
         private void Awake()
         {
             anim = GetComponent<Animator>();
             controller = GetComponent<CharacterController>();
             stateManager.EnterMovementState(MovementState.Walk, this);
             _cam = Camera.main;
-            IInput = Input.Actions.Instance;
-            if (IInput == null) IInput = gameObject.GetComponent<Input.Actions>();
-            if (IInput == null) IInput = gameObject.AddComponent<Input.Actions>();
+            IInput = (Input.Actions.Instance != null)? Input.Actions.Instance : MiscUtils.CreateGameManager().gameObject.GetComponent<Input.Actions>();
             if (_cam) _cm = _cam.GetComponent<ThirdPersonCamera>();
             if (!_cm) _cm = GetComponent<ThirdPersonCamera>(); // You had the script here, right?
-            IInput.OnCrouchToggledEvent += ToggleCrouch;
-            maxHealth = 100f;
-            _health = maxHealth;
         }
         
+        private void OnEnable()
+        {
+            IInput.OnCrouchToggledEvent += ToggleCrouch;
+            IInput.OnAttackTriggeredEvent += Punch;
+        }
         private void OnDestroy()
+        {
+            UnSubscribe();
+        }
+        private void OnDisable()
+        {
+            UnSubscribe();
+        }
+        
+        private void UnSubscribe()
         {
             IInput.OnCrouchToggledEvent -= ToggleCrouch;
         }
@@ -82,54 +79,18 @@ namespace Character
                 stateManager.EnterMovementState(MovementState.Dead, this);
                 return;
             }
-            
             GetDirectionAndMove();
             ApplyGravity();
             HandleActions();
             stateManager.UpdateMovementState(this);
         }
-        
+
         private void FixedUpdate()
         {
             if (_cm.type == CameraTypes.FreeLook)
                 _cam.transform.position += _velocity * Time.deltaTime;
         }
-        private IEnumerator Dodge()
-        {
-            isDodging = true;
-            canDodge = false;
-            canTakeDamage = false;
 
-            dodgeDirection = new Vector3(IInput.Movement.x, 0, IInput.Movement.y).normalized;
-            if (dodgeDirection == Vector3.zero) dodgeDirection = transform.forward;
-
-            _velocity = dodgeDirection * dodgeSpeed;
-            float elapsedTime = 0f;
-            while (elapsedTime < dodgeDuration)
-            {
-                controller.Move(_velocity * Time.deltaTime);
-                elapsedTime += Time.deltaTime;
-                yield return null;
-            }
-
-            
-            isDodging = false;
-            canTakeDamage = true;
-            
-            float decelerationTime = 0.2f; 
-            float elapsedDecel = 0f;
-            while (elapsedDecel < decelerationTime)
-            {
-                
-                _velocity = Vector3.Lerp(_velocity, Vector3.zero, elapsedDecel / decelerationTime);
-                controller.Move(_velocity * Time.deltaTime);
-                elapsedDecel += Time.deltaTime;
-                yield return null;
-            }
-
-            yield return new WaitForSeconds(dodgeCooldown);
-            canDodge = true;
-        }
         public void SwitchMovementState(MovementState state)
         {
             stateManager.EnterMovementState(state, this);
@@ -137,19 +98,9 @@ namespace Character
         
         private void HandleActions() // This method will be refactored later (Inputs n shit)
         {
-           /* if (IInput.Jump && IsGrounded())
+            if (IInput.Jump && IsGrounded())
             {
                 Jump();
-            }*/
-                
-            if (IInput.Attack)
-            {
-                Punch();
-            }
-            if (IInput.Jump)
-            {
-                StartCoroutine(Dodge());
-                Debug.Log("esquiva");
             }
         }
         
@@ -202,12 +153,18 @@ namespace Character
         
         private void Punch()
         {
+            if (stateManager.CurrentFightingState == FightingState.NonCombat && NpcCloseBy())
+            {
+                // Start the dialogue thing
+            }
+
             anim.SetTrigger(AnimAttack);
         }
-        public void IncreaseMaxHealth(float amount)
+        
+        private Boolean NpcCloseBy()
         {
-            maxHealth += amount;
-            _health = maxHealth; // Opcional: Restaura la vida al nuevo máximo
+            // Check if there is an NPC close by
+            return false;
         }
         
         private bool IsGrounded()
@@ -238,7 +195,7 @@ namespace Character
             Gizmos.color = Color.red;
             Gizmos.DrawSphere(_spherePos, controller.radius - 0.05f);
         }
-        
+
         public void StartUnarmedCombat()
         {
             // Should put away the weapons, change stance 

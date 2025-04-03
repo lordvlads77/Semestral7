@@ -1,0 +1,94 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a798c9a5de09ea84cb76a0bf7aa60ac8, type: 3}
+  m_Name: ExampleNPCDialog
+  m_EditorClassIdentifier: 
+  dialogOptions:
+  - npcDialog: Greetings traveler!
+    userResponses:
+    - response: 'Greetings good man... '
+      moodChange: 2
+      nextDialog:
+        npcDialog: Oh brave traveler, may I ask a favor from your esteemed self?
+        userResponses:
+        - response: Haha, no...
+          moodChange: -2
+          nextDialog:
+            npcDialog: 
+            userResponses: []
+          onResponse:
+            m_PersistentCalls:
+              m_Calls: []
+        - response: Sure, what may I assist you with?
+          moodChange: 3
+          nextDialog:
+            npcDialog: I'm terribly sorry but it seems there's some bandits lurking
+              around... Could you take care of them?
+            userResponses:
+            - response: YEAH!
+              moodChange: 2
+              nextDialog:
+                npcDialog: 
+                userResponses: []
+              onResponse:
+                m_PersistentCalls:
+                  m_Calls: []
+            - response: I'm afraid I'm under equiped right now...
+              moodChange: 0
+              nextDialog:
+                npcDialog: 
+                userResponses: []
+              onResponse:
+                m_PersistentCalls:
+                  m_Calls: []
+          onResponse:
+            m_PersistentCalls:
+              m_Calls: []
+      onResponse:
+        m_PersistentCalls:
+          m_Calls: []
+    - response: 'Haha, Joe mamma so fat... '
+      moodChange: -5
+      nextDialog:
+        npcDialog: Apologise now, and I'll let this go...
+        userResponses:
+        - response: She required two dialog options!
+          moodChange: -10
+          nextDialog:
+            npcDialog: 
+            userResponses: []
+          onResponse:
+            m_PersistentCalls:
+              m_Calls: []
+        - response: Sorry, sorry...
+          moodChange: 3
+          nextDialog:
+            npcDialog: 
+            userResponses: []
+          onResponse:
+            m_PersistentCalls:
+              m_Calls: []
+      onResponse:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 0}
+            m_TargetAssemblyTypeName: 
+            m_MethodName: 
+            m_Mode: 0
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: 
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
