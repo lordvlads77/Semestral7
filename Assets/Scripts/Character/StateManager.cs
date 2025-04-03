@@ -15,7 +15,8 @@ namespace Character
     {
         NonCombat,
         UnarmedFighting,
-        SwordAndShield
+        SwordAndShield,
+        OneHandedFighting
     }
     
     public class StateManager : MonoBehaviour
@@ -191,6 +192,7 @@ namespace Character
                 case FightingState.NonCombat:
                     _animator.SetBool("UnarmedCombat", false);
                     _animator.SetBool("SwordAndShield", false);
+                    _animator.SetBool("1HSwordMov", false);
                     break;
                 case FightingState.UnarmedFighting:
                     _animator.SetBool("UnarmedCombat", true);
@@ -199,6 +201,10 @@ namespace Character
                 case FightingState.SwordAndShield:
                     _animator.SetBool("UnarmedCombat", false);
                     _animator.SetBool("SwordAndShield", true);
+                    break;
+                case FightingState.OneHandedFighting:
+                    _animator.SetBool("UnarmedCombat", false);
+                    _animator.SetBool("1HSwordMov", true);
                     break;
             }
         }
@@ -212,6 +218,9 @@ namespace Character
                     break;
                 case FightingState.SwordAndShield:
                     _animator.SetBool("SwordAndShield", false);
+                    break;
+                case FightingState.OneHandedFighting:
+                    _animator.SetBool("1HSwordMov", false);
                     break;
             }
             EnterFightingState(newState, movement);
