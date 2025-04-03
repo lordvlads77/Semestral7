@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Character;
+using Utils;
 
 public class DamageObject : MonoBehaviour
 {
@@ -18,7 +19,7 @@ public class DamageObject : MonoBehaviour
             Vector3 hitPoint = other.ClosestPoint(transform.position); // Punto de impacto más cercano
             Vector3 hitDirection = (other.transform.position - transform.position).normalized; // Dirección del impacto
 
-            player.TakeDamage(damageAmount, hitPoint, hitDirection, armorPiercing);
+            player.TakeDamage(Vector3.up, Vector3.back, DamageType.Dark,DamageType.Electric,damageAmount,15,0,armorPiercing,0,0);
         }
     }
 }

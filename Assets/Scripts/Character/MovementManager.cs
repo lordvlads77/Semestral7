@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Controllers;
 using UnityEngine;
 using Utils;
@@ -42,6 +43,17 @@ namespace Character
         
         private Camera _cam;
         private ThirdPersonCamera _cm;
+        
+        [Header("Dodge Settings")]
+        [SerializeField] private float dodgeSpeed = 10f; // Fuerza de impulso
+        [SerializeField] private float dodgeDuration = 0.5f; // Duración de la esquiva
+        [SerializeField] private float dodgeCooldown = 1f; // Tiempo de espera entre esquivas
+
+        private CharacterController characterController;
+        private Vector3 dodgeDirection;
+        private bool isDodging = false;
+        private bool canDodge = true;
+        private Rigidbody rb;
         
         private void Awake()
         {
@@ -90,7 +102,42 @@ namespace Character
             if (_cm.type == CameraTypes.FreeLook)
                 _cam.transform.position += _velocity * Time.deltaTime;
         }
+        private IEnumerator Dodge()
+        {
+            isDodging = true;
+            canDodge = false;
+            canTakeDamage = false;
 
+            dodgeDirection = new Vector3(IInput.Movement.x, 0, IInput.Movement.y).normalized;
+            if (dodgeDirection == Vector3.zero) dodgeDirection = transform.forward;
+
+            _velocity = dodgeDirection * dodgeSpeed;
+            float elapsedTime = 0f;
+            while (elapsedTime < dodgeDuration)
+            {
+                controller.Move(_velocity * Time.deltaTime);
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+
+            
+            isDodging = false;
+            canTakeDamage = true;
+            
+            float decelerationTime = 0.2f; 
+            float elapsedDecel = 0f;
+            while (elapsedDecel < decelerationTime)
+            {
+                
+                _velocity = Vector3.Lerp(_velocity, Vector3.zero, elapsedDecel / decelerationTime);
+                controller.Move(_velocity * Time.deltaTime);
+                elapsedDecel += Time.deltaTime;
+                yield return null;
+            }
+
+            yield return new WaitForSeconds(dodgeCooldown);
+            canDodge = true;
+        }
         public void SwitchMovementState(MovementState state)
         {
             stateManager.EnterMovementState(state, this);
@@ -101,6 +148,11 @@ namespace Character
             if (IInput.Jump && IsGrounded())
             {
                 Jump();
+            }
+            if (IInput.Attack)
+            {
+                StartCoroutine(Dodge());
+               // Debug.Log("esquiva");
             }
         }
         
@@ -160,7 +212,11 @@ namespace Character
 
             anim.SetTrigger(AnimAttack);
         }
-        
+        public void IncreaseMaxHealth(float amount)
+        {
+            maxHealth += amount;
+            _health = maxHealth;
+        }
         private Boolean NpcCloseBy()
         {
             // Check if there is an NPC close by
