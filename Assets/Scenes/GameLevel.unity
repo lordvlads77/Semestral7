@@ -55817,6 +55817,7 @@ GameObject:
   - component: {fileID: 1212018272}
   - component: {fileID: 1212018271}
   - component: {fileID: 1212018270}
+  - component: {fileID: 1212018276}
   m_Layer: 3
   m_Name: EnemyV2 (4)
   m_TagString: DamageDealer
@@ -55886,8 +55887,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _damageDealer: {fileID: 8669460329892484304}
   _isDead: 0
-  _playerObj: {fileID: 0}
-  _life: 20
+  _playerObj: {fileID: 5380833302022311900}
+  _life: 10
 --- !u!114 &1212018273
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -55956,6 +55957,20 @@ Transform:
   - {fileID: 1977306211}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1212018276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1212018269}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 142cbcddf09a3a340be8f123ae94a989, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageAmount: 20
+  armorPiercing: 0
 --- !u!1 &1213172357
 GameObject:
   m_ObjectHideFlags: 0
@@ -74877,6 +74892,7 @@ GameObject:
   - component: {fileID: 1652750900}
   - component: {fileID: 1652750899}
   - component: {fileID: 1652750898}
+  - component: {fileID: 1652750904}
   m_Layer: 3
   m_Name: EnemyV2 (2)
   m_TagString: DamageDealer
@@ -74946,8 +74962,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _damageDealer: {fileID: 8669460329892484304}
   _isDead: 0
-  _playerObj: {fileID: 0}
-  _life: 20
+  _playerObj: {fileID: 5380833302022311900}
+  _life: 10
 --- !u!114 &1652750901
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -75016,6 +75032,20 @@ Transform:
   - {fileID: 243984717}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1652750904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1652750897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 142cbcddf09a3a340be8f123ae94a989, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageAmount: 20
+  armorPiercing: 0
 --- !u!1001 &1654562176
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -78092,6 +78122,7 @@ GameObject:
   - component: {fileID: 1722080017}
   - component: {fileID: 1722080016}
   - component: {fileID: 1722080015}
+  - component: {fileID: 1722080021}
   m_Layer: 3
   m_Name: EnemyV2 (1)
   m_TagString: DamageDealer
@@ -78161,8 +78192,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _damageDealer: {fileID: 8669460329892484304}
   _isDead: 0
-  _playerObj: {fileID: 0}
-  _life: 20
+  _playerObj: {fileID: 5380833302022311900}
+  _life: 10
 --- !u!114 &1722080018
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -78231,6 +78262,20 @@ Transform:
   - {fileID: 2046014736}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1722080021
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1722080014}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 142cbcddf09a3a340be8f123ae94a989, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageAmount: 20
+  armorPiercing: 0
 --- !u!1 &1722504251
 GameObject:
   m_ObjectHideFlags: 0
@@ -78733,6 +78778,7 @@ GameObject:
   - component: {fileID: 1743499249}
   - component: {fileID: 1743499248}
   - component: {fileID: 1743499247}
+  - component: {fileID: 1743499253}
   m_Layer: 3
   m_Name: EnemyV2 (6)
   m_TagString: DamageDealer
@@ -78802,8 +78848,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _damageDealer: {fileID: 8669460329892484304}
   _isDead: 0
-  _playerObj: {fileID: 0}
-  _life: 20
+  _playerObj: {fileID: 5380833302022311900}
+  _life: 10
 --- !u!114 &1743499250
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -78872,6 +78918,20 @@ Transform:
   - {fileID: 943651473}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1743499253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1743499246}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 142cbcddf09a3a340be8f123ae94a989, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageAmount: 20
+  armorPiercing: 0
 --- !u!1 &1744292553
 GameObject:
   m_ObjectHideFlags: 0
@@ -80844,6 +80904,7 @@ GameObject:
   - component: {fileID: 1791270645}
   - component: {fileID: 1791270644}
   - component: {fileID: 1791270643}
+  - component: {fileID: 1791270649}
   m_Layer: 3
   m_Name: EnemyV2 (3)
   m_TagString: DamageDealer
@@ -80913,8 +80974,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _damageDealer: {fileID: 8669460329892484304}
   _isDead: 0
-  _playerObj: {fileID: 0}
-  _life: 20
+  _playerObj: {fileID: 5380833302022311900}
+  _life: 10
 --- !u!114 &1791270646
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -80983,6 +81044,20 @@ Transform:
   - {fileID: 892155947}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1791270649
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1791270642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 142cbcddf09a3a340be8f123ae94a989, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageAmount: 20
+  armorPiercing: 0
 --- !u!1001 &1791886260
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -85282,6 +85357,7 @@ GameObject:
   - component: {fileID: 1921526559}
   - component: {fileID: 1921526558}
   - component: {fileID: 1921526557}
+  - component: {fileID: 1921526563}
   m_Layer: 3
   m_Name: EnemyV2 (5)
   m_TagString: DamageDealer
@@ -85351,8 +85427,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _damageDealer: {fileID: 8669460329892484304}
   _isDead: 0
-  _playerObj: {fileID: 0}
-  _life: 20
+  _playerObj: {fileID: 5380833302022311900}
+  _life: 10
 --- !u!114 &1921526560
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -85421,6 +85497,20 @@ Transform:
   - {fileID: 482992102}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1921526563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1921526556}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 142cbcddf09a3a340be8f123ae94a989, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageAmount: 20
+  armorPiercing: 0
 --- !u!1001 &1922131337
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -97127,6 +97217,7 @@ GameObject:
   - component: {fileID: 8493787899872042241}
   - component: {fileID: 8493787899872042240}
   - component: {fileID: 203681279646249923}
+  - component: {fileID: 8493787899872042243}
   m_Layer: 3
   m_Name: EnemyV2
   m_TagString: DamageDealer
@@ -107535,8 +107626,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _damageDealer: {fileID: 8669460329892484304}
   _isDead: 0
-  _playerObj: {fileID: 0}
-  _life: 20
+  _playerObj: {fileID: 5380833302022311900}
+  _life: 10
 --- !u!114 &8493787899872042242
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -107566,6 +107657,20 @@ MonoBehaviour:
   playerInAttackRange: 0
   _deathObj: {fileID: 601066423682200995}
   damageSys: {fileID: 8493787899872042241}
+--- !u!114 &8493787899872042243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 601066423682200995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 142cbcddf09a3a340be8f123ae94a989, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageAmount: 20
+  armorPiercing: 0
 --- !u!1 &8496812183082504592
 GameObject:
   m_ObjectHideFlags: 0
