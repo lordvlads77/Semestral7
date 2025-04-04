@@ -277,6 +277,12 @@ namespace Utils
             sb.Append('/');
             sb.Append((int)gameState);
             sb.Append('/');
+            sb.Append(transform.position.x);
+            sb.Append('/');
+            sb.Append(transform.position.y);
+            sb.Append('/');
+            sb.Append(transform.position.z);
+            sb.Append('/');
 
             return sb.ToString();
         }
@@ -405,6 +411,16 @@ namespace Utils
             index += 1;
 
             gameState = (GameStates)int.Parse(dataDivided[index]);
+            index += 1;
+
+            Vector3 entity_pos = Vector3.zero;
+
+            entity_pos.x = float.Parse(dataDivided[index]);
+            index += 1;
+            entity_pos.y = float.Parse(dataDivided[index]);
+            index += 1;
+            entity_pos.z = float.Parse(dataDivided[index]);
+            transform.position = entity_pos;
 
         }
 
