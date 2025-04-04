@@ -99834,7 +99834,7 @@ MonoBehaviour:
   armorClass: 1
   armorDurability: 3
   damageTypeResistance: 0
-  _health: 20
+  _health: 100
   isInDialog: 0
   isDead: 0
   canTakeDamage: 1
@@ -105367,7 +105367,8 @@ MonoBehaviour:
   invertYAxis: 1
   lookAt: {fileID: 1602902110539712831}
   lockTarget: {fileID: 0}
-  lockIndicatorPrefab: {fileID: 0}
+  lockIndicatorPrefab: {fileID: 3834326841812901329, guid: b50df8210c1823a42acc01846beb6de1,
+    type: 3}
   settings:
     offsetX: 0
     offsetY: 0
@@ -109103,7 +109104,7 @@ MonoBehaviour:
   _playerObj: {fileID: 5380833302022311900}
   _camera: {fileID: 0}
   _isPlayer: 1
-  _life: 21
+  _life: 100
 --- !u!4 &9213945334526644407
 Transform:
   m_ObjectHideFlags: 0
