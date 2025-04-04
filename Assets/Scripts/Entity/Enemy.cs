@@ -15,6 +15,9 @@ namespace Entity
 
         [SerializeField] public Animator animator;
 
+        private readonly int chaseAnimationID = Animator.StringToHash("enemy_chase");
+        private readonly int attackAnimationID = Animator.StringToHash("enemy_attack");
+
         [Header("AI Components")]
         [SerializeField] NavMeshAgent agent;
         [SerializeField] LivingEntity player;
@@ -62,6 +65,8 @@ namespace Entity
             animator = GetComponentInChildren<Animator>();
 
 
+            animator.SetBool(chaseAnimationID, true);
+
             agent.speed = speed;
 
             SetHealth(health);
@@ -76,18 +81,32 @@ namespace Entity
             GoToDestination(PlayerPosition);
             float distance = Vector3.Distance(PlayerPosition, agent.transform.position);
 
+            if (enemy_state == ENEMY_STATE.DYING)
+            {
+                if (animator.GetBool("enemy_is_dead"))
+                {
+                    enemy_state = ENEMY_STATE.DEAD;
+                    gameObject.SetActive(false);
+                }
+                return;
+            }
+
             //EDebug.Log("agent radius = " + agent.radius + "\nDistance = " + distance);
-            if (!(attackRange >= distance))
+            if (!(attackRange >= distance) && enemy_state == ENEMY_STATE.ALIVE)
             {
                 timeInsdeAttackRange = 0.0f;
+                animator.SetBool(attackAnimationID, false);
                 return;
             }
 
             timeInsdeAttackRange += Time.deltaTime;
             if (timeInsdeAttackRange > attackCooldown)
             {
+
                 Vector3 direction = PlayerPosition - transform.position;
                 timeInsdeAttackRange = 0.0f;
+                animator.SetBool(attackAnimationID, true);
+
                 //player.TakeDamage(damage, transform.position, direction);
                 CombatUtils.Attack(this, player);
             }
@@ -135,7 +154,9 @@ namespace Entity
         protected override void Die()
         {
             base.Die();
-            gameObject.SetActive(false);
+            //gameObject.SetActive(false);
+            animator.SetBool("enemy_dead", true);
+            enemy_state = ENEMY_STATE.DYING;
         }
 
         public void OnStateChange(GameStates state)
