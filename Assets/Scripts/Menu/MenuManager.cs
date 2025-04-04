@@ -47,8 +47,9 @@ public class MenuManager : MonoBehaviour
 
     private void OnJump()
     {
-        if (currentState == CURRENT_MENU_STATE.MAIN_MENU && currentSelection == 3)
+        if (currentState == CURRENT_MENU_STATE.MAIN_MENU && currentSelection == 2)
         {
+            Debug.Log("CURRENT_MENU_STATE.MAIN_MENU");
             Menuoptions.SetActive(true);
             currentState = CURRENT_MENU_STATE.OPTIONS;
             currentSelection = 0;
@@ -57,6 +58,8 @@ public class MenuManager : MonoBehaviour
         }
         else if (currentState == CURRENT_MENU_STATE.OPTIONS && currentSelection == 3)
         {
+
+            Debug.Log("CURRENT_MENU_STATE.OPTIONS");
             Menuoptions.SetActive(false);
             currentState = CURRENT_MENU_STATE.MAIN_MENU;
             currentSelection = 0;
@@ -123,6 +126,7 @@ public class MenuManager : MonoBehaviour
         {
             ChangeCurrentSelection(_add);
         }
+        EDebug.Log("current selection =" + currentSelection, this);
         ChangeSelectorPosition();
     }
 
@@ -166,13 +170,23 @@ private void Update()
 
             if (cosa.Jump)
             {
+                if(currentSelection == 0)
+                {
+                        // TODO : agergar el load scene
+                    SceneManager.LoadScene("Scenes/GameLevel");
+                }
+
                 if (currentSelection == 3)
                 {
+                        /// TODO: descomentar y arreglar esto
+                        /*
                     Menuoptions.SetActive(true);
                     currentState = CURRENT_MENU_STATE.OPTIONS;
                     currentSelection = 0;
                     currentArrayInUse = optionsItems;
-                    ChangeSelectorPosition();
+                    ChangeSelectorPosition();*/
+                        EDebug.Log("Quitting application");
+                        Application.Quit();
                 }
             }
             break;
