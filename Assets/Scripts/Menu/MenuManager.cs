@@ -30,9 +30,13 @@ public class MenuManager : MonoBehaviour
 
     private void OnDisable()
     {
-        Actions.Instance.OnWeaponDownToggledEvent -= OnWeaponDown;
-        Actions.Instance.OnWeaponUpToggledEvent -= OnWeaponUp;
-        Actions.Instance.OnAttackTriggeredEvent -= OnJump;
+        Actions local = Actions.TryGetInstance();
+        if (local != null)
+        {
+            Actions.Instance.OnWeaponDownToggledEvent -= OnWeaponDown;
+            Actions.Instance.OnWeaponUpToggledEvent -= OnWeaponUp;
+            Actions.Instance.OnAttackTriggeredEvent -= OnJump;
+        }
     }
 
     private void OnWeaponDown()
@@ -77,14 +81,14 @@ public class MenuManager : MonoBehaviour
         currentSelection = 0;
         ChangeSelectorPosition();
     }
-  /*  public void OnIntroFiniched()
-    {
-        selector.gameObject.SetActive(true);
-        currentState = CURRENT_MENU_STATE.MAIN_MENU;
-    }*/
+    /*  public void OnIntroFiniched()
+      {
+          selector.gameObject.SetActive(true);
+          currentState = CURRENT_MENU_STATE.MAIN_MENU;
+      }*/
     void ChangeSelectorPosition()
     {
-        if(currentState == CURRENT_MENU_STATE.INTRO || currentState == CURRENT_MENU_STATE.MAIN_MENU)
+        if (currentState == CURRENT_MENU_STATE.INTRO || currentState == CURRENT_MENU_STATE.MAIN_MENU)
         {
             selector.SetParent(currentArrayInUse[currentSelection]);
             selector.anchoredPosition = new Vector2(-73, 0);
@@ -126,90 +130,90 @@ public class MenuManager : MonoBehaviour
         ChangeSelectorPosition();
     }
 
-   /* void SkipAnimation() 
-    {
-        OnIntroFiniched();
-        animator.Play(0,0, animator.GetCurrentAnimatorClipInfo(0)[0].clip.length);
-    }*/
+    /* void SkipAnimation() 
+     {
+         OnIntroFiniched();
+         animator.Play(0,0, animator.GetCurrentAnimatorClipInfo(0)[0].clip.length);
+     }*/
     [SerializeField] private float inputCooldown = 0.2f; // Tiempo de espera entre inputs
-private float lastInputTime = 0f;
+    private float lastInputTime = 0f;
 
-private bool isWeaponDownPressed = false;
-private bool isWeaponUpPressed = false;
+    private bool isWeaponDownPressed = false;
+    private bool isWeaponUpPressed = false;
 
-private void Update()
-{
-    switch (currentState)
+    private void Update()
     {
-        case CURRENT_MENU_STATE.MAIN_MENU:
-            if (cosa.WeaponDown && !isWeaponDownPressed) // Solo ejecuta una vez cuando se presiona
-            {
-                ChangeCurrentSelectionUntilObjectIsFound();
-                isWeaponDownPressed = true; // Marcar como presionado
-                lastInputTime = Time.time; // Actualiza el tiempo
-            }
-            else if (!cosa.WeaponDown)
-            {
-                isWeaponDownPressed = false; // Se ha liberado el botón
-            }
-
-            if (cosa.WeaponUp && !isWeaponUpPressed) // Solo ejecuta una vez cuando se presiona
-            {
-                ChangeCurrentSelectionUntilObjectIsFound(false);
-                isWeaponUpPressed = true; // Marcar como presionado
-                lastInputTime = Time.time; // Actualiza el tiempo
-            }
-            else if (!cosa.WeaponUp)
-            {
-                isWeaponUpPressed = false; // Se ha liberado el botón
-            }
-
-            if (cosa.Jump)
-            {
-                if (currentSelection == 3)
+        switch (currentState)
+        {
+            case CURRENT_MENU_STATE.MAIN_MENU:
+                if (cosa.WeaponDown && !isWeaponDownPressed) // Solo ejecuta una vez cuando se presiona
                 {
-                    Menuoptions.SetActive(true);
-                    currentState = CURRENT_MENU_STATE.OPTIONS;
-                    currentSelection = 0;
-                    currentArrayInUse = optionsItems;
-                    ChangeSelectorPosition();
+                    ChangeCurrentSelectionUntilObjectIsFound();
+                    isWeaponDownPressed = true; // Marcar como presionado
+                    lastInputTime = Time.time; // Actualiza el tiempo
                 }
-            }
-            break;
-
-        case CURRENT_MENU_STATE.OPTIONS:
-            if (cosa.WeaponDown && !isWeaponDownPressed) // Solo ejecuta una vez cuando se presiona
-            {
-                ChangeCurrentSelectionUntilObjectIsFound();
-                isWeaponDownPressed = true; // Marcar como presionado
-            }
-            else if (!cosa.WeaponDown)
-            {
-                isWeaponDownPressed = false; // Se ha liberado el botón
-            }
-
-            if (cosa.WeaponUp && !isWeaponUpPressed) // Solo ejecuta una vez cuando se presiona
-            {
-                ChangeCurrentSelectionUntilObjectIsFound(false);
-                isWeaponUpPressed = true; // Marcar como presionado
-            }
-            else if (!cosa.WeaponUp)
-            {
-                isWeaponUpPressed = false; // Se ha liberado el botón
-            }
-
-            if (cosa.Jump)
-            {
-                if (currentSelection == 3)
+                else if (!cosa.WeaponDown)
                 {
-                    Menuoptions.SetActive(false);
-                    currentState = CURRENT_MENU_STATE.MAIN_MENU;
-                    currentSelection = 0;
-                    currentArrayInUse = menuItems;
-                    ChangeSelectorPosition();
+                    isWeaponDownPressed = false; // Se ha liberado el botón
                 }
-            }
-            break;
-    }
+
+                if (cosa.WeaponUp && !isWeaponUpPressed) // Solo ejecuta una vez cuando se presiona
+                {
+                    ChangeCurrentSelectionUntilObjectIsFound(false);
+                    isWeaponUpPressed = true; // Marcar como presionado
+                    lastInputTime = Time.time; // Actualiza el tiempo
+                }
+                else if (!cosa.WeaponUp)
+                {
+                    isWeaponUpPressed = false; // Se ha liberado el botón
+                }
+
+                if (cosa.Jump)
+                {
+                    if (currentSelection == 3)
+                    {
+                        Menuoptions.SetActive(true);
+                        currentState = CURRENT_MENU_STATE.OPTIONS;
+                        currentSelection = 0;
+                        currentArrayInUse = optionsItems;
+                        ChangeSelectorPosition();
+                    }
+                }
+                break;
+
+            case CURRENT_MENU_STATE.OPTIONS:
+                if (cosa.WeaponDown && !isWeaponDownPressed) // Solo ejecuta una vez cuando se presiona
+                {
+                    ChangeCurrentSelectionUntilObjectIsFound();
+                    isWeaponDownPressed = true; // Marcar como presionado
+                }
+                else if (!cosa.WeaponDown)
+                {
+                    isWeaponDownPressed = false; // Se ha liberado el botón
+                }
+
+                if (cosa.WeaponUp && !isWeaponUpPressed) // Solo ejecuta una vez cuando se presiona
+                {
+                    ChangeCurrentSelectionUntilObjectIsFound(false);
+                    isWeaponUpPressed = true; // Marcar como presionado
+                }
+                else if (!cosa.WeaponUp)
+                {
+                    isWeaponUpPressed = false; // Se ha liberado el botón
+                }
+
+                if (cosa.Jump)
+                {
+                    if (currentSelection == 3)
+                    {
+                        Menuoptions.SetActive(false);
+                        currentState = CURRENT_MENU_STATE.MAIN_MENU;
+                        currentSelection = 0;
+                        currentArrayInUse = menuItems;
+                        ChangeSelectorPosition();
+                    }
+                }
+                break;
+        }
     }
 }
