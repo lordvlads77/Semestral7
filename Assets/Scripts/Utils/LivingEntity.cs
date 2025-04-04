@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using Scriptables;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -242,6 +243,134 @@ namespace Utils
             }
             _health = health;
         }
-        
+
+        public string SaveLivingEntity()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("/");
+            sb.Append("LE");
+            sb.Append("/");
+            sb.Append(this.name);
+            sb.Append(SaveDialogOptions());
+            sb.Append("/");
+            sb.Append(SaveNameCustomization());
+            sb.Append('/');
+            sb.Append(this.isPlayer);
+            sb.Append('/');
+            sb.Append(maxHealth);
+            sb.Append('/');
+            sb.Append(dmgImmunityTime);
+            sb.Append('/');
+            sb.Append(armorClass);
+            sb.Append('/');
+            sb.Append(armorDurability);
+            sb.Append('/');
+            sb.Append(SaveDamegeType());
+            sb.Append('/');
+            sb.Append(_health);
+            sb.Append('/');
+            sb.Append(_mood);
+            sb.Append('/');
+            sb.Append(isDead ? 1 : 0);
+            sb.Append("/");
+            sb.Append(canTakeDamage ? 1 : 0);
+            sb.Append('/');
+            sb.Append((int)gameState);
+            sb.Append('/');
+
+            return sb.ToString();
+        }
+
+        private string SaveDialogOptions()
+        {
+            StringBuilder sb = new StringBuilder();
+            List<DialogOption> options = dialogOptions.dialogOptions;
+
+            sb.Append("/");
+            sb.Append(options.Count);
+            for (int i = 0; i < options.Count; ++i)
+            {
+                sb.Append("/");
+                sb.Append(options[i].npcDialog);
+                sb.Append("/");
+                sb.Append(options[i].userResponses.Count);
+                for (int j = 0; j < options[i].userResponses.Count; ++j)
+                {
+                    sb.Append("/");
+                    sb.Append(options[i].userResponses[j]);
+                }
+            }
+            return sb.ToString();
+        }
+
+        private string SaveNameCustomization()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("/");
+            sb.Append(nameCustomization.isMale ? 1 : 0);
+            sb.Append(nameCustomization.includeName ? 1 : 0);
+            sb.Append(nameCustomization.includeLastName ? 1 : 0);
+            sb.Append(nameCustomization.includeNickname ? 1 : 0);
+            sb.Append(nameCustomization.includeTitle ? 1 : 0);
+            sb.Append(nameCustomization.startsWithTitle ? 1 : 0);
+            sb.Append(nameCustomization.replaceNameWithNickname ? 1 : 0);
+            sb.Append(nameCustomization.lastNameThenName ? 1 : 0);
+            sb.Append(nameCustomization.useTitleDividers ? 1 : 0);
+
+            return sb.ToString();
+        }
+
+        private string SaveDamegeType()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("/");
+            sb.Append((int)damageTypeResistance);
+
+            return sb.ToString();
+        }
+
+        public void loadData(string _data)
+        {
+            string[] dataDivided = _data.Split('/');
+            int index = 0;
+            if (dataDivided[index] != "LE")
+            {
+                EDebug.Log("Datos incompatibles", this);
+                EDebug.Log(_data, this);
+                return;
+            }
+            index += 1;
+            this.name = dataDivided[index];
+
+        }
+
+
+        private void loadDataSaveDialogOptions(string[] _data, ref int index)
+        {
+            index += 1;
+            int dialogOptionsCount = int.Parse(_data[index]);
+
+            index += 1;
+            string npcDialog = _data[index];
+
+            List<ResponseOption> responseOptions = new List<ResponseOption>();
+            for (int i = 0; i < dialogOptionsCount; i++)
+            {
+
+
+            }
+
+        }
+        /**
+         
+    [Serializable]
+    public class DialogOption
+    {
+        public string npcDialog;
+        public List<ResponseOption> userResponses;
+    }
+         */
+
+
     }
 }
