@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: b4c7f455176ed1e4383bfefe8fe55a46
+guid: 951618cf70547014e90c2bc5a31049ef
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -37,22 +37,22 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: 1HWeaponIDLE
+      name: Walking1HWeaponR
       takeName: mixamo.com
       internalID: -203655887218126122
       firstFrame: 0
-      lastFrame: 110
+      lastFrame: 79
       wrapMode: 0
-      orientationOffsetY: 0
+      orientationOffsetY: -45
       level: 0
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
       loopTime: 1
       loopBlend: 0
-      loopBlendOrientation: 0
+      loopBlendOrientation: 1
       loopBlendPositionY: 1
-      loopBlendPositionXZ: 0
+      loopBlendPositionXZ: 1
       keepOriginalOrientation: 1
       keepOriginalPositionY: 0
       keepOriginalPositionXZ: 1
