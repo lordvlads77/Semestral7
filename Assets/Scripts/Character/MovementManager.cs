@@ -51,7 +51,8 @@ namespace Character
             _cam = Camera.main;
             IInput = (Input.Actions.Instance != null)? Input.Actions.Instance : MiscUtils.CreateGameManager().gameObject.GetComponent<Input.Actions>();
             if (_cam) _cm = _cam.GetComponent<ThirdPersonCamera>();
-            if (!_cm) _cm = GetComponent<ThirdPersonCamera>(); // You had the script here, right?
+            if (!_cm) _cm = GetComponent<ThirdPersonCamera>(); // You had the script here, right
+            SetHealth(GetMaxHealth());
         }
         
         private void OnEnable()

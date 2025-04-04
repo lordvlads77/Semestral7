@@ -13,14 +13,15 @@ namespace Utils
         Paused,
         Chatting,
         GameOver,
+        Idle,
     }
 
     public enum CameraTypes
     {
         FreeLook,
-        Locked 
+        Locked
     }
-    
+
     public enum WeaponType
     {
         LightSword,
@@ -29,7 +30,7 @@ namespace Utils
         NamePending4,
         Unarmed
     }
-    
+
     public enum DamageType
     {
         Physical,
@@ -40,7 +41,21 @@ namespace Utils
         Dark,
         Light
     }
-    
+
+    public enum ENEMY_TYPE
+    {
+        None = 0,
+        CHASER = 1,
+        THROWER = 2,
+    }
+
+    public enum ENEMY_STATE
+    {
+        ALIVE = 0,
+        DYING = 1,
+        DEAD = 2,
+    }
+
     public static class MathUtils
     {
         public static Vector3[] CanonBasis(Transform trans)
@@ -52,7 +67,7 @@ namespace Utils
             return new[] { camForward.normalized, camRight.normalized };
         }
     }
-    
+
     public static class CombatUtils
     {
         public static void Attack(LivingEntity attacker, LivingEntity target)
@@ -82,6 +97,22 @@ namespace Utils
                 stats.critDamage
             );
         }
+
+        public static void ProjectileDamage(LivingEntity target, Vector3 hitPoint, Vector3 hitDirection, Projectile projectile)
+        {
+            DamageType resistance = target.GetDmgTypeResistance();
+            target.TakeDamage(hitPoint,
+                hitDirection,
+                projectile.getDamageType,
+                resistance,
+                projectile.damage,
+                0.0f,
+                0.0f,
+                0.0f,
+                0.0f,
+                2.0f);
+
+        }
     }
 
     public static class MiscUtils
@@ -100,14 +131,14 @@ namespace Utils
                 nameCustomization.useTitleDividers
             );
         }
-        
+
         public static GameManager CreateGameManager()
         {
             GameManager gm = GameManager.Instance;
             if (gm == null)
             {
                 GameObject newGm = new GameObject("GameManager");
-                newGm.transform.position = new Vector3(0, 10 ,0);
+                newGm.transform.position = new Vector3(0, 10, 0);
                 newGm.AddComponent<GameManager>();
                 newGm.AddComponent<Input.Actions>();
                 UnityEngine.Object.Instantiate(newGm);
@@ -117,40 +148,44 @@ namespace Utils
             return gm;
         }
     }
-    
-    [Serializable] public class DialogOption
+
+    [Serializable]
+    public class DialogOption
     {
         public string npcDialog;
         public List<ResponseOption> userResponses;
     }
-    
-    [Serializable] public class ResponseOption
+
+    [Serializable]
+    public class ResponseOption
     {
         public string response;
         public float moodChange;
         public DialogOption nextDialog;
         public UnityEvent onResponse;
-        
+
         public virtual void OnResponse()
         {
             EDebug.Log($"Response: {response}");
             onResponse?.Invoke();
         }
     }
-    
-    [Serializable] public class WeaponStatistics
+
+    [Serializable]
+    public class WeaponStatistics
     {
         public DamageType damageType;                //Type of damage
         public float damage;                         //Flat damage number
         public float attackSpeed;                    //Cooldown between attacks
         public float knockBack;                      //Force applied to the target
         public float staggerBuildUp;                 //Amount of stagger applied to the target (flat number)
-        [Range(0,1)] public float armorPenetration;  //Percentage of armor ignored
-        [Range(0,1)] public float critRate;          //Chance of landing a critical hit
-        [Range(1,5)] public float critDamage;        //Multiplier for critical hits
+        [Range(0, 1)] public float armorPenetration;  //Percentage of armor ignored
+        [Range(0, 1)] public float critRate;          //Chance of landing a critical hit
+        [Range(1, 5)] public float critDamage;        //Multiplier for critical hits
     }
 
-    [Serializable] public class NameCustomization
+    [Serializable]
+    public class NameCustomization
     {
         public bool isMale;
         public bool includeName;
@@ -162,8 +197,9 @@ namespace Utils
         public bool lastNameThenName;
         public bool useTitleDividers;
     }
-    
-    [Serializable] public class CanvasPrefabs
+
+    [Serializable]
+    public class CanvasPrefabs
     {
         [Header("Canvas Sprites")]
         public RandomSprite[] canvasSprites;
@@ -174,11 +210,12 @@ namespace Utils
         // (I'd like it if you added a header for each category)
     }
 
-    [Serializable] public class CustomDialogSprites
+    [Serializable]
+    public class CustomDialogSprites
     {
         public Sprite dialogBox;
         public Sprite dialogOption;
         public Sprite nameDivider;
     }
-    
+
 }

@@ -43,7 +43,7 @@ namespace Character
                     EDebug.LogError("No LivingEntity component found on " + other.name + " (Enemy)");
                     return;
                 }
-                CombatUtils.Attack(player, enemy);
+                Utils.CombatUtils.Attack(player, enemy);
             }
         }
     
