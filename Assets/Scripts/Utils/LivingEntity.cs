@@ -28,7 +28,7 @@ namespace Utils
         [SerializeField] public int armorClass = 1;
         [SerializeField] public int armorDurability = 3;
         [SerializeField] private DamageType damageTypeResistance;
-        
+
         public float _health;
         private float _mood;
         public bool isInDialog;
@@ -63,14 +63,14 @@ namespace Utils
             if (dialogSprites.nameDivider == null) hasSprites = false;
             return hasSprites;
         }
-        
+
         private void Awake()
         {
             _health = maxHealth;
             Weapon = WeaponType.Unarmed;
             if (!isPlayer) return;
-            
-            IInput = (Input.Actions.Instance != null)? Input.Actions.Instance : MiscUtils.GetOrCreateGameManager().gameObject.GetComponent<Input.Actions>();
+
+            IInput = (Input.Actions.Instance != null) ? Input.Actions.Instance : MiscUtils.GetOrCreateGameManager().gameObject.GetComponent<Input.Actions>();
             _wLTHandler = () => ChangeWeapon(WeaponType.LightSword);
             _wUTHandler = () => ChangeWeapon(WeaponType.GreatSword);
             _wRTHandler = () => ChangeWeapon(WeaponType.NamePending3);
@@ -80,7 +80,7 @@ namespace Utils
             IInput.OnWeaponRightToggledEvent += _wRTHandler;
             IInput.OnWeaponDownToggledEvent += _wDTHandler;
         }
-        
+
         private void OnDestroy()
         {
             Unsubscribe();
@@ -89,12 +89,12 @@ namespace Utils
         {
             Unsubscribe();
         }
-        
+
         private void ChangeWeapon(WeaponType weapon)
         {
-            Weapon = (Weapon == weapon)? WeaponType.Unarmed : weapon;
+            Weapon = (Weapon == weapon) ? WeaponType.Unarmed : weapon;
         }
-        
+
         public void ChangeMood(float amount)
         {
             _mood = Mathf.Clamp(_mood + amount, -10, 10);
@@ -103,7 +103,7 @@ namespace Utils
         private void Unsubscribe()
         {
             if (!isPlayer) return;
-            if(IInput == null) return;
+            if (IInput == null) return;
             IInput.OnWeaponLeftToggledEvent -= _wLTHandler;
             IInput.OnWeaponUpToggledEvent -= _wUTHandler;
             IInput.OnWeaponRightToggledEvent -= _wRTHandler;
@@ -150,12 +150,12 @@ namespace Utils
                 if (armorClass > 1) ReduceArmorDurability();
             }
         }
-        
+
         public virtual void Heal(float amount)
         {
             _health = Mathf.Min(maxHealth, _health + amount);
         }
-        
+
         protected virtual float GetDamageReduction(float armorPiercing)
         {
             float reduction = 0f;
@@ -170,7 +170,7 @@ namespace Utils
             }
             return Mathf.Max(0, reduction - armorPiercing);
         }
-        
+
         protected virtual void ReduceArmorDurability()
         {
             armorDurability--;
@@ -180,14 +180,14 @@ namespace Utils
                 armorDurability = 3;
             }
         }
-        
+
         private IEnumerator DamageImmunity()
         {
             canTakeDamage = false;
             yield return new WaitForSeconds(dmgImmunityTime);
             canTakeDamage = true;
         }
-        
+
         protected void PlayParticleEffect(ParticleSystem particlePrefab, Vector3 position, Vector3 direction)
         {
             if (particlePrefab == null)
@@ -222,7 +222,7 @@ namespace Utils
             }
             return null;
         }
-        
+
         protected virtual void Die()
         {
             // So... what happens when the entity dies? 
@@ -236,7 +236,7 @@ namespace Utils
         /// <param name="health"></param>
         public void SetHealth(float health)
         {
-            if(health > maxHealth)
+            if (health > maxHealth)
             {
                 _health = maxHealth;
                 return;
@@ -251,7 +251,7 @@ namespace Utils
             sb.Append("LE");
             sb.Append("/");
             sb.Append(this.name);
-            sb.Append(SaveDialogOptions());
+            //sb.Append(SaveDialogOptions());
             sb.Append("/");
             sb.Append(SaveNameCustomization());
             sb.Append('/');
@@ -281,6 +281,7 @@ namespace Utils
             return sb.ToString();
         }
 
+        // TODO : TERMINA ESTA FUNCION recursividad infinita
         private string SaveDialogOptions()
         {
             StringBuilder sb = new StringBuilder();
@@ -297,11 +298,32 @@ namespace Utils
                 for (int j = 0; j < options[i].userResponses.Count; ++j)
                 {
                     sb.Append("/");
-                    sb.Append(options[i].userResponses[j]);
+                    sb.Append(options[i].userResponses[j].response);
+                    sb.Append("/");
+                    sb.Append(options[i].userResponses[j].moodChange);
                 }
             }
             return sb.ToString();
         }
+
+        /**
+
+    [Serializable]
+    public class ResponseOption
+    {
+        public string response;
+        public float moodChange;
+        public DialogOption nextDialog;
+        public UnityEvent onResponse;
+
+        public virtual void OnResponse()
+        {
+            EDebug.Log($"Response: {response}");
+            onResponse?.Invoke();
+        }
+    }
+         
+         */
 
         private string SaveNameCustomization()
         {
@@ -339,38 +361,117 @@ namespace Utils
                 EDebug.Log(_data, this);
                 return;
             }
+
             index += 1;
             this.name = dataDivided[index];
+
+            index += 1;
+            //loadDataSaveDialogOptions(dataDivided, ref index);
+            loadDataCustomization(dataDivided, ref index);
+
+            index += 1;
+            string isPlayerBool = dataDivided[index];
+
+            isPlayer = (isPlayerBool[0] - '0') >= 1;
+            index += 1;
+
+            maxHealth = int.Parse(dataDivided[index]);
+            index += 1;
+
+            dmgImmunityTime = float.Parse(dataDivided[index]);
+            index += 1;
+
+            armorClass = int.Parse(dataDivided[index]);
+            index += 1;
+
+            armorDurability = int.Parse(dataDivided[index]);
+            index += 1;
+
+            loadDamageType(dataDivided, ref index);
+            index += 1;
+
+            _health = int.Parse(dataDivided[index]);
+            index += 1;
+
+            _mood = float.Parse(dataDivided[index]);
+            index += 1;
+
+            string isDeadBool = dataDivided[index];
+            isDead = (isDeadBool[0] - '0') >= 1;
+            index += 1;
+
+            string canTakeDamageBool = dataDivided[index];
+            canTakeDamage = (canTakeDamageBool[0] - '0') >= 1;
+            index += 1;
+
+            gameState = (GameStates)int.Parse(dataDivided[index]);
 
         }
 
 
+        // TODO : TERMINA ESTA FUNCION.
         private void loadDataSaveDialogOptions(string[] _data, ref int index)
         {
             index += 1;
             int dialogOptionsCount = int.Parse(_data[index]);
+            List<DialogOption> dialogOptions = new List<DialogOption>();
 
-            index += 1;
-            string npcDialog = _data[index];
-
-            List<ResponseOption> responseOptions = new List<ResponseOption>();
             for (int i = 0; i < dialogOptionsCount; i++)
             {
+                DialogOption dialogOption = new DialogOption();
+                index += 1;
+                dialogOption.npcDialog = _data[index];
 
+                index += 1;
+                int responsCount = int.Parse(_data[index]);
+                List<ResponseOption> all_reponses = new List<ResponseOption>();
+                for (int j = 0; j < responsCount; j++)
+                {
+                    index += 1;
+                    ResponseOption responsOption = new ResponseOption();
+
+                }
 
             }
 
         }
+
+        private void loadDataCustomization(string[] _data, ref int index)
+        {
+            string boolArray = _data[index];
+            nameCustomization.isMale = (boolArray[0] - '0') >= 1;
+            nameCustomization.includeName = (boolArray[1] - '0') >= 1;
+            nameCustomization.includeLastName = (boolArray[2] - '0') >= 1;
+            nameCustomization.includeNickname = (boolArray[3] - '0') >= 1;
+            nameCustomization.includeTitle = (boolArray[4] - '0') >= 1;
+            nameCustomization.startsWithTitle = (boolArray[5] - '0') >= 1;
+            nameCustomization.replaceNameWithNickname = (boolArray[6] - '0') >= 1;
+            nameCustomization.lastNameThenName = (boolArray[7] - '0') >= 1;
+            nameCustomization.useTitleDividers = (boolArray[8] - '0') >= 1;
+
+        }
         /**
          
-    [Serializable]
-    public class DialogOption
-    {
-        public string npcDialog;
-        public List<ResponseOption> userResponses;
-    }
+            [Serializable]
+            public class NameCustomization
+            {
+                public bool isMale;
+                public bool includeName;
+                public bool includeLastName;
+                public bool includeNickname;
+                public bool includeTitle;
+                public bool startsWithTitle;
+                public bool replaceNameWithNickname;
+                public bool lastNameThenName;
+                public bool useTitleDividers;
+            }
+
          */
 
+        private void loadDamageType(string[] _data, ref int index)
+        {
+            damageTypeResistance = (DamageType)int.Parse(_data[index]);
+        }
 
     }
 }
