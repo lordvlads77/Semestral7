@@ -11,15 +11,18 @@ public class BarraVida : MonoBehaviour
     public Image fondoBarra; // Fondo de la barra de vida
     [SerializeField] private LivingEntity jugador;
 
+    [SerializeField] private DamageSys jugadorDamageSys = default;
+
     private float vidaInicial;
     private Vector2 barraOriginalSize;
     private Vector2 fondoOriginalSize;
 
     private void Start()
     {
+        Debug.Assert(jugadorDamageSys != default, "Necesitamos el sistema de daño del enemigo", this);
         if (jugador != null)
         {
-            vidaInicial = jugador.GetMaxHealth();
+            vidaInicial = jugadorDamageSys._life; //jugador.GetMaxHealth();
             barraOriginalSize = viada.rectTransform.sizeDelta; // Tamaño original de la barra
             fondoOriginalSize = fondoBarra.rectTransform.sizeDelta; // Tamaño original del fondo
         }
@@ -29,7 +32,7 @@ public class BarraVida : MonoBehaviour
     {
         if (jugador != null)
         {
-            float vidaActual = jugador.GetHealth();
+            float vidaActual = jugadorDamageSys._life;//jugador.GetHealth();
             float maxVida = jugador.GetMaxHealth();
 
             // Calcular la escala de crecimiento
@@ -40,7 +43,7 @@ public class BarraVida : MonoBehaviour
 
             // Mantener la barra dentro del fondo (sin moverla)
             viada.rectTransform.sizeDelta = new Vector2(barraOriginalSize.x * escala, barraOriginalSize.y);
-            viada.rectTransform.anchoredPosition = new Vector2(0, viada.rectTransform.anchoredPosition.y); 
+            viada.rectTransform.anchoredPosition = new Vector2(0, viada.rectTransform.anchoredPosition.y);
 
             // Ajustar el fillAmount para la vida actual
             viada.fillAmount = vidaActual / maxVida;
