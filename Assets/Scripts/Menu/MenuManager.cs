@@ -148,7 +148,7 @@ public class MenuManager : MonoBehaviour
             case CURRENT_MENU_STATE.MAIN_MENU:
                 if (cosa.WeaponDown && !isWeaponDownPressed) // Solo ejecuta una vez cuando se presiona
                 {
-                    ChangeCurrentSelectionUntilObjectIsFound();
+                    //ChangeCurrentSelectionUntilObjectIsFound();
                     isWeaponDownPressed = true; // Marcar como presionado
                     lastInputTime = Time.time; // Actualiza el tiempo
                 }
@@ -159,7 +159,7 @@ public class MenuManager : MonoBehaviour
 
                 if (cosa.WeaponUp && !isWeaponUpPressed) // Solo ejecuta una vez cuando se presiona
                 {
-                    ChangeCurrentSelectionUntilObjectIsFound(false);
+                    //ChangeCurrentSelectionUntilObjectIsFound(false);
                     isWeaponUpPressed = true; // Marcar como presionado
                     lastInputTime = Time.time; // Actualiza el tiempo
                 }
@@ -170,13 +170,16 @@ public class MenuManager : MonoBehaviour
 
                 if (cosa.Jump)
                 {
+
+                    if(currentSelection == 0)
+                    {
+                        SceneManager.LoadScene("Scenes/GameLevel");
+                    }
+
                     if (currentSelection == 3)
                     {
-                        Menuoptions.SetActive(true);
-                        currentState = CURRENT_MENU_STATE.OPTIONS;
-                        currentSelection = 0;
-                        currentArrayInUse = optionsItems;
-                        ChangeSelectorPosition();
+                        EDebug.Log("Quitting");
+                        Application.Quit();
                     }
                 }
                 break;
