@@ -37,7 +37,7 @@ public sealed class GameManager : Singleton<GameManager>
     {
         EDebug.Log("GameManager Awake");
         SetGameState(GameStates.Joining);
-        CheckForMissingScripts();
+       // CheckForMissingScripts();
         InvokeRepeating(nameof(LazyUpdate), 1f, 1f);
     }
     

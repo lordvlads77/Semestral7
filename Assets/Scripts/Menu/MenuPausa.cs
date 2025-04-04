@@ -1,12 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
-using Input;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using Input;
 
-public class MenuManager : MonoBehaviour
+public class MenuPausa : MonoBehaviour
 {
-    Animator animator;
+Animator animator;
     [SerializeField] RectTransform selector;
     [SerializeField] Transform[] menuItems;
     [SerializeField] Transform[] optionsItems;

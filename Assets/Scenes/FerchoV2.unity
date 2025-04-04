@@ -275,6 +275,7 @@ MonoBehaviour:
   oneHandedWeapon: {fileID: 1725069699}
   twoHandedWeapon: {fileID: 1725069698}
   twoHandedHand: {fileID: 0}
+  _isWeaponInUse: 0
 --- !u!4 &165038227
 Transform:
   m_ObjectHideFlags: 0
@@ -1559,6 +1560,11 @@ PrefabInstance:
         type: 3}
       propertyPath: isPlayer
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3797058045696758372, guid: 94cd54f3e49f0224684d2023ea43391f,
+        type: 3}
+      propertyPath: dodgeSpeed
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 3797058045696758372, guid: 94cd54f3e49f0224684d2023ea43391f,
         type: 3}

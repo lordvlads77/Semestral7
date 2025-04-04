@@ -559,10 +559,21 @@ public partial class @PlaInputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""f3a97099-5173-4428-a76d-72650d2193f3"",
-                    ""path"": """",
+                    ""path"": ""<XInputController>/buttonWest"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";Xbox"",
+                    ""action"": ""LeftButton"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""24556542-b325-400f-88b1-44e291679d68"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""LeftButton"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -647,10 +658,10 @@ public partial class @PlaInputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""91e8608d-0ccb-43af-a443-5489fb6025e9"",
-                    ""path"": """",
+                    ""path"": ""<XInputController>/rightTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";Xbox"",
                     ""action"": ""RB"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false

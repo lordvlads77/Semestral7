@@ -25,6 +25,7 @@ namespace Entity
                 _npcCanvas = _gm.GetOrCreateNpcCanvas();
             }
             _responsePrefab = _gm.canvasPrefabs.npcOption;
+            _npcCanvas.enabled = false;
             EDebug.Log("Dialog ► Awake");
         }
 

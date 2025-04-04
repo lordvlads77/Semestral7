@@ -145,14 +145,16 @@ namespace Character
         
         private void HandleActions() // This method will be refactored later (Inputs n shit)
         {
-            if (IInput.Jump && IsGrounded())
+            if (isDodging == false)
+            {
+                if (IInput.Jump && IsGrounded())
             {
                 Jump();
             }
-            if (IInput.Attack)
+            }
+            if (IInput.Doge)
             {
                 StartCoroutine(Dodge());
-               // Debug.Log("esquiva");
             }
         }
         
