@@ -65,16 +65,19 @@ MonoBehaviour:
     dialogOption: {fileID: 0}
     nameDivider: {fileID: 0}
   isPlayer: 0
-  dmgParticles: []
-  criticalDmgParticles: []
+  dmgParticles:
+  - {fileID: 3104916853003571433, guid: e8b652848777dab47afdd50a040605b5, type: 3}
+  criticalDmgParticles:
+  - {fileID: 3104916853003571433, guid: 0541075591277094f92b6b73fd9c1f3c, type: 3}
   maxHealth: 100
   dmgImmunityTime: 0.05
   armorClass: 1
   armorDurability: 3
-  damageTypeResistance: 0
+  damageTypeResistance: 1
   isDead: 0
   canTakeDamage: 1
   gameState: 0
+  animator: {fileID: 0}
   agent: {fileID: 0}
   player: {fileID: 0}
   prefab: {fileID: 1116390432347759286, guid: 81a15e14825efb94dad47669a2393910, type: 3}

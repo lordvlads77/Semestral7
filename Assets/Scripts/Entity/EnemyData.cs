@@ -24,6 +24,8 @@ public struct EnemyData
 
     [SerializeField] public LivingEntity player;
 
+    [SerializeField] public Utils.ENEMY_STATE enemy_state;
+
     public EnemyData Default()
     {
         return new EnemyData();
@@ -34,6 +36,7 @@ public struct EnemyData
         float _attackCoolDown,
         float _attackRange,
         float _timeInsideAttackRange,
+        Utils.ENEMY_STATE _enemy_state,
         LivingEntity _underliningEntity = null,
         LivingEntity _player = null)
     {
@@ -42,6 +45,7 @@ public struct EnemyData
         attackCoolDown = _attackCoolDown;
         attackRange = _attackRange;
         timeInsideAttackRange = _timeInsideAttackRange;
+        enemy_state = _enemy_state;
         underliningEntity = _underliningEntity;
         player = _player;
     }

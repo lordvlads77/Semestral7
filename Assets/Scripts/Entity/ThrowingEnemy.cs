@@ -8,6 +8,12 @@ namespace Entity
 {
     public sealed class ThrowingEnemy : Utils.LivingEntity
     {
+
+        [SerializeField] public Animator animator;
+
+        private int castAnimationID = Animator.StringToHash("enemy_cast");
+        private int deathAnimationID = Animator.StringToHash("enemy_dead");
+
         [Header("AI Components")]
         [SerializeField] NavMeshAgent agent;
         [SerializeField] LivingEntity player;
@@ -18,6 +24,8 @@ namespace Entity
         [SerializeField] GameObject prefab;
 
         [Header("Enemy properties")]
+
+        [SerializeField] public Utils.ENEMY_STATE enemyState = Utils.ENEMY_STATE.ALIVE;
         [Range(0f, 20f)]
         [SerializeField] float damage = 1.0f;
 
@@ -49,6 +57,8 @@ namespace Entity
         void Start()
         {
             agent = GetComponent<NavMeshAgent>();
+            animator = GetComponentInChildren<Animator>();
+
 
             GameObject temp_player = GameObject.FindGameObjectWithTag("Player");
             EDebug.Assert(temp_player != null, "could not find player character", this);
@@ -67,21 +77,36 @@ namespace Entity
 
             Vector3 player_position = player.transform.position;
             float distance = Vector3.Distance(player_position, transform.position);
-            if (distance < attackRange)
+            if (distance < attackRange && enemyState == ENEMY_STATE.ALIVE)
             {
                 agent.SetDestination(player_position);
                 FacePlayer();
                 timeInsdeAttackRange += Time.deltaTime;
+                animator.SetBool(castAnimationID, true);
             }
             else
             {
                 timeInsdeAttackRange = 0;
+                animator.SetBool(castAnimationID, false);
             }
 
             if (timeInsdeAttackRange >= attackCooldown)
             {
                 Attack();
                 timeInsdeAttackRange = 0.0f;
+            }
+
+            if (enemyState == ENEMY_STATE.DYING)
+            {
+
+                animator.SetBool(deathAnimationID, true);
+                bool is_dead = animator.GetBool("enemy_is_dead");
+                if (is_dead)
+                {
+                    EDebug.Log("We reached here", this);
+                    enemyState = ENEMY_STATE.DEAD;
+                    gameObject.SetActive(false);
+                }
             }
 
         }
@@ -153,7 +178,8 @@ namespace Entity
 
         protected override void Die()
         {
-            gameObject.SetActive(false);
+            enemyState = ENEMY_STATE.DYING;
+            //gameObject.SetActive(false);
         }
 
         private void FacePlayer()
