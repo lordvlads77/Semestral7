@@ -9,6 +9,7 @@ TagManager:
   - Weapon
   - Enemy_Body
   - DamageDealer
+  - NPC
   layers:
   - Default
   - TransparentFX
