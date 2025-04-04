@@ -17,6 +17,7 @@ namespace Controllers
         public void TwoHandsWeaponWithdraw(Animator animator)
         {
             animator.SetTrigger(_2HWeaponWithdraw);
+            stateManager.EnterFightingState(FightingState.TwoHandedFighting, GetComponent<MovementManager>());
         }
 
         public void OneHandWeaponWithdraw(Animator animator)
@@ -34,6 +35,7 @@ namespace Controllers
         public void TwoHandsWeaponSheath(Animator animator)
         {
             animator.SetTrigger(_2HWeaponSheath);
+            stateManager.EnterFightingState(FightingState.NonCombat, GetComponent<MovementManager>());
         }
 
         public void OneHandAttackSwing(Animator animator)
@@ -44,6 +46,7 @@ namespace Controllers
         public void TwoHandAttackSwing(Animator animator)
         {
             animator.SetTrigger(_2HAttackSwing);
+            stateManager.EnterFightingState(FightingState.TwoHandedSwing, GetComponent<MovementManager>());
         }
         
     }

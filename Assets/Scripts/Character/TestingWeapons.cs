@@ -1,4 +1,5 @@
 using System;
+using Controllers;
 using Input;
 using UnityEngine;
 using Utils;
@@ -27,6 +28,7 @@ namespace Character
             _input.OnWeaponLeftToggledEvent += WithdrawWeaponLight;
             _input.OnWeaponRightToggledEvent += SheathWeaponLight;
             _input.OnWeaponDownToggledEvent += SheathWeaponHeavy;
+            _input.OnAttackHeavySwing += TwoHandsiesWeaponSwing;
         }
 
         private void WeaponHeavy()
@@ -44,12 +46,18 @@ namespace Character
             WeaponSystem.Instance.SheathTwoHandedWeapon();
         }
 
+        public void TwoHandsiesWeaponSwing()
+        {
+            WeaponSystem.Instance.TwoWeaponSwing();
+        }
+
         private void OnDisable()
         {
             _input.OnWeaponUpToggledEvent -= WithdrawWeaponHeavy;
             _input.OnWeaponLeftToggledEvent -= WithdrawWeaponLight;
             _input.OnWeaponRightToggledEvent -= SheathWeaponLight;
             _input.OnWeaponDownToggledEvent -= SheathWeaponHeavy;
+            _input.OnAttackHeavySwing -= TwoHandsiesWeaponSwing;
         }
 
         private void OnDestroy()
@@ -58,6 +66,7 @@ namespace Character
             _input.OnWeaponLeftToggledEvent -= WithdrawWeaponLight;
             _input.OnWeaponRightToggledEvent -= SheathWeaponLight;
             _input.OnWeaponDownToggledEvent -= SheathWeaponHeavy;
+            _input.OnAttackHeavySwing -= TwoHandsiesWeaponSwing;
         }
         
     }

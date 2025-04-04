@@ -21,8 +21,9 @@ namespace Character
         [SerializeField] private GameObject twoHandedHand = default;
         [SerializeField] private bool _isWeaponInUse = false;
 
+        [FormerlySerializedAs("animator")]
         [Header("Animator Reference")]
-        private Animator animator = default;
+        [SerializeField] private Animator _animator = default;
     
         public void Unarmed()
         {
@@ -35,7 +36,7 @@ namespace Character
             if (_isWeaponInUse == false)
             {
                 _isWeaponInUse = true;
-                AnimationController.Instance.OneHandWeaponWithdraw(animator);
+                AnimationController.Instance.OneHandWeaponWithdraw(_animator);
                 //Add VFX Calling Here if applicable
                 //Add SFX Calling Here
                 oneHandedWeapon.SetActive(true);
@@ -66,7 +67,7 @@ namespace Character
                 }
                 else
                 {
-                    AnimationController.Instance.OneHandWeaponSheath(animator);
+                    AnimationController.Instance.OneHandWeaponSheath(_animator);
                     oneHandedWeapon.SetActive(false);
                 }
             }
@@ -81,7 +82,7 @@ namespace Character
             if (_isWeaponInUse == false)
             {
                 _isWeaponInUse = true;
-                AnimationController.Instance.TwoHandsWeaponWithdraw(animator);
+                AnimationController.Instance.TwoHandsWeaponWithdraw(_animator);
                 //Add VFX Calling Here if applicable
                 //Add SFX Calling Here
                 twoHandedWeapon.SetActive(false);
@@ -104,7 +105,7 @@ namespace Character
             if (_isWeaponInUse)
             {
                 _isWeaponInUse = false;
-                AnimationController.Instance.TwoHandsWeaponSheath(animator);
+                AnimationController.Instance.TwoHandsWeaponSheath(_animator);
                 //Add VFX Calling Here if applicable
                 //Add SFX Calling Here
                 twoHandedHand.SetActive(false);
@@ -114,6 +115,11 @@ namespace Character
             {
                 EDebug.Log("You already sheathed your weapon");
             }
+        }
+
+        public void TwoWeaponSwing()
+        {
+            AnimationController.Instance.TwoHandAttackSwing(_animator);
         }
 
     }
