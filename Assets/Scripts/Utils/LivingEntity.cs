@@ -21,15 +21,16 @@ namespace Utils
         [Tooltip("The particle systems that will play when the entity takes LETHAL damage (Will be skipped if none are present)")]
         public ParticleSystem[] criticalDmgParticles;
         [Tooltip("The entity's maximum health")]
-        [SerializeField] private float maxHealth = 100f;
+        [SerializeField] public float maxHealth = 100f;
         [Tooltip("For how long is the entity immune to damage after taking some?")]
         [SerializeField] private float dmgImmunityTime = 0.05f;
-        [SerializeField] private int armorClass = 1;
-        [SerializeField] private int armorDurability = 3;
+        [SerializeField] public int armorClass = 1;
+        [SerializeField] public int armorDurability = 3;
         [SerializeField] private DamageType damageTypeResistance;
         
-        private float _health;
+        public float _health;
         private float _mood;
+        public bool isInDialog;
         [HideInInspector] public bool isDead;
         [HideInInspector] public bool canTakeDamage = true;
         [HideInInspector] public GameStates gameState;
@@ -68,7 +69,7 @@ namespace Utils
             Weapon = WeaponType.Unarmed;
             if (!isPlayer) return;
             
-            IInput = (Input.Actions.Instance != null)? Input.Actions.Instance : MiscUtils.CreateGameManager().gameObject.GetComponent<Input.Actions>();
+            IInput = (Input.Actions.Instance != null)? Input.Actions.Instance : MiscUtils.GetOrCreateGameManager().gameObject.GetComponent<Input.Actions>();
             _wLTHandler = () => ChangeWeapon(WeaponType.LightSword);
             _wUTHandler = () => ChangeWeapon(WeaponType.GreatSword);
             _wRTHandler = () => ChangeWeapon(WeaponType.NamePending3);
@@ -111,35 +112,42 @@ namespace Utils
         public virtual void TakeDamage(Vector3 hitPoint, Vector3 hitDirection, DamageType dmgType, DamageType resType,
             float damage, float knockBack, float stagger, float armorPenetration, float critRate, float critDmg)
         {
-            float damageReduction = GetDamageReduction(armorPenetration);
-            float finalDamage = damage * (1 - damageReduction);
-            if (Random.value < critRate) finalDamage *= critDmg; // Rand -> 0 - 1 The higher the critRate, the higher the chance of crit
-            _health -= finalDamage;
-            if (_health <= 0 && !isDead)
+            if (canTakeDamage)
             {
-                isDead = true;
-                Die();
-                if (criticalDmgParticles.Length > 0) 
-                    PlayParticleEffect(criticalDmgParticles[Random.Range(0, criticalDmgParticles.Length)], hitPoint, hitDirection);
+                float damageReduction = GetDamageReduction(armorPenetration);
+                float finalDamage = damage * (1 - damageReduction);
+                if (Random.value < critRate)
+                    finalDamage *= critDmg; // Rand -> 0 - 1 The higher the critRate, the higher the chance of crit
+                _health -= finalDamage;
+                if (_health <= 0 && !isDead)
+                {
+                    isDead = true;
+                    Die();
+                    if (criticalDmgParticles.Length > 0)
+                        PlayParticleEffect(criticalDmgParticles[Random.Range(0, criticalDmgParticles.Length)], hitPoint,
+                            hitDirection);
+                    else
+                        Debug.LogWarning("criticalDmgParticles array is empty.");
+                }
                 else
-                    Debug.LogWarning("criticalDmgParticles array is empty.");
+                {
+                    if (_damageImmunityCoroutine != null)
+                        StopCoroutine(_damageImmunityCoroutine);
+                    _damageImmunityCoroutine = StartCoroutine(DamageImmunity());
+                    if (dmgParticles.Length > 0)
+                        PlayParticleEffect(dmgParticles[Random.Range(0, dmgParticles.Length)], hitPoint, hitDirection);
+                    else
+                        Debug.LogWarning("dmgParticles array is empty.");
+                }
+
+                // Create knockBack logic here some time later
+                if (stagger > 0)
+                {
+                    // Same with the stagger stuff
+                }
+
+                if (armorClass > 1) ReduceArmorDurability();
             }
-            else
-            {
-                if (_damageImmunityCoroutine != null)
-                    StopCoroutine(_damageImmunityCoroutine);
-                _damageImmunityCoroutine = StartCoroutine(DamageImmunity());
-                if (dmgParticles.Length > 0)
-                    PlayParticleEffect(dmgParticles[Random.Range(0, dmgParticles.Length)], hitPoint, hitDirection);
-                else
-                    Debug.LogWarning("dmgParticles array is empty.");
-            }
-            // Create knockBack logic here some time later
-            if (stagger > 0)
-            {
-                // Same with the stagger stuff
-            }
-            if (armorClass > 1) ReduceArmorDurability();
         }
         
         public virtual void Heal(float amount)

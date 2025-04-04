@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 885023297473484951}
   - component: {fileID: 5915010268080521751}
   m_Layer: 5
-  m_Name: Dialog Pannel
+  m_Name: Dialog Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
