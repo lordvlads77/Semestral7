@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Input;
+//using UnityEditor.Playables;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -30,19 +31,23 @@ public class MenuManager : MonoBehaviour
 
     private void OnDisable()
     {
-        Actions.Instance.OnWeaponDownToggledEvent -= OnWeaponDown;
-        Actions.Instance.OnWeaponUpToggledEvent -= OnWeaponUp;
-        Actions.Instance.OnAttackTriggeredEvent -= OnJump;
+        Actions local = Actions.TryGetInstance();
+        if(local != null)
+        {
+            local.OnWeaponDownToggledEvent -= OnWeaponDown;
+            local.OnWeaponUpToggledEvent -= OnWeaponUp;
+            local.OnAttackTriggeredEvent -= OnJump;
+        }
     }
 
     private void OnWeaponDown()
     {
-        ChangeCurrentSelectionUntilObjectIsFound();
+        ChangeCurrentSelection();  //ChangeCurrentSelectionUntilObjectIsFound();
     }
 
     private void OnWeaponUp()
     {
-        ChangeCurrentSelectionUntilObjectIsFound(false);
+         ChangeCurrentSelection(false);//      ChangeCurrentSelectionUntilObjectIsFound(false);
     }
 
     private void OnJump()
@@ -144,7 +149,9 @@ private void Update()
         case CURRENT_MENU_STATE.MAIN_MENU:
             if (cosa.WeaponDown && !isWeaponDownPressed) // Solo ejecuta una vez cuando se presiona
             {
-                ChangeCurrentSelectionUntilObjectIsFound();
+                //ChangeCurrentSelectionUntilObjectIsFound();
+                    //ChangeCurrentSelection();
+                //currentSelection
                 isWeaponDownPressed = true; // Marcar como presionado
                 lastInputTime = Time.time; // Actualiza el tiempo
             }
@@ -155,7 +162,8 @@ private void Update()
 
             if (cosa.WeaponUp && !isWeaponUpPressed) // Solo ejecuta una vez cuando se presiona
             {
-                ChangeCurrentSelectionUntilObjectIsFound(false);
+                //ChangeCurrentSelectionUntilObjectIsFound(false);
+                    //ChangeCurrentSelection(false);
                 isWeaponUpPressed = true; // Marcar como presionado
                 lastInputTime = Time.time; // Actualiza el tiempo
             }
@@ -166,13 +174,21 @@ private void Update()
 
             if (cosa.Jump)
             {
+
+                    if(currentSelection == 0)
+                    {
+                        SceneManager.LoadScene("Scenes/GameLevel");
+                    }
+
                 if (currentSelection == 3)
                 {
-                    Menuoptions.SetActive(true);
-                    currentState = CURRENT_MENU_STATE.OPTIONS;
-                    currentSelection = 0;
-                    currentArrayInUse = optionsItems;
-                    ChangeSelectorPosition();
+                        Application.Quit();
+                    //Menuoptions.SetActive(true);
+                        //currentState = CURRENT_MENU_STATE.OPTIONS;
+                        EDebug.Log("<color=green> SUB MENU NO IMPLEMENTADO  </color>", this);
+                    //currentSelection = 0;
+                    //currentArrayInUse = optionsItems;
+                    //ChangeSelectorPosition();
                 }
             }
             break;
