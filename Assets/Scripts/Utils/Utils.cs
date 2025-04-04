@@ -40,13 +40,13 @@ namespace Utils
         Electric,
         Dark,
         Light
-    }
-
-    public enum ENEMY_TYPE
+    } 
+    
+    public enum EnemyType 
     {
         None = 0,
-        CHASER = 1,
-        THROWER = 2,
+        Chaser = 1,
+        Thrower = 2,
     }
 
     public enum ENEMY_STATE
@@ -85,7 +85,7 @@ namespace Utils
                 return;
             }
             target.TakeDamage(
-                attacker.transform.position, //Change this later to the actual point of impact
+                attacker.transform.position, //Change this later to the actual point of impact for particles
                 attacker.transform.forward,
                 stats.damageType,
                 target.GetDmgTypeResistance(),
@@ -132,18 +132,17 @@ namespace Utils
             );
         }
 
-        public static GameManager CreateGameManager()
+        public static GameManager GetOrCreateGameManager()
         {
             GameManager gm = GameManager.Instance;
             if (gm == null)
             {
-                GameObject newGm = new GameObject("GameManager");
-                newGm.transform.position = new Vector3(0, 10, 0);
-                newGm.AddComponent<GameManager>();
+                GameObject newGm = new GameObject("GameManager")
+                { transform = { position = new Vector3(0, 10 ,0) } };
+                gm = newGm.AddComponent<GameManager>();
                 newGm.AddComponent<Input.Actions>();
-                UnityEngine.Object.Instantiate(newGm);
+                UnityEngine.Object.DontDestroyOnLoad(newGm);
                 EDebug.Log("GameManager was not found, a new one was created.");
-                gm = newGm.GetComponent<GameManager>();
             }
             return gm;
         }
@@ -206,6 +205,8 @@ namespace Utils
         [Header("NPC Stuffs")]
         public Canvas npcCanvas;
         public GameObject npcOption;
+        public GameObject dialogPrompt;
+        public GameObject promptName;
         // Add more as needed! 
         // (I'd like it if you added a header for each category)
     }

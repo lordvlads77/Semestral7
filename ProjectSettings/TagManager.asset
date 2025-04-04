@@ -6,8 +6,7 @@ TagManager:
   tags:
   - Interest
   - Enemy
-  - Weapon
-  - Enemy_Body
+  - NPC
   layers:
   - Default
   - TransparentFX
@@ -18,7 +17,7 @@ TagManager:
   - Player
   - Interest
   - Ground
-  - Weapon
+  - 
   - 
   - 
   - 
