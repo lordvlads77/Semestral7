@@ -1,3 +1,4 @@
+using Controllers;
 using UnityEngine;
 
 namespace Character
@@ -16,7 +17,9 @@ namespace Character
         NonCombat,
         UnarmedFighting,
         SwordAndShield,
-        OneHandedFighting
+        OneHandedFighting,
+        TwoHandedFighting,
+        TwoHandedSwing,
     }
     
     public class StateManager : MonoBehaviour
@@ -193,6 +196,7 @@ namespace Character
                     _animator.SetBool("UnarmedCombat", false);
                     _animator.SetBool("SwordAndShield", false);
                     _animator.SetBool("1HSwordMov", false);
+                    _animator.SetBool("2HSwordMov", false);;
                     break;
                 case FightingState.UnarmedFighting:
                     _animator.SetBool("UnarmedCombat", true);
@@ -205,6 +209,15 @@ namespace Character
                 case FightingState.OneHandedFighting:
                     _animator.SetBool("UnarmedCombat", false);
                     _animator.SetBool("1HSwordMov", true);
+                    break;
+                case FightingState.TwoHandedFighting:
+                    _animator.SetBool("2HSwordMov", true);
+                    _animator.SetBool("UnarmedCombat", false);
+                    _animator.SetBool("SwordAndShield", false);
+                    _animator.SetBool("1HSwordMov", false);
+                    break;
+                case FightingState.TwoHandedSwing:
+                    AnimationController.Instance.TwoHandAttackSwing(_animator);
                     break;
             }
         }
@@ -221,6 +234,9 @@ namespace Character
                     break;
                 case FightingState.OneHandedFighting:
                     _animator.SetBool("1HSwordMov", false);
+                    break;
+                case FightingState.TwoHandedFighting:
+                    _animator.SetBool("2HSwordMov", false);
                     break;
             }
             EnterFightingState(newState, movement);

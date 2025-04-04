@@ -40,6 +40,9 @@ namespace Input
         public bool RightTrigger { get; private set; }
         public bool Pause { get; private set; }
         
+        public bool AttackHeavy { get; private set; }
+        public event Action OnAttackHeavySwing;
+        
         protected override void OnAwake()
         {
             _inputActions = new PlaInputActions();
@@ -49,6 +52,7 @@ namespace Input
             WeaponLeft = false;
             WeaponRight = false;
             WeaponDown = false;
+            AttackHeavy = false;
             CurrentWeapon = WeaponType.Unarmed;
             EDebug.Log("Input Actions ► Initialized");
         }
@@ -93,6 +97,10 @@ namespace Input
             _inputActions.Player.ZTarget.canceled += OnZTargetCanceled;
             
             //_inputActions.Player.RT.performed += context => RightTrigger = context.ReadValueAsButton();
+            
+            _inputActions.Player.UpButton.started += OnAttackHeavySwingToggle;
+            _inputActions.Player.UpButton.performed += OnAttackHeavySwingToggle;
+            _inputActions.Player.UpButton.canceled += OnAttackHeavySwingToggle;
         }
         
         private void OnDisable()
@@ -226,6 +234,12 @@ namespace Input
             OnWeaponDownToggledEvent?.Invoke();
         }
         #endregion
-        
+
+        private void OnAttackHeavySwingToggle(InputAction.CallbackContext context)
+        {
+            CurrentWeapon = (CurrentWeapon == WeaponType.GreatSword) ? WeaponType.Unarmed : WeaponType.GreatSword;
+            AttackHeavy = !AttackHeavy;
+            OnAttackHeavySwing?.Invoke();
+        }
     }
 }
