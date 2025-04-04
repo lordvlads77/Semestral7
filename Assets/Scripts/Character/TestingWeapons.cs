@@ -13,27 +13,38 @@ namespace Character
         private void Awake()
         {
             _input = Input.Actions.Instance;
-            if (_input == null) _input = gameObject.GetComponent<Input.Actions>();
-            if (_input == null) _input = gameObject.AddComponent<Input.Actions>();
         }
 
-        private void Cosa(LivingEntity entity)
+        private void GreatSwordUse(LivingEntity entity)
         {
-            if (entity.Weapon == WeaponType.Unarmed) return;
+            if (entity.Weapon == WeaponType.GreatSword) return;
+        }
+
+        private void LightSwordUse(LivingEntity entity)
+        {
+            if (entity.Weapon == WeaponType.LightSword)
+            {
+                return;
+            }
         }
 
         private void OnEnable()
         {
-          // _input.OnWeaponUpToggledEvent += WithdrawWeaponHeavy;
-        //    _input.OnWeaponLeftToggledEvent += WithdrawWeaponLight;
+            _input.OnWeaponUpToggledEvent += WithdrawWeaponHeavy;
+            _input.OnWeaponLeftToggledEvent += WithdrawWeaponLight;
             _input.OnWeaponRightToggledEvent += SheathWeaponLight;
             _input.OnWeaponDownToggledEvent += SheathWeaponHeavy;
             _input.OnAttackHeavySwing += TwoHandsiesWeaponSwing;
         }
 
-        private void WeaponHeavy()
+        private void WithdrawWeaponHeavy()
         {
             WeaponSystem.Instance.WithdrawTwoHandedWeapon();
+        }
+        
+        private void WithdrawWeaponLight()
+        {
+            WeaponSystem.Instance.WithdrawOneHandedWeapon();
         }
 
         private void SheathWeaponLight()
@@ -53,8 +64,8 @@ namespace Character
 
         private void OnDisable()
         {
-         //   _input.OnWeaponUpToggledEvent -= WithdrawWeaponHeavy;
-         //   _input.OnWeaponLeftToggledEvent -= WithdrawWeaponLight;
+            _input.OnWeaponUpToggledEvent -= WithdrawWeaponHeavy;
+            _input.OnWeaponLeftToggledEvent -= WithdrawWeaponLight;
             _input.OnWeaponRightToggledEvent -= SheathWeaponLight;
             _input.OnWeaponDownToggledEvent -= SheathWeaponHeavy;
             _input.OnAttackHeavySwing -= TwoHandsiesWeaponSwing;
@@ -62,8 +73,8 @@ namespace Character
 
         private void OnDestroy()
         {
-         //   _input.OnWeaponUpToggledEvent -= WithdrawWeaponHeavy;
-          //  _input.OnWeaponLeftToggledEvent -= WithdrawWeaponLight;
+            _input.OnWeaponUpToggledEvent -= WithdrawWeaponHeavy;
+            _input.OnWeaponLeftToggledEvent -= WithdrawWeaponLight;
             _input.OnWeaponRightToggledEvent -= SheathWeaponLight;
             _input.OnWeaponDownToggledEvent -= SheathWeaponHeavy;
             _input.OnAttackHeavySwing -= TwoHandsiesWeaponSwing;

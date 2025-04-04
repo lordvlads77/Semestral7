@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e28d868eb123d246b26245c938cd1fb, type: 3}
+  m_Name: DefaultWeaponStats
+  m_EditorClassIdentifier: 
+  lightSwordStats:
+    damageType: 0
+    damage: 2
+    attackSpeed: 0.25
+    knockBack: 1
+    staggerBuildUp: 5
+    armorPenetration: 0.1
+    critRate: 0.25
+    critDamage: 1.5
+  greatSwordStats:
+    damageType: 0
+    damage: 5
+    attackSpeed: 5
+    knockBack: 5
+    staggerBuildUp: 15
+    armorPenetration: 0.25
+    critRate: 0.5
+    critDamage: 3
+  namePending3Stats:
+    damageType: 0
+    damage: 0
+    attackSpeed: 0
+    knockBack: 0
+    staggerBuildUp: 0
+    armorPenetration: 0
+    critRate: 0
+    critDamage: 1
+  namePending4Stats:
+    damageType: 0
+    damage: 0
+    attackSpeed: 0
+    knockBack: 0
+    staggerBuildUp: 0
+    armorPenetration: 0
+    critRate: 0
+    critDamage: 1
+  unarmedStats:
+    damageType: 0
+    damage: 1
+    attackSpeed: 0.1
+    knockBack: 0.25
+    staggerBuildUp: 3
+    armorPenetration: 0
+    critRate: 0.1
+    critDamage: 2

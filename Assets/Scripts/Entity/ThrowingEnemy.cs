@@ -6,10 +6,14 @@ using Utils;
 
 namespace Entity
 {
-    public sealed class ThrowingEnemy : LivingEntity
+    public sealed class ThrowingEnemy : Utils.LivingEntity
     {
-        [Header("Enemy type")]
-        [SerializeField] private EnemyType type;
+
+        [SerializeField] public Animator animator;
+
+        private int castAnimationID = Animator.StringToHash("enemy_cast");
+        private int deathAnimationID = Animator.StringToHash("enemy_dead");
+
         [Header("AI Components")]
         [SerializeField] NavMeshAgent agent;
         [SerializeField] LivingEntity player;
@@ -21,6 +25,7 @@ namespace Entity
 
         [Header("Enemy properties")]
 
+        [SerializeField] public Utils.ENEMY_STATE enemyState = Utils.ENEMY_STATE.ALIVE;
         [Range(0f, 20f)]
         [SerializeField] float damage = 1.0f;
 
@@ -28,7 +33,6 @@ namespace Entity
         [SerializeField] float speed = 1.0f;
 
         [field: Range(0f, 100f)]
-
         [field: SerializeField]
 
         float health
@@ -53,13 +57,16 @@ namespace Entity
         void Start()
         {
             agent = GetComponent<NavMeshAgent>();
+            animator = GetComponentInChildren<Animator>();
+
 
             GameObject temp_player = GameObject.FindGameObjectWithTag("Player");
             EDebug.Assert(temp_player != null, "could not find player character", this);
+            Debug.Assert(PreFab != null, "Enemy Needs Prefab to work", this);
             player = temp_player.GetComponent<LivingEntity>();
             agent.speed = speed;
+            agent.updatePosition = false;
 
-            gameState = GameStates.Playing;
             SetHealth(health);
         }
 
@@ -67,14 +74,20 @@ namespace Entity
         {
             if (gameState != GameStates.Playing) { return; }
 
-            float distance = Vector3.Distance(player.transform.position, transform.position);
-            if (distance < attackRange)
+
+            Vector3 player_position = player.transform.position;
+            float distance = Vector3.Distance(player_position, transform.position);
+            if (distance < attackRange && enemyState == ENEMY_STATE.ALIVE)
             {
+                agent.SetDestination(player_position);
+                FacePlayer();
                 timeInsdeAttackRange += Time.deltaTime;
+                animator.SetBool(castAnimationID, true);
             }
             else
             {
                 timeInsdeAttackRange = 0;
+                animator.SetBool(castAnimationID, false);
             }
 
             if (timeInsdeAttackRange >= attackCooldown)
@@ -83,6 +96,40 @@ namespace Entity
                 timeInsdeAttackRange = 0.0f;
             }
 
+            if (enemyState == ENEMY_STATE.DYING)
+            {
+
+                animator.SetBool(deathAnimationID, true);
+                bool is_dead = animator.GetBool("enemy_is_dead");
+                if (is_dead)
+                {
+                    EDebug.Log("We reached here", this);
+                    enemyState = ENEMY_STATE.DEAD;
+                    gameObject.SetActive(false);
+                }
+            }
+
+        }
+
+        private void OnEnable()
+        {
+            GameManager.Instance.Subscribe(OnGameStateChange);
+            gameState = GameManager.Instance.GameState;
+        }
+
+        private void OnDisable()
+        {
+            GameManager.TryGetInstance()?.Unsubscribe(OnGameStateChange);
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            EDebug.Log(other, this);
+            EDebug.Log(other.tag, this);
+            if (other.CompareTag("Weapon"))
+            {
+                CombatUtils.Attack(player, this);
+            }
         }
 
         public void Attack()
@@ -90,8 +137,9 @@ namespace Entity
             Projectile final_projectile = Recycle();
 
             Vector3 direction = (player.transform.position - transform.position).normalized;
-            
-            if (final_projectile == null) {
+
+            if (final_projectile == null)
+            {
                 Projectile go = Instantiate(PreFab, transform.position + (direction * 2.0f), Quaternion.identity);
                 go.setDestination(player.transform.position);
                 Spawned.Add(go);
@@ -110,7 +158,7 @@ namespace Entity
             {
                 if (!p.gameObject.activeInHierarchy)
                 {
-                    result = p; 
+                    result = p;
                     break;
                 }
             }
@@ -120,6 +168,27 @@ namespace Entity
         public void Prepare(Projectile pro)
         {
 
+        }
+
+        public void OnGameStateChange(GameStates _newState)
+        {
+            gameState = _newState;
+        }
+
+
+        protected override void Die()
+        {
+            enemyState = ENEMY_STATE.DYING;
+            //gameObject.SetActive(false);
+        }
+
+        private void FacePlayer()
+        {
+            var turnTowardNavSteeringTarget = agent.steeringTarget;
+
+            Vector3 direction = (turnTowardNavSteeringTarget - transform.position).normalized;
+            Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5);
         }
     }
 }
