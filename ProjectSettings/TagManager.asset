@@ -8,6 +8,7 @@ TagManager:
   - Enemy
   - Weapon
   - Enemy_Body
+  - DamageDealer
   layers:
   - Default
   - TransparentFX
