@@ -30,6 +30,7 @@ namespace Utils
         
         public float _health;
         private float _mood;
+        public bool isInDialog;
         [HideInInspector] public bool isDead;
         [HideInInspector] public bool canTakeDamage = true;
         [HideInInspector] public GameStates gameState;
@@ -68,7 +69,7 @@ namespace Utils
             Weapon = WeaponType.Unarmed;
             if (!isPlayer) return;
             
-            IInput = (Input.Actions.Instance != null)? Input.Actions.Instance : MiscUtils.CreateGameManager().gameObject.GetComponent<Input.Actions>();
+            IInput = (Input.Actions.Instance != null)? Input.Actions.Instance : MiscUtils.GetOrCreateGameManager().gameObject.GetComponent<Input.Actions>();
             _wLTHandler = () => ChangeWeapon(WeaponType.LightSword);
             _wUTHandler = () => ChangeWeapon(WeaponType.GreatSword);
             _wRTHandler = () => ChangeWeapon(WeaponType.NamePending3);
@@ -226,6 +227,20 @@ namespace Utils
             // So... what happens when the entity dies? 
             // I could try a skinned mesh particle system that could look cool, but I don't know...
             // What are we making? 
+        }
+
+        /// <summary>
+        /// Sets health but no beyond maxHealth
+        /// </summary>
+        /// <param name="health"></param>
+        public void SetHealth(float health)
+        {
+            if(health > maxHealth)
+            {
+                _health = maxHealth;
+                return;
+            }
+            _health = health;
         }
         
     }

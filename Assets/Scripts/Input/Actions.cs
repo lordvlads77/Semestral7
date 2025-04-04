@@ -5,9 +5,9 @@ using Utils;
 
 namespace Input
 {
-    [DefaultExecutionOrder(-10)]
+    //[DefaultExecutionOrder(-10)]
     public class Actions : Singleton<Actions> // Input Interface
-    {
+    {   // If possible, subscribe to the events, if not, use the public properties
         private PlaInputActions _inputActions;
         
         public Vector2 Movement { get; private set; }
@@ -23,7 +23,6 @@ namespace Input
         public event Action OnWeaponRightToggledEvent;
         public bool WeaponDown { get; private set; }
         public event Action OnWeaponDownToggledEvent;
-        // If possible, subscribe to the events, if not, use the public properties
         
         public bool UpButton { get; private set; }
         public bool Jump { get; private set; }

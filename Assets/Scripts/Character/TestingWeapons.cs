@@ -12,19 +12,13 @@ namespace Character
         private void Awake()
         {
             _input = Input.Actions.Instance;
+            if (_input == null) _input = gameObject.GetComponent<Input.Actions>();
+            if (_input == null) _input = gameObject.AddComponent<Input.Actions>();
         }
 
-        private void GreatSwordUse(LivingEntity entity)
+        private void Cosa(LivingEntity entity)
         {
-            if (entity.Weapon == WeaponType.GreatSword) return;
-        }
-
-        private void LightSwordUse(LivingEntity entity)
-        {
-            if (entity.Weapon == WeaponType.LightSword)
-            {
-                return;
-            }
+            if (entity.Weapon == WeaponType.Unarmed) return;
         }
 
         private void OnEnable()
@@ -35,14 +29,9 @@ namespace Character
             _input.OnWeaponDownToggledEvent += SheathWeaponHeavy;
         }
 
-        private void WithdrawWeaponHeavy()
+        private void WeaponHeavy()
         {
             WeaponSystem.Instance.WithdrawTwoHandedWeapon();
-        }
-        
-        private void WithdrawWeaponLight()
-        {
-            WeaponSystem.Instance.WithdrawOneHandedWeapon();
         }
 
         private void SheathWeaponLight()

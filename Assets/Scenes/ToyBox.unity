@@ -483,12 +483,6 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 1
---- !u!1 &580664377 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1557559137977642738, guid: 94cd54f3e49f0224684d2023ea43391f,
-    type: 3}
-  m_PrefabInstance: {fileID: 4325116912432689114}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -635,12 +629,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &1267598858 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 4333506671907191469, guid: 94cd54f3e49f0224684d2023ea43391f,
-    type: 3}
-  m_PrefabInstance: {fileID: 4325116912432689114}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1564776592
 GameObject:
   m_ObjectHideFlags: 0
@@ -831,16 +819,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 353940237441650522, guid: 94cd54f3e49f0224684d2023ea43391f,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1557559137977642738, guid: 94cd54f3e49f0224684d2023ea43391f,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3725687767794704282, guid: 94cd54f3e49f0224684d2023ea43391f,
         type: 3}
       propertyPath: m_LocalPosition.x

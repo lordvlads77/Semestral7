@@ -22,7 +22,7 @@ namespace Character
         [SerializeField] private bool _isWeaponInUse = false;
 
         [Header("Animator Reference")]
-        [SerializeField] private Animator animator = default;
+        private Animator animator = default;
     
         public void Unarmed()
         {

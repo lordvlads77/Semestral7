@@ -851,13 +851,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1557559137977642738}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.77786106, y: 0.29511184, z: 0.32788178, w: -0.4475877}
-  m_LocalPosition: {x: -0.10760738, y: -0.15603556, z: 0.18044677}
+  m_LocalRotation: {x: -0.5666139, y: -0.21263933, z: -0.7370632, w: -0.3007841}
+  m_LocalPosition: {x: -0.27114528, y: 0, z: -0.00038136425}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4767185981220574664}
-  m_LocalEulerAnglesHint: {x: 30.185, y: -116.398, z: -119.462}
+  m_LocalEulerAnglesHint: {x: 1.57, y: -285.52, z: -223.206}
 --- !u!33 &2786472856299537877
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -2371,8 +2371,10 @@ MonoBehaviour:
     dialogOption: {fileID: 0}
     nameDivider: {fileID: 0}
   isPlayer: 0
-  dmgParticles: []
-  criticalDmgParticles: []
+  dmgParticles:
+  - {fileID: 3104916853003571433, guid: e8b652848777dab47afdd50a040605b5, type: 3}
+  criticalDmgParticles:
+  - {fileID: 3104916853003571433, guid: 0541075591277094f92b6b73fd9c1f3c, type: 3}
   maxHealth: 100
   dmgImmunityTime: 0.05
   armorClass: 1

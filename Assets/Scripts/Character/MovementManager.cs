@@ -30,7 +30,6 @@ namespace Character
         [SerializeField] private LayerMask groundLayer;
         [SerializeField, Range(5f, 15f)] private float gravity = 9.81f;
         [SerializeField] private float jumpHeight = 2f;
-    
         [HideInInspector] public Vector3 dir;
         [HideInInspector] public float horizontalInput, verticalInput;
     
@@ -61,9 +60,10 @@ namespace Character
             controller = GetComponent<CharacterController>();
             stateManager.EnterMovementState(MovementState.Walk, this);
             _cam = Camera.main;
-            IInput = (Input.Actions.Instance != null)? Input.Actions.Instance : MiscUtils.CreateGameManager().gameObject.GetComponent<Input.Actions>();
+            IInput = (Input.Actions.Instance != null)? Input.Actions.Instance : MiscUtils.GetOrCreateGameManager().gameObject.GetComponent<Input.Actions>();
             if (_cam) _cm = _cam.GetComponent<ThirdPersonCamera>();
-            if (!_cm) _cm = GetComponent<ThirdPersonCamera>(); // You had the script here, right?
+            if (!_cm) _cm = GetComponent<ThirdPersonCamera>(); // You had the script here, right
+            SetHealth(GetMaxHealth());
         }
         
         private void OnEnable()
@@ -205,7 +205,7 @@ namespace Character
         
         private void Punch()
         {
-            if (stateManager.CurrentFightingState == FightingState.NonCombat && NpcCloseBy())
+            if (stateManager.CurrentFightingState == FightingState.NonCombat && GameManager.Instance.NpcCloseBy(transform.position))
             {
                 // Start the dialogue thing
             }
@@ -245,10 +245,11 @@ namespace Character
             controller.Move(_velocity * Time.deltaTime);
         }
         
+        private readonly Color _groundCheck = new Color(1f, 0.1f, 0.1f, 0.25f);
         private void OnDrawGizmos()
         {
             if (controller == null) return;
-            Gizmos.color = Color.red;
+            Gizmos.color = _groundCheck;
             Gizmos.DrawSphere(_spherePos, controller.radius - 0.05f);
         }
 
