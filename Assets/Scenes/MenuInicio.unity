@@ -244,8 +244,10 @@ MonoBehaviour:
   - {fileID: 1163483209}
   - {fileID: 1843004512}
   optionsItems: []
-  Menuoptions: {fileID: 0}
-  inputCooldown: 0.2
+  currentSelection: 0
+  currentState: 0
+  Menuoptions: {fileID: 1231248268}
+  inputCooldown: 0.4
 --- !u!224 &342620038 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7673116798527122802, guid: 3eeed4605ea6a6543bb72d0cc15e8df8,
@@ -519,6 +521,12 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 7259832061606562013}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1231248268 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 961572929326584686, guid: 3eeed4605ea6a6543bb72d0cc15e8df8,
+    type: 3}
+  m_PrefabInstance: {fileID: 7259832061606562013}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1346162363 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2873852479047157339, guid: 3eeed4605ea6a6543bb72d0cc15e8df8,
@@ -551,7 +559,7 @@ GameObject:
   m_Icon: {fileID: 2800000, guid: ee8ce5cd9c0883f4182b5cfd43cfd7fe, type: 3}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &2002783374
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -652,7 +660,9 @@ MonoBehaviour:
   - {fileID: 1163483209}
   - {fileID: 1843004512}
   optionsItems: []
-  Menuoptions: {fileID: 0}
+  currentSelection: 0
+  currentState: 0
+  Menuoptions: {fileID: 1231248268}
   inputCooldown: 0.2
 --- !u!1 &2048524463
 GameObject:
@@ -671,7 +681,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &2048524465
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -11,6 +11,13 @@ public class HealingItem : MonoBehaviour
     {
         // Verifica si el objeto que entra en el trigger es el jugador
         MovementManager player = other.GetComponent<MovementManager>();
+
+        if (other.CompareTag("Player"))
+        {
+            DamageSys damageSys = player.GetComponent<DamageSys>();
+            damageSys._life += (int)healingAmount;
+        }
+
         if (player != null)
         {
             player.Heal(healingAmount); // Llama al método de curación

@@ -17,7 +17,7 @@ namespace Entity
 
         protected override void OnAwake()
         {
-            _gm = this.GetComponent<GameManager>();
+            _gm = GameManager.Instance;// this.GetComponent<GameManager>();
             _npcCanvas = _gm.NpcCanvas;
             if (_npcCanvas == null)
             {

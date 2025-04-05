@@ -207,13 +207,13 @@ namespace Character
 
                 float minCircleRadius = (float)Math.Cos(minAngle - Math.PI / 2) * settings.GetCameraDistance();
                 float minCircleY = (float)(settings.GetCameraDistance() * Math.Cos(minAngle));
-                Handles.color = Color.red;
-                Handles.DrawWireDisc(lookAt.transform.position + new Vector3(0, minCircleY, 0), Vector3.up, minCircleRadius);
+                //Handles.color = Color.red;
+                //Handles.DrawWireDisc(lookAt.transform.position + new Vector3(0, minCircleY, 0), Vector3.up, minCircleRadius);
 
                 float maxCircleRadius = (float)Math.Cos(maxAngle - Math.PI / 2) * settings.GetCameraDistance();
                 float maxCircleY = (float)(settings.GetCameraDistance() * Math.Cos(maxAngle));
-                Handles.color = Color.red;
-                Handles.DrawWireDisc(lookAt.transform.position + new Vector3(0, maxCircleY, 0), Vector3.up, maxCircleRadius);
+                //Handles.color = Color.red;
+                //Handles.DrawWireDisc(lookAt.transform.position + new Vector3(0, maxCircleY, 0), Vector3.up, maxCircleRadius);
 
                 Gizmos.color = Color.blue;
                 Gizmos.DrawWireSphere(lookAt.transform.position, settings.GetCameraDistance());
