@@ -148,7 +148,6 @@ public class MenuManager : MonoBehaviour
             case CURRENT_MENU_STATE.MAIN_MENU:
                 if (cosa.WeaponDown && !isWeaponDownPressed) // Solo ejecuta una vez cuando se presiona
                 {
-                    //ChangeCurrentSelectionUntilObjectIsFound();
                     isWeaponDownPressed = true; // Marcar como presionado
                     lastInputTime = Time.time; // Actualiza el tiempo
                 }
@@ -159,7 +158,6 @@ public class MenuManager : MonoBehaviour
 
                 if (cosa.WeaponUp && !isWeaponUpPressed) // Solo ejecuta una vez cuando se presiona
                 {
-                    //ChangeCurrentSelectionUntilObjectIsFound(false);
                     isWeaponUpPressed = true; // Marcar como presionado
                     lastInputTime = Time.time; // Actualiza el tiempo
                 }
@@ -171,15 +169,24 @@ public class MenuManager : MonoBehaviour
                 if (cosa.Jump)
                 {
 
-                    if(currentSelection == 0)
+                    if (currentSelection == 0)
                     {
-                        SceneManager.LoadScene("Scenes/GameLevel");
+                        Inicio();
+                    }
+
+                    if (currentSelection == 1)
+                    {
+                        Cargar();
+                    }
+
+                    if (currentSelection == 2)
+                    {
+                        Options();
                     }
 
                     if (currentSelection == 3)
                     {
-                        EDebug.Log("Quitting");
-                        Application.Quit();
+                        Salir();
                     }
                 }
                 break;
@@ -218,5 +225,27 @@ public class MenuManager : MonoBehaviour
                 }
                 break;
         }
+    }
+
+    public void Inicio()
+    {
+        EDebug.Log("Inicio");
+        SceneManager.LoadScene("Scenes/GameLevel");
+    }
+
+    public void Cargar()
+    {
+        EDebug.Log("Cargar");
+    }
+
+    public void Options()
+    {
+        EDebug.Log("Opciones");
+    }
+
+    public void Salir()
+    {
+        EDebug.Log("Quitting");
+        Application.Quit();
     }
 }
