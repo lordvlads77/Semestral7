@@ -56,6 +56,14 @@ namespace Utils
         DEAD = 2,
     }
 
+    [Serializable]
+    public enum Languege : int
+    {
+        English = 0,
+        Spanish,
+        COUNT,/// NOTE : Cuando agregas un lenguage nuevo tienes que ponerlos antes que el COUNT
+    }
+
     public static class MathUtils
     {
         public static Vector3[] CanonBasis(Transform trans)
