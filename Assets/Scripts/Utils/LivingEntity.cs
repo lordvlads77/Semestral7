@@ -251,9 +251,9 @@ namespace Utils
             sb.Append("LE");
             sb.Append("/");
             sb.Append(this.name);
-            //sb.Append(SaveDialogOptions());
+            sb.Append(SaveDialogOptions());
             sb.Append("/");
-            sb.Append(SaveNameCustomization());
+            //sb.Append(SaveNameCustomization());
             sb.Append('/');
             sb.Append(this.isPlayer);
             sb.Append('/');
@@ -312,8 +312,7 @@ namespace Utils
             return sb.ToString();
         }
 
-        /**
-
+/**
     [Serializable]
     public class ResponseOption
     {
@@ -328,8 +327,7 @@ namespace Utils
             onResponse?.Invoke();
         }
     }
-         
-         */
+*/
 
         private string SaveNameCustomization()
         {
