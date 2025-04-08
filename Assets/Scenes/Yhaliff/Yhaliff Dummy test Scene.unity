@@ -770,6 +770,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d55fc4e8ea204cd499af4aa50c6fdcda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  weaponStats: {fileID: 0}
+  randomNames: {fileID: 0}
+  canvasPrefabs:
+    canvasSprites: []
+    npcCanvas: {fileID: 0}
+    npcOption: {fileID: 0}
+    dialogPrompt: {fileID: 0}
+    promptName: {fileID: 0}
+  npcRange: 1.5
+  player: {fileID: 0}
 --- !u!4 &1830678369
 Transform:
   m_ObjectHideFlags: 0
@@ -906,6 +916,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameStates: 0
+  stateToChangeTo: 5
 --- !u!1 &1884105855
 GameObject:
   m_ObjectHideFlags: 0
