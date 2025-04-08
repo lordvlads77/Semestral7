@@ -103939,7 +103939,6 @@ GameObject:
   - component: {fileID: 2487169530206942754}
   - component: {fileID: 4340718835606206952}
   - component: {fileID: 9202856032771810628}
-  - component: {fileID: 9202856032771810629}
   m_Layer: 6
   m_Name: Char_Knight_Black_FxScale
   m_TagString: Player
@@ -105727,8 +105726,10 @@ MonoBehaviour:
   oneHandedWeapon: {fileID: 8669460329892484304}
   twoHandedWeapon: {fileID: 1562194746952504152}
   twoHandedHand: {fileID: 7678053276611328937}
-  _isWeaponInUse: 0
-  _animator: {fileID: 2439035665859341509}
+  isWeaponInUse: 0
+  player: {fileID: 0}
+  enemy: {fileID: 0}
+  animator: {fileID: 2439035665859341509}
 --- !u!1 &6675006006952689453
 GameObject:
   m_ObjectHideFlags: 0
@@ -109086,25 +109087,7 @@ MonoBehaviour:
   viada: {fileID: 5028796686468968}
   fondoBarra: {fileID: 5351221107238745359}
   jugador: {fileID: 2044310253568215568}
-  jugadorDamageSys: {fileID: 9202856032771810629}
---- !u!114 &9202856032771810629
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5380833302022311900}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a91b808eff87e674db302062de35ff13, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _damageDealer: {fileID: 601066423682200995}
-  _isDead: 0
-  _playerObj: {fileID: 5380833302022311900}
-  _camera: {fileID: 0}
-  _isPlayer: 1
-  _life: 100
+  jugadorDamageSys: {fileID: 0}
 --- !u!4 &9213945334526644407
 Transform:
   m_ObjectHideFlags: 0

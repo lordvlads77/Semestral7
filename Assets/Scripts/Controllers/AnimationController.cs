@@ -13,6 +13,7 @@ namespace Controllers
         private readonly int _1HAttackSwing = Animator.StringToHash("1HAttackSwing");
         private readonly int _2HAttackSwing = Animator.StringToHash("2HAttackSwing");
         [SerializeField] private StateManager stateManager = default;
+        private readonly int _WeaponType = Animator.StringToHash("WeaponType");
 
         public void TwoHandsWeaponWithdraw(Animator animator)
         {
@@ -47,6 +48,12 @@ namespace Controllers
         {
             animator.SetTrigger(_2HAttackSwing);
             stateManager.EnterFightingState(FightingState.TwoHandedSwing, GetComponent<MovementManager>());
+        }
+
+        
+        public void WeaponType(Animator animator, int weaponType)
+        {
+            animator.SetInteger(_WeaponType, weaponType);
         }
         
     }

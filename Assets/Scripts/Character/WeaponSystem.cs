@@ -19,12 +19,22 @@ namespace Character
         private GameObject twoHandedWeapon = default;
         [Header("Two Handed Weapon in Hands")]
         [SerializeField] private GameObject twoHandedHand = default;
-        [SerializeField] private bool _isWeaponInUse = false;
+        [FormerlySerializedAs("_isWeaponInUse")] [SerializeField] private bool isWeaponInUse = false;
+        [FormerlySerializedAs("_player")] [SerializeField] private LivingEntity player;
+        [FormerlySerializedAs("_enemy")] [SerializeField] private GameObject enemy;
 
-        [FormerlySerializedAs("animator")]
+        [FormerlySerializedAs("_animator")]
         [Header("Animator Reference")]
-        [SerializeField] private Animator _animator = default;
-    
+        [SerializeField] private Animator animator = default;
+
+        protected override void OnAwake()
+        {
+            if (player == null)
+            {
+                player = GameObject.FindWithTag("Player").GetComponent<LivingEntity>();
+            }
+        }
+
         public void Unarmed()
         {
             oneHandedWeapon.SetActive(false);
@@ -33,10 +43,10 @@ namespace Character
 
         public void WithdrawOneHandedWeapon()
         {
-            if (_isWeaponInUse == false)
+            if (isWeaponInUse == false)
             {
-                _isWeaponInUse = true;
-                AnimationController.Instance.OneHandWeaponWithdraw(_animator);
+                isWeaponInUse = true;
+                AnimationController.Instance.OneHandWeaponWithdraw(animator);
                 //Add VFX Calling Here if applicable
                 //Add SFX Calling Here
                 oneHandedWeapon.SetActive(true);
@@ -55,10 +65,10 @@ namespace Character
         
         public void SheathOneHandedWeapon()
         {
-            _isWeaponInUse = true;
-            if (_isWeaponInUse)
+            isWeaponInUse = true;
+            if (isWeaponInUse)
             {
-                _isWeaponInUse = false;
+                isWeaponInUse = false;
                 //Add VFX Calling Here if applicable
                 //Add SFX Calling Here
                 if (!oneHandedWeapon.activeInHierarchy)
@@ -67,7 +77,7 @@ namespace Character
                 }
                 else
                 {
-                    AnimationController.Instance.OneHandWeaponSheath(_animator);
+                    AnimationController.Instance.OneHandWeaponSheath(animator);
                     oneHandedWeapon.SetActive(false);
                 }
             }
@@ -79,10 +89,10 @@ namespace Character
 
         public void WithdrawTwoHandedWeapon()
         {
-            if (_isWeaponInUse == false)
+            if (isWeaponInUse == false)
             {
-                _isWeaponInUse = true;
-                AnimationController.Instance.TwoHandsWeaponWithdraw(_animator);
+                isWeaponInUse = true;
+                AnimationController.Instance.TwoHandsWeaponWithdraw(animator);
                 //Add VFX Calling Here if applicable
                 //Add SFX Calling Here
                 twoHandedWeapon.SetActive(false);
@@ -102,10 +112,10 @@ namespace Character
         
         public void SheathTwoHandedWeapon()
         {
-            if (_isWeaponInUse)
+            if (isWeaponInUse)
             {
-                _isWeaponInUse = false;
-                AnimationController.Instance.TwoHandsWeaponSheath(_animator);
+                isWeaponInUse = false;
+                AnimationController.Instance.TwoHandsWeaponSheath(animator);
                 //Add VFX Calling Here if applicable
                 //Add SFX Calling Here
                 twoHandedHand.SetActive(false);
@@ -119,7 +129,27 @@ namespace Character
 
         public void TwoWeaponSwing()
         {
-            AnimationController.Instance.TwoHandAttackSwing(_animator);
+            AnimationController.Instance.TwoHandAttackSwing(animator);
+            switch (player.GetComponent<LivingEntity>().Weapon)
+            {
+                default:
+                case WeaponType.Unarmed:
+                    AnimationController.Instance.WeaponType(animator, 0);
+                    AnimationController.Instance.TwoHandAttackSwing(animator);
+                    //TODO: Implement and Switch to the Unarm Animation
+                    CombatUtils.Attack(player, enemy.GetComponent<LivingEntity>());
+                    break;
+                case WeaponType.LightSword:
+                    AnimationController.Instance.WeaponType(animator, 1);
+                    AnimationController.Instance.OneHandAttackSwing(animator);
+                    CombatUtils.Attack(player, enemy.GetComponent<LivingEntity>());
+                    break;
+                case WeaponType.GreatSword:
+                    AnimationController.Instance.WeaponType(animator, 2);
+                    AnimationController.Instance.TwoHandAttackSwing(animator);
+                    CombatUtils.Attack(player, enemy.GetComponent<LivingEntity>());
+                    break;
+            }
         }
 
     }
