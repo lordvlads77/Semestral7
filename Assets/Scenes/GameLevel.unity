@@ -99183,7 +99183,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -103166,7 +103166,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4780263590589362506
 Transform:
   m_ObjectHideFlags: 0
@@ -104185,13 +104185,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6053024190455053106}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.08264307, y: 0.08071651, z: -0.0067158127, w: 0.9932824}
-  m_LocalPosition: {x: 8.42, y: 1.86, z: -15.31}
+  m_LocalRotation: {x: 0.06377494, y: -0.6368599, z: 0.052987974, w: 0.7665079}
+  m_LocalPosition: {x: 11, y: 1.66, z: -15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 9.512, y: 9.292, z: 0}
+  m_LocalEulerAnglesHint: {x: 9.512, y: 0, z: 0}
 --- !u!222 &5498976299908090889
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -109102,7 +109102,7 @@ MonoBehaviour:
   _damageDealer: {fileID: 601066423682200995}
   _isDead: 0
   _playerObj: {fileID: 5380833302022311900}
-  _camera: {fileID: 7371094561271942253}
+  _camera: {fileID: 0}
   _isPlayer: 1
   _life: 100
 --- !u!4 &9213945334526644407
@@ -109124,8 +109124,8 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 618658584}
   - {fileID: 5466018920911079746}
+  - {fileID: 618658584}
   - {fileID: 2848910665840195304}
   - {fileID: 185337639}
   - {fileID: 390832602}
