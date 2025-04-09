@@ -111,6 +111,4 @@ public sealed class GameManager : Singleton<GameManager>
         }
         return sprite.ToArray();
     }
-    
-    
 }
