@@ -12,4 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a798c9a5de09ea84cb76a0bf7aa60ac8, type: 3}
   m_Name: JuanNPC
   m_EditorClassIdentifier: 
-  dialogOptions: []
+  dialogOptions:
+  - npcDialog: npc_dialog.blacksmith_npc.first_line
+    userResponses:
+    - response: Ok
+      moodChange: -1
+      nextDialog:
+        npcDialog: 
+        userResponses: []
+      onResponse:
+        m_PersistentCalls:
+          m_Calls: []

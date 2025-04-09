@@ -619,6 +619,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8196564893783427960, guid: 0331b169005eb1d469455efaa6b9024a,
+        type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1517,7 +1522,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   entityName: 
-  dialogOptions: {fileID: 0}
+  dialogOptions: {fileID: 11400000, guid: 0e6c84f70c4b4e1498f7edf6574fb219, type: 2}
   nameCustomization:
     isMale: 1
     includeName: 1
@@ -1638,6 +1643,12 @@ PrefabInstance:
       propertyPath: cam
       value: 
       objectReference: {fileID: 330585545}
+    - target: {fileID: 9111392096366206734, guid: 94cd54f3e49f0224684d2023ea43391f,
+        type: 3}
+      propertyPath: lockIndicatorPrefab
+      value: 
+      objectReference: {fileID: 3834326841812901329, guid: b50df8210c1823a42acc01846beb6de1,
+        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
