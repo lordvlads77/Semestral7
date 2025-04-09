@@ -122,6 +122,12 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &63987646 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5367782462016838935, guid: 94cd54f3e49f0224684d2023ea43391f,
+    type: 3}
+  m_PrefabInstance: {fileID: 1725069697}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &76454022
 GameObject:
   m_ObjectHideFlags: 0
@@ -276,6 +282,7 @@ MonoBehaviour:
   twoHandedWeapon: {fileID: 1725069698}
   twoHandedHand: {fileID: 0}
   _isWeaponInUse: 0
+  _animator: {fileID: 0}
 --- !u!4 &165038227
 Transform:
   m_ObjectHideFlags: 0
@@ -989,6 +996,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1283466404}
+    - targetCorrespondingSourceObject: {fileID: 119458, guid: a6ebdfa58063c6e40a19612fc9013404,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1283466407}
   m_SourcePrefab: {fileID: 100100000, guid: a6ebdfa58063c6e40a19612fc9013404, type: 3}
 --- !u!1 &1283466338 stripped
 GameObject:
@@ -1493,6 +1504,47 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &1283466407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1283466338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d597ab26ea918047af6c85e065a160e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  entityName: 
+  dialogOptions: {fileID: 0}
+  nameCustomization:
+    isMale: 1
+    includeName: 1
+    includeLastName: 1
+    includeNickname: 1
+    includeTitle: 1
+    startsWithTitle: 1
+    replaceNameWithNickname: 1
+    lastNameThenName: 1
+    useTitleDividers: 1
+  dialogSprites:
+    dialogBox: {fileID: 0}
+    dialogOption: {fileID: 0}
+    nameDivider: {fileID: 0}
+  isPlayer: 0
+  dmgParticles: []
+  criticalDmgParticles: []
+  maxHealth: 100
+  dmgImmunityTime: 0.05
+  armorClass: 1
+  armorDurability: 3
+  damageTypeResistance: 0
+  _health: 0
+  isInDialog: 1
+  isDead: 0
+  canTakeDamage: 1
+  gameState: 0
 --- !u!1001 &1725069697
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1679,7 +1731,7 @@ MonoBehaviour:
     promptName: {fileID: 1211403597667094122, guid: 8963dde98fd27974da51c95ae8a39cd8,
       type: 3}
   npcRange: 1.5
-  player: {fileID: 0}
+  player: {fileID: 63987646}
 --- !u!114 &1922866079
 MonoBehaviour:
   m_ObjectHideFlags: 0

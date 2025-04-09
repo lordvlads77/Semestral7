@@ -6,6 +6,12 @@ using UnityEngine.Events;
 
 namespace Utils
 {
+    public enum Language
+    {
+        En,
+        Es
+    }
+    
     public enum GameStates : byte
     {
         Joining,
@@ -54,6 +60,72 @@ namespace Utils
         ALIVE = 0,
         DYING = 1,
         DEAD = 2,
+    }
+    
+    public static class Localization
+    {
+        private static readonly Dictionary<string, string> Translations = new Dictionary<string, string>();
+        private static Language _lang = Language.En;
+        private static GameManager _gm = GameManager.Instance;
+
+        public static void LoadLanguage(Language language)
+        { // This method is public, however it's already called by "Translate" so it shouldn't be needed outside... 
+            try
+            {
+                string langFileName = $"Assets/Resources/Lang/{language.ToString().ToLower()}.json";
+                TextAsset langFile = Resources.Load<TextAsset>($"Lang/{language.ToString().ToLower()}");
+                if (langFile == null)
+                {
+                    EDebug.LogError($"Couldn't find the language file: {langFileName}");
+                    return;
+                }
+                JSONObject json = JSONObject.Create(langFile.text);
+                if (json == null || json.type != JSONObject.Type.Object || json.count == 0)
+                {
+                    EDebug.LogError($"This lang file is empty or has invalid translations: {langFileName}");
+                    return;
+                }
+                Translations.Clear();
+                for (int i = 0; i < json.keys.Count; i++)
+                {
+                    string key = json.keys[i];
+                    string value = json.list[i].stringValue;
+                    Translations[key] = value;
+                }
+                _lang = language;
+                EDebug.Log($"Language loaded correctly: {language}");
+            }
+            catch (Exception ex)
+            {
+                EDebug.LogError($"Error loading lang file: {language}. Details: {ex.Message}");
+            }
+        }
+
+        public static string Translate(string key)
+        {
+            if (Translations.Count == 0 || _lang != _gm.CurrentLanguage)
+                LoadLanguage(_gm.CurrentLanguage);
+            if (Translations.TryGetValue(key, out string value))
+                return value;
+            EDebug.LogError($"Translation not found for key: {key}");
+            return key; // (Fallback)
+        }
+
+        [Serializable] private class SerializableDictionary
+        {
+            public List<string> keys;
+            public List<string> values;
+
+            public Dictionary<string, string> ToDictionary()
+            {
+                Dictionary<string, string> dictionary = new Dictionary<string, string>();
+                for (int i = 0; i < keys.Count; i++)
+                {
+                    dictionary[keys[i]] = values[i];
+                }
+                return dictionary;
+            }
+        }
     }
 
     public static class MathUtils

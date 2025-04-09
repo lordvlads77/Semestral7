@@ -17,11 +17,11 @@ namespace Entity
 
         protected override void OnAwake()
         {
-            _gm = GameManager.Instance;// this.GetComponent<GameManager>();
+            _gm = GetComponent<GameManager>();
             _npcCanvas = _gm.NpcCanvas;
             if (_npcCanvas == null)
             {
-                EDebug.Log("New canvas is being created...");
+                EDebug.Log(Localization.Translate("log.new_canvas"));
                 _npcCanvas = _gm.GetOrCreateNpcCanvas();
             }
             _responsePrefab = _gm.canvasPrefabs.npcOption;
@@ -34,8 +34,10 @@ namespace Entity
             _npc = npc;
             _npc.isInDialog = true;
             _dialog = _npc.dialogOptions;
-            if (_dialog != null && _dialog.dialogOptions.Count > 0) DisplayDialog(_dialog.dialogOptions[0]);
-            else EDebug.LogError("DialogOptions are null or empty... >:/");
+            if (_dialog != null && _dialog.dialogOptions.Count > 0) 
+                DisplayDialog(_dialog.dialogOptions[0]);
+            else 
+                EDebug.LogError(Localization.Translate("log.dialog_null_empty"));
         }
 
         public void StopDialog()
@@ -70,7 +72,7 @@ namespace Entity
                 EDebug.LogError("One or more UI components are not assigned.");
                 return;
             }
-            dialogText.text = dialogOption.npcDialog;
+            dialogText.text = Localization.Translate(dialogOption.npcDialog);
             npcName.text = _npc.HasCustomName()? _npc.entityName : MiscUtils.GetRandomName(
                 _gm.randomNames, _npc.nameCustomization);
             
@@ -83,7 +85,6 @@ namespace Entity
                 int index = i;
                 resp.GetComponent<Button>().onClick.AddListener(() => OnResponseSelected(dialogOption.userResponses[index]));
             }
-            
             _npcCanvas.gameObject.SetActive(true);
         }
         
