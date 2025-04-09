@@ -284,11 +284,12 @@ namespace Input
             OnAttackHeavySwing?.Invoke();
         }
         
-        #region JumpInput
+        #region Dodge
 
         private void OnDogeStarted(InputAction.CallbackContext context)
         {
             Doge = true;
+            OnDoge?.Invoke();
         }
 
         private void OnDogeHeld(InputAction.CallbackContext context)
