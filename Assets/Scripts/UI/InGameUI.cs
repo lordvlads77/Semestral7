@@ -25,7 +25,7 @@ namespace UI
 
         private void Awake()
         {
-            inputReciver = Input.Actions.Instance;
+            inputReciver = GameManager.Instance.GetComponent<Input.Actions>();
         }
 
         void Start()
@@ -38,32 +38,25 @@ namespace UI
 
         void Update()
         {
-            //bool pressedUP = inputReciver .Movement.y > 0.0f;
-            EDebug.Log(inputReciver.Movement.x, this);
-            EDebug.Log(inputReciver.Movement.y, this);
-
-            if (inputReciver.WeaponUp)
+            if (inputReciver.Movement.y > 0.1)
             {
-                EDebug.Log("Weapon UP");
+                EDebug.Log("UP");
+                selectUp();
             }
 
-            if (inputReciver.WeaponDown)
+            else if (inputReciver.Movement.y < -0.1)
             {
-                EDebug.Log("Weapon Down");
+                EDebug.Log("DOWN");
+                selectDown();
             }
-
-            /*if (pressedUP)
-            {
-                EDebug.Log("<color=orange> pressed button  </color>");
-            }*/
         }
 
 
         private void OnEnable()
         {
-            Input.Actions.Instance.OnWeaponUpToggledEvent += selectUp;
+            /*Input.Actions.Instance.OnWeaponUpToggledEvent += selectUp;
             Input.Actions.Instance.OnWeaponDownToggledEvent += selectDown;
-
+*/
             GameManager.Instance.Subscribe(OnStateChange);
 
             GameManager.Instance.SetGameState(GameStates.Paused);
@@ -77,8 +70,9 @@ namespace UI
             var localAction = Input.Actions.TryGetInstance();
             if (localAction != null)
             {
+                /*
                 Input.Actions.Instance.OnWeaponUpToggledEvent -= selectUp;
-                Input.Actions.Instance.OnWeaponDownToggledEvent -= selectDown;
+                Input.Actions.Instance.OnWeaponDownToggledEvent -= selectDown;*/
             }
         }
 

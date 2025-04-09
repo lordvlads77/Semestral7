@@ -51,6 +51,13 @@ namespace Input
 
         protected override void OnAwake()
         {
+            if (_inputActions == null) InitStuff();
+            EDebug.Log("Input Actions ► Awake");
+        }
+
+        private PlaInputActions InitStuff()
+        {
+            if (_inputActions != null) return _inputActions;
             _inputActions = new PlaInputActions();
             Crouch = false;
             Pause = false;
@@ -60,12 +67,15 @@ namespace Input
             WeaponDown = false;
             AttackHeavy = false;
             CurrentWeapon = WeaponType.Unarmed;
-            EDebug.Log("Input Actions ► Initialized");
+            EDebug.Log("Input Actions ► Awake");
+            return _inputActions;
         }
+
+
 
         private void OnEnable()
         {
-            _inputActions.Enable();
+            InitStuff().Enable();
             _inputActions.Player.Pause.started += OnPauseToggled;
 
             _inputActions.Player.MoveVec.started += OnMoveVecStarted;
@@ -114,7 +124,7 @@ namespace Input
 
         }
 
-        
+
 
         private void OnDisable()
         {
@@ -283,7 +293,7 @@ namespace Input
             AttackHeavy = !AttackHeavy;
             OnAttackHeavySwing?.Invoke();
         }
-        
+
         #region Dodge
 
         private void OnDogeStarted(InputAction.CallbackContext context)
