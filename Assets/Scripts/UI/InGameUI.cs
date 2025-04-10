@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -21,7 +20,10 @@ namespace UI
         [SerializeField] private Image selector;
         [SerializeField] Utils.GameStates currentGameState;
         private int selectedElement;
+
+        [Header("Other")]
         [SerializeField] private Input.Actions inputReciver;
+        [SerializeField] private float distanceFromElement = -73.0f;
 
         private void Awake()
         {
@@ -30,25 +32,45 @@ namespace UI
 
         void Start()
         {
+            // TODO : remover este codigo cuando este terminado el script
             GameManager.Instance.SetGameState(GameStates.Paused);
             selectedElement = 0;
             Debug.Assert(selector != null, "Necesitamos una imagen para apuntar a los elementos", this);
-            assigneDefaultFunction();
+            //initButtons();
         }
 
         void Update()
         {
             if (inputReciver.Movement.y > 0.1)
             {
-                EDebug.Log("UP");
-                selectUp();
+                EDebug.Log("DOWN");
+                //selectDown();
+                selectDownUntilFoundActiveElement();
             }
 
             else if (inputReciver.Movement.y < -0.1)
             {
-                EDebug.Log("DOWN");
-                selectDown();
+                EDebug.Log("UP");
+                selectUpUntilFoundActiveElement();
             }
+
+            if (inputReciver.Jump)
+            {
+                currentMenu.elements[selectedElement].button.button.onClick?.Invoke();
+            }
+
+
+            for (int i = 0; i < currentMenu.elements.Length; ++i)
+            {
+                if (currentMenu.elements[i].button.isPointerOverButton)
+                {
+                    selectedElement = i;
+                    break;
+                }
+            }
+
+            AjustSelector();
+
         }
 
 
@@ -76,7 +98,7 @@ namespace UI
             }
         }
 
-        private void DefaultAssignedFunction()
+        public void DefaultAssignedFunction()
         {
             EDebug.Log("<color=orange> Please assign a function to the unity event if you did not what it to be empty </color>", this);
         }
@@ -101,69 +123,117 @@ namespace UI
 
         private void ActivateMenuUiElements(ref Menu _menu)
         {
+            if (_menu.background != null)
+            {
+                _menu.background.gameObject.SetActive(true);
+            }
+
             for (int i = 0; i < _menu.elements.Length; i++)
             {
-                _menu.elements[i].transform.gameObject.SetActive(true);
+                if (_menu.elements[i].rectTransform != null)
+                {
+                    _menu.elements[i].rectTransform.gameObject.SetActive(true);
+                }
             }
+            currentMenu = _menu;
         }
 
         private void DeactivateMenuUiElements(ref Menu _menu)
         {
-            for (int i = 0; i < _menu.elements.Length; i++)
+            if (_menu.background != null)
             {
-                _menu.elements[i].transform.gameObject.SetActive(false);
+                _menu.background.gameObject.SetActive(false);
             }
 
-        }
-
-        private void assigneDefaultFunction()
-        {
-            for (int i = 0; i < menus.Length; i++)
+            for (int i = 0; i < _menu.elements.Length; i++)
             {
-                for (int j = 0; j < menus[i].elements.Length; j++)
+                if (_menu.elements[i].rectTransform != null)
                 {
-                    if (menus[i].elements[j].function.GetPersistentEventCount() < 1)
-                    {
-                        menus[i].elements[j].function.AddListener(DefaultAssignedFunction);
-                    }
+                    _menu.elements[i].rectTransform.gameObject.SetActive(false);
                 }
             }
 
         }
 
+
         #region INPUT_EVENTS
+
+        private void selectUpUntilFoundActiveElement()
+        {
+            int safety_var = 10_000;
+            selectUp();
+            while (safety_var > 1 &&
+                !currentMenu.elements[selectedElement].rectTransform.gameObject.activeInHierarchy
+                )
+            {
+                selectUp();
+                safety_var -= 1;
+            }
+
+        }
 
         private void selectUp()
         {
             EDebug.Log("selectUp");
             selectedElement += 1;
+            if (selectedElement > currentMenu.elements.Length - 1)
+            {
+                selectedElement = 0;
+            }
         }
+
 
         private void selectDown()
         {
             EDebug.Log("selectDown");
             selectedElement -= 1;
+            if (selectedElement < 0)
+            {
+                selectedElement = currentMenu.elements.Length - 1;
+            }
+        }
+
+        private void selectDownUntilFoundActiveElement()
+        {
+            int safety_var = 10_000;
+            selectDown();
+            while (safety_var > 1 &&
+                !currentMenu.elements[selectedElement].rectTransform.gameObject.activeInHierarchy
+                )
+            {
+                selectDown();
+                safety_var -= 1;
+            }
+
         }
 
         #endregion
 
+
+        private void AjustSelector()
+        {
+            selector.transform.SetParent(currentMenu.elements[selectedElement].rectTransform);
+            selector.rectTransform.anchoredPosition = new Vector2(distanceFromElement, 0);
+        }
     }
 
 
     [Serializable]
-    struct UIElement
+    public struct UIElement
     {
-        public RectTransform transform;
-        /// <summary>
-        /// la funcion que se tomara al hacer click sobre el elemento de UI
-        /// </summary>
-        public UnityEvent function;
+        public RectTransform rectTransform;
+
+        public ButtonInfo button;
     }
 
     [Serializable]
     struct Menu
     {
         public UIElement[] elements;
+        /// <summary>
+        /// OPCIONAL : El fondo del menu en question
+        /// </summary
+        public Image background;
         /// <summary>
         /// El menu solo es visible si es del mismo game State
         /// </summary>
