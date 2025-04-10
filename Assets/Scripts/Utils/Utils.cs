@@ -20,6 +20,7 @@ namespace Utils
         Chatting,
         GameOver,
         Idle,
+        Won,
     }
 
     public enum CameraTypes
