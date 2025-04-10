@@ -169,6 +169,32 @@ namespace Utils
                 stats.critDamage
             );
         }
+        
+        public static void Attack(Transform attackFrom, WeaponStatistics stats, LivingEntity target)
+        {
+            if (stats == null)
+            {
+                EDebug.LogError($"WeaponStats not found");
+                return;
+            }
+            if (target == null || attackFrom == null)
+            {
+                EDebug.LogError("Target or attacker transform is null");
+                return;
+            }
+            target.TakeDamage(
+                target.transform.position,
+                (target.transform.position - attackFrom.position).normalized,
+                stats.damageType,
+                target.GetDmgTypeResistance(),
+                stats.damage,
+                stats.knockBack,
+                stats.staggerBuildUp,
+                stats.armorPenetration,
+                stats.critRate,
+                stats.critDamage
+            );
+        }
 
         public static void ProjectileDamage(LivingEntity target, Vector3 hitPoint, Vector3 hitDirection, Projectile projectile)
         {
