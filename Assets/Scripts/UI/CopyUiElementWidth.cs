@@ -26,7 +26,13 @@ public class CopyUiElementWidth : MonoBehaviour
 
         if (selfWidth < otherWidth || selfWidth > otherWidth)
         {
-            selfUiRectTransform = otherUiRectTransform;
+            Rect selfRect = selfUiRectTransform.rect;
+
+            selfUiRectTransform.rect.Set(selfRect.x,
+                selfRect.y,
+                selfRect.height,
+                otherUiRectTransform.rect.width);
+
         }
 
     }
