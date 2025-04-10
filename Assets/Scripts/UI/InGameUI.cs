@@ -32,8 +32,6 @@ namespace UI
 
         void Start()
         {
-            // TODO : remover este codigo cuando este terminado el script
-            GameManager.Instance.SetGameState(GameStates.Paused);
             selectedElement = 0;
             Debug.Assert(selector != null, "Necesitamos una imagen para apuntar a los elementos", this);
             //initButtons();
