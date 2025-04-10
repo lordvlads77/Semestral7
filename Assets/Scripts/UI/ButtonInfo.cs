@@ -26,7 +26,11 @@ namespace UI
 
         private void Awake()
         {
-            button = GetComponent<UnityEngine.UI.Button>();
+            if (button == null)
+            {
+                button = GetComponent<UnityEngine.UI.Button>();
+            }
+
             EDebug.Assert(button != null, "Attach this script to a unity button");
         }
 
