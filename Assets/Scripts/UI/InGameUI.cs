@@ -54,7 +54,27 @@ namespace UI
 
             if (inputReciver.Jump)
             {
-                currentMenu.elements[selectedElement].button.button.onClick?.Invoke();
+                int PersistentEventCount = currentMenu.elements[selectedElement].button.button.onClick.GetPersistentEventCount();
+
+                bool hasFunction = false;
+
+                if (PersistentEventCount > 0)
+                {
+                    string methodName = currentMenu.elements[selectedElement].button.button.onClick.GetPersistentMethodName(0);
+
+                    hasFunction = methodName != "";
+                    EDebug.Log($"hasFunction = {hasFunction}",this);
+                    EDebug.Log($"methodName = |{methodName}|",this);
+                }
+
+                if (hasFunction)
+                {
+                    currentMenu.elements[selectedElement].button.button.onClick.Invoke();
+                }
+                else
+                {
+                    ButtonWithNoAssignedFunctionFunction();
+                }
             }
 
 
@@ -96,7 +116,10 @@ namespace UI
             }
         }
 
-        public void DefaultAssignedFunction()
+        /// <summary>
+        /// Se llama esta funcion cuando el button precionado no tiene funcion
+        /// </summary>
+        public void ButtonWithNoAssignedFunctionFunction()
         {
             EDebug.Log("<color=orange> Please assign a function to the unity event if you did not what it to be empty </color>", this);
         }
