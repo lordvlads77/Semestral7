@@ -5501,9 +5501,9 @@ MonoBehaviour:
   controller: {fileID: 6504752884908034062}
   stateManager: {fileID: 9202856032771810627}
   anim: {fileID: 2439035665859341509}
-  dodgeSpeed: 0.2
+  dodgeSpeed: 1.5
   dodgeDuration: 0.5
-  dodgeCooldown: 1
+  dodgeCooldown: 0.5
 --- !u!4 &2051069495702148509
 Transform:
   m_ObjectHideFlags: 0
