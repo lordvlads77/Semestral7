@@ -97772,7 +97772,6 @@ GameObject:
   - component: {fileID: 3107033457030106570}
   - component: {fileID: 5430601400696130898}
   - component: {fileID: 8493787899872042242}
-  - component: {fileID: 8493787899872042241}
   - component: {fileID: 8493787899872042240}
   - component: {fileID: 203681279646249923}
   - component: {fileID: 8493787899872042243}
@@ -105727,9 +105726,10 @@ MonoBehaviour:
   twoHandedWeapon: {fileID: 1562194746952504152}
   twoHandedHand: {fileID: 7678053276611328937}
   isWeaponInUse: 0
-  player: {fileID: 0}
-  enemy: {fileID: 0}
+  player: {fileID: 2044310253568215568}
+  enemy: {fileID: 601066423682200995}
   animator: {fileID: 2439035665859341509}
+  stateManager: {fileID: 9202856032771810627}
 --- !u!1 &6675006006952689453
 GameObject:
   m_ObjectHideFlags: 0
@@ -108171,24 +108171,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8493787899872042241
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 601066423682200995}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a91b808eff87e674db302062de35ff13, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _damageDealer: {fileID: 8669460329892484304}
-  _isDead: 0
-  _playerObj: {fileID: 5380833302022311900}
-  _camera: {fileID: 0}
-  _isPlayer: 0
-  _life: 10
 --- !u!114 &8493787899872042242
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -108215,9 +108197,9 @@ MonoBehaviour:
   sightRange: 3.6
   attackRange: 0.77
   playerInSightRange: 0
-  playerInAttackRange: 0
+  playerInAttackRange: 1
   _deathObj: {fileID: 601066423682200995}
-  damageSys: {fileID: 8493787899872042241}
+  damageSys: {fileID: 0}
 --- !u!114 &8493787899872042243
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -109087,7 +109069,6 @@ MonoBehaviour:
   viada: {fileID: 5028796686468968}
   fondoBarra: {fileID: 5351221107238745359}
   jugador: {fileID: 2044310253568215568}
-  jugadorDamageSys: {fileID: 0}
 --- !u!4 &9213945334526644407
 Transform:
   m_ObjectHideFlags: 0

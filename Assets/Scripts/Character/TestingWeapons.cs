@@ -34,7 +34,7 @@ namespace Character
             _input.OnWeaponLeftToggledEvent += WithdrawWeaponLight;
             _input.OnWeaponRightToggledEvent += SheathWeaponLight;
             _input.OnWeaponDownToggledEvent += SheathWeaponHeavy;
-            _input.OnAttackTriggeredEvent += TwoHandsiesWeaponSwing;
+            //_input.OnAttackTriggeredEvent += TwoHandsiesWeaponSwing;
         }
 
         private void WithdrawWeaponHeavy()
@@ -62,10 +62,10 @@ namespace Character
             
         }
 
-        public void TwoHandsiesWeaponSwing()
+        /*public void TwoHandsiesWeaponSwing()
         {
-            WeaponSystem.Instance.TwoWeaponSwing();
-        }
+            WeaponSystem.Instance.Attack();
+        }*/
 
         private void OnDisable()
         {
@@ -73,7 +73,7 @@ namespace Character
             _input.OnWeaponLeftToggledEvent -= WithdrawWeaponLight;
             _input.OnWeaponRightToggledEvent -= SheathWeaponLight;
             _input.OnWeaponDownToggledEvent -= SheathWeaponHeavy;
-            _input.OnAttackTriggeredEvent -= TwoHandsiesWeaponSwing;
+            //_input.OnAttackTriggeredEvent -= TwoHandsiesWeaponSwing;
         }
 
         private void OnDestroy()
@@ -82,7 +82,7 @@ namespace Character
             _input.OnWeaponLeftToggledEvent -= WithdrawWeaponLight;
             _input.OnWeaponRightToggledEvent -= SheathWeaponLight;
             _input.OnWeaponDownToggledEvent -= SheathWeaponHeavy;
-            _input.OnAttackTriggeredEvent -= TwoHandsiesWeaponSwing;
+            //_input.OnAttackTriggeredEvent -= TwoHandsiesWeaponSwing;
         }
         
     }

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 504c53f83e053af4d95b75d6f9cd1301
+guid: c9ef3a82af222394dbf54f8b2ac7a478
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -37,11 +37,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: UnarmedCombatWalkBackwards
+      name: UnarmedWalking
       takeName: mixamo.com
       internalID: -203655887218126122
       firstFrame: 0
-      lastFrame: 51
+      lastFrame: 60
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

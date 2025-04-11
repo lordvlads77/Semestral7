@@ -26,6 +26,9 @@ namespace Character
         [FormerlySerializedAs("_animator")]
         [Header("Animator Reference")]
         [SerializeField] private Animator animator = default;
+        
+        [Header("State Manager Ref")]
+        [SerializeField] private StateManager stateManager = default;
 
         protected override void OnAwake()
         {
@@ -127,28 +130,32 @@ namespace Character
             }
         }
 
-        public void TwoWeaponSwing()
+        public void Attack()
         {
-            AnimationController.Instance.TwoHandAttackSwing(animator);
-            switch (player.GetComponent<LivingEntity>().Weapon)
+            AnimationController.Instance.WeaponType(animator, 0);
+            CombatUtils.Attack(player, enemy.GetComponent<LivingEntity>());
+            if (player.GetComponent<LivingEntity>().Weapon == WeaponType.Unarmed )
             {
-                default:
-                case WeaponType.Unarmed:
-                    AnimationController.Instance.WeaponType(animator, 0);
-                    AnimationController.Instance.TwoHandAttackSwing(animator);
-                    //TODO: Implement and Switch to the Unarm Animation
-                    CombatUtils.Attack(player, enemy.GetComponent<LivingEntity>());
-                    break;
-                case WeaponType.LightSword:
-                    AnimationController.Instance.WeaponType(animator, 1);
-                    AnimationController.Instance.OneHandAttackSwing(animator);
-                    CombatUtils.Attack(player, enemy.GetComponent<LivingEntity>());
-                    break;
-                case WeaponType.GreatSword:
-                    AnimationController.Instance.WeaponType(animator, 2);
-                    AnimationController.Instance.TwoHandAttackSwing(animator);
-                    CombatUtils.Attack(player, enemy.GetComponent<LivingEntity>());
-                    break;
+                stateManager.EnterFightingState(FightingState.UnarmedFighting, player.GetComponent<MovementManager>());
+            }
+            //AnimationController.Instance.TwoHandAttackSwing(animator);
+            if (isWeaponInUse)
+            {
+                switch (player.GetComponent<LivingEntity>().Weapon)
+                {
+                    default:
+                    case WeaponType.LightSword:
+                        AnimationController.Instance.WeaponType(animator, 1);
+                        AnimationController.Instance.OneHandAttackSwing(animator);
+                        CombatUtils.Attack(player, enemy.GetComponent<LivingEntity>());
+                        break;
+                    case WeaponType.GreatSword:
+                        AnimationController.Instance.WeaponType(animator, 2);
+                        AnimationController.Instance.TwoHandAttackSwing(animator);
+                        CombatUtils.Attack(player, enemy.GetComponent<LivingEntity>());
+                        break;
+                }
+                //TODO: Change this to ifs for each weapon type.
             }
         }
 
