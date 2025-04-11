@@ -92,6 +92,7 @@ GameObject:
   - component: {fileID: 257176506940773171}
   - component: {fileID: 5469902479946153296}
   - component: {fileID: 1981558596906301673}
+  - component: {fileID: 2552029778772896327}
   m_Layer: 5
   m_Name: Invisible Button
   m_TagString: Untagged
@@ -214,3 +215,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 5469902479946153296}
+--- !u!114 &2552029778772896327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3827488678807519047}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b62aa0990957a5b49b035986b6ba02e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selfUiRectTransform: {fileID: 0}
+  otherUiRectTransform: {fileID: 0}
