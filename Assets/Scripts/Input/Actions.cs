@@ -284,7 +284,7 @@ namespace Input
             OnAttackHeavySwing?.Invoke();
         }
         
-        #region JumpInput
+        #region DogeInput
 
         private void OnDogeStarted(InputAction.CallbackContext context)
         {

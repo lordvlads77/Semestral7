@@ -108,8 +108,25 @@ namespace Character
             canDodge = false;
             canTakeDamage = false;
 
-            dodgeDirection = new Vector3(IInput.Movement.x, 0, IInput.Movement.y).normalized;
-            if (dodgeDirection == Vector3.zero) dodgeDirection = transform.forward;
+            Vector3 inputDir = new Vector3(IInput.Movement.x, 0f, IInput.Movement.y);
+
+            if (inputDir.sqrMagnitude > 0.1f)
+            {
+                // Obtener forward y right planos de la cámara
+                Vector3 camForward = _cam.transform.forward;
+                Vector3 camRight = _cam.transform.right;
+                camForward.y = 0;
+                camRight.y = 0;
+                camForward.Normalize();
+                camRight.Normalize();
+
+                // Convertir el input a dirección en el mundo según cámara
+                dodgeDirection = (camForward * inputDir.z + camRight * inputDir.x).normalized;
+            }
+            else
+            {
+                dodgeDirection = transform.forward;
+            }
 
             _velocity = dodgeDirection * dodgeSpeed;
             float elapsedTime = 0f;
@@ -145,14 +162,14 @@ namespace Character
         
         private void HandleActions() // This method will be refactored later (Inputs n shit)
         {
-            if (isDodging == false)
+            if (!isDodging)
             {
                 if (IInput.Jump && IsGrounded())
             {
                 Jump();
             }
             }
-            if (IInput.Doge)
+            if (IInput.Doge && canDodge && !isDodging)
             {
                 StartCoroutine(Dodge());
             }
