@@ -20,6 +20,7 @@ namespace UI
         [SerializeField] private Image selector;
         [SerializeField] Utils.GameStates currentGameState;
         private int selectedElement;
+        private int currentMenuLevel;
 
         [Header("Other")]
         [SerializeField] private Input.Actions inputReciver;
@@ -33,16 +34,21 @@ namespace UI
         void Start()
         {
             selectedElement = 0;
+            currentMenuLevel = 0;
             Debug.Assert(selector != null, "Necesitamos una imagen para apuntar a los elementos", this);
-            //initButtons();
         }
 
         void Update()
         {
+            if (currentMenuLevel != currentMenu.menuLevel)
+            {
+                ActivateValidMenus();
+            }
+
+
             if (inputReciver.Movement.y > 0.1)
             {
                 EDebug.Log("DOWN");
-                //selectDown();
                 selectDownUntilFoundActiveElement();
             }
 
@@ -54,27 +60,7 @@ namespace UI
 
             if (inputReciver.Jump)
             {
-                int PersistentEventCount = currentMenu.elements[selectedElement].button.button.onClick.GetPersistentEventCount();
-
-                bool hasFunction = false;
-
-                if (PersistentEventCount > 0)
-                {
-                    string methodName = currentMenu.elements[selectedElement].button.button.onClick.GetPersistentMethodName(0);
-
-                    hasFunction = methodName != "";
-                    EDebug.Log($"hasFunction = {hasFunction}",this);
-                    EDebug.Log($"methodName = |{methodName}|",this);
-                }
-
-                if (hasFunction)
-                {
-                    currentMenu.elements[selectedElement].button.button.onClick.Invoke();
-                }
-                else
-                {
-                    ButtonWithNoAssignedFunctionFunction();
-                }
+                ExecuteButtonFunction();
             }
 
 
@@ -128,18 +114,8 @@ namespace UI
         private void OnStateChange(Utils.GameStates new_state)
         {
             currentGameState = new_state;
-
-            for (int i = 0; i < menus.Length; i++)
-            {
-                if (menus[i].associatedGameStates == currentGameState)
-                {
-                    this.ActivateMenuUiElements(ref menus[i]);
-                }
-                else
-                {
-                    this.DeactivateMenuUiElements(ref menus[i]);
-                }
-            }
+            ActivateValidMenus();
+            selectedElement = 0;
         }
 
         private void ActivateMenuUiElements(ref Menu _menu)
@@ -175,7 +151,6 @@ namespace UI
             }
 
         }
-
 
         #region INPUT_EVENTS
 
@@ -230,12 +205,69 @@ namespace UI
 
         #endregion
 
-
         private void AjustSelector()
         {
             selector.transform.SetParent(currentMenu.elements[selectedElement].rectTransform);
             selector.rectTransform.anchoredPosition = new Vector2(distanceFromElement, 0);
         }
+
+        private void ExecuteButtonFunction()
+        {
+            int PersistentEventCount = currentMenu.elements[selectedElement].button.button.onClick.GetPersistentEventCount();
+
+            bool hasFunction = false;
+
+            if (PersistentEventCount > 0)
+            {
+                string methodName = currentMenu.elements[selectedElement].button.button.onClick.GetPersistentMethodName(0);
+
+                hasFunction = methodName != "";
+                EDebug.Log($"hasFunction = {hasFunction}", this);
+                EDebug.Log($"methodName = |{methodName}|", this);
+            }
+
+            if (hasFunction)
+            {
+                currentMenu.elements[selectedElement].button.button.onClick.Invoke();
+            }
+            else
+            {
+                ButtonWithNoAssignedFunctionFunction();
+            }
+
+        }
+
+        public void IncreaseMenuLevel()
+        {
+            currentMenuLevel += 1;
+        }
+
+        public void DecreaseMenuLevel()
+        {
+            currentMenuLevel -= 1;
+        }
+
+        public void SetMenuLevel(int _new_menu_level)
+        {
+            currentMenuLevel = _new_menu_level;
+        }
+
+        private void ActivateValidMenus()
+        {
+            for (int i = 0; i < menus.Length; i++)
+            {
+                if (menus[i].associatedGameStates == currentGameState && menus[i].menuLevel == currentMenuLevel)
+                {
+                    this.ActivateMenuUiElements(ref menus[i]);
+                }
+                else
+                {
+                    this.DeactivateMenuUiElements(ref menus[i]);
+                }
+            }
+        }
+
+
     }
 
 
@@ -259,6 +291,15 @@ namespace UI
         /// El menu solo es visible si es del mismo game State
         /// </summary>
         public GameStates associatedGameStates;
+
+        /// <summary>
+        /// 0 = el menu principal y solo esta activo cuando el menuLevel es 0
+        /// 1 = el sub menu que solo eat activo cuando el menuLevel es 1
+        /// 2 = el sub sub menu que solo eata activo cuando el menuLevel es 2 
+        /// 3 = el sub sub sub menu que solo eata activo cuando el menuLevel es 3  etc.
+        /// </summary>
+        public int menuLevel;
+
     }
 
 }
