@@ -19,6 +19,7 @@ namespace UI
         [SerializeField] private Menu currentMenu;
         [SerializeField] private Image selector;
         [SerializeField] Utils.GameStates currentGameState;
+        [SerializeField] float menuDeadZone = 0.1f;
         private int selectedElement;
         private int currentMenuLevel;
 
@@ -28,7 +29,7 @@ namespace UI
 
         private void Awake()
         {
-            inputReciver = GameManager.Instance.GetComponent<Input.Actions>();
+            ///    inputReciver.
         }
 
         void Start()
@@ -43,16 +44,25 @@ namespace UI
             if (currentMenuLevel != currentMenu.menuLevel)
             {
                 ActivateValidMenus();
+                selectedElement = 0;
+                /// if fist element is not active find 1 that is
+                if (!currentMenu.elements[selectedElement].rectTransform.gameObject.activeInHierarchy)
+                {
+                    selectDownUntilFoundActiveElement();
+                }
+
+
+                AjustSelector();
             }
 
 
-            if (inputReciver.Movement.y > 0.1)
+            if (inputReciver.Movement.y > menuDeadZone)
             {
                 EDebug.Log("DOWN");
                 selectDownUntilFoundActiveElement();
             }
 
-            else if (inputReciver.Movement.y < -0.1)
+            else if (inputReciver.Movement.y < -menuDeadZone)
             {
                 EDebug.Log("UP");
                 selectUpUntilFoundActiveElement();
@@ -64,15 +74,6 @@ namespace UI
             }
 
 
-            for (int i = 0; i < currentMenu.elements.Length; ++i)
-            {
-                if (currentMenu.elements[i].button.isPointerOverButton)
-                {
-                    selectedElement = i;
-                    break;
-                }
-            }
-
             AjustSelector();
 
         }
@@ -81,8 +82,13 @@ namespace UI
         private void OnEnable()
         {
             /*Input.Actions.Instance.OnWeaponUpToggledEvent += selectUp;
-            Input.Actions.Instance.OnWeaponDownToggledEvent += selectDown;
-*/
+            Input.Actions.Instance.OnWeaponDownToggledEvent += selectDown;*/
+
+            if (inputReciver == null)
+            {
+                inputReciver = GameManager.Instance.GetComponent<Input.Actions>();
+            }
+
             GameManager.Instance.Subscribe(OnStateChange);
 
             GameManager.Instance.SetGameState(GameStates.Paused);
@@ -113,9 +119,11 @@ namespace UI
 
         private void OnStateChange(Utils.GameStates new_state)
         {
+            selectedElement = 0;
             currentGameState = new_state;
             ActivateValidMenus();
             selectedElement = 0;
+            AjustSelector();
         }
 
         private void ActivateMenuUiElements(ref Menu _menu)
@@ -199,6 +207,10 @@ namespace UI
             {
                 selectDown();
                 safety_var -= 1;
+                if(safety_var < 1)
+                {
+                    break;
+                }
             }
 
         }
@@ -213,13 +225,13 @@ namespace UI
 
         private void ExecuteButtonFunction()
         {
-            int PersistentEventCount = currentMenu.elements[selectedElement].button.button.onClick.GetPersistentEventCount();
+            int PersistentEventCount = currentMenu.elements[selectedElement].eventForUi.GetPersistentEventCount();
 
             bool hasFunction = false;
 
             if (PersistentEventCount > 0)
             {
-                string methodName = currentMenu.elements[selectedElement].button.button.onClick.GetPersistentMethodName(0);
+                string methodName = currentMenu.elements[selectedElement].eventForUi.GetPersistentMethodName(0);
 
                 hasFunction = methodName != "";
                 EDebug.Log($"hasFunction = {hasFunction}", this);
@@ -228,7 +240,7 @@ namespace UI
 
             if (hasFunction)
             {
-                currentMenu.elements[selectedElement].button.button.onClick.Invoke();
+                currentMenu.elements[selectedElement].eventForUi.Invoke();
             }
             else
             {
@@ -276,7 +288,7 @@ namespace UI
     {
         public RectTransform rectTransform;
 
-        public ButtonInfo button;
+        public UnityEvent eventForUi;
     }
 
     [Serializable]
