@@ -15,17 +15,21 @@ public class MenuManager : MonoBehaviour
     [SerializeField] CURRENT_MENU_STATE currentState = CURRENT_MENU_STATE.INTRO;
     [SerializeField] GameObject Menuoptions;
     Input.Actions cosa;
+
     enum CURRENT_MENU_STATE
     {
         INTRO,
         MAIN_MENU,
         OPTIONS
     }
+
     private void OnEnable()
     {
+        /*
         Actions.Instance.OnWeaponDownToggledEvent += OnWeaponDown;
         Actions.Instance.OnWeaponUpToggledEvent += OnWeaponUp;
         Actions.Instance.OnAttackTriggeredEvent += OnJump;
+        */
     }
 
     private void OnDisable()
@@ -33,11 +37,15 @@ public class MenuManager : MonoBehaviour
         Actions local = Actions.TryGetInstance();
         if (local != null)
         {
+            /*
             Actions.Instance.OnWeaponDownToggledEvent -= OnWeaponDown;
             Actions.Instance.OnWeaponUpToggledEvent -= OnWeaponUp;
             Actions.Instance.OnAttackTriggeredEvent -= OnJump;
+            */
         }
     }
+
+    #region INPUT_EVENTS
 
     private void OnWeaponDown()
     {
@@ -68,6 +76,9 @@ public class MenuManager : MonoBehaviour
             ChangeSelectorPosition();
         }
     }
+
+    #endregion
+
     private void Awake()
     {
         cosa = Actions.Instance;
@@ -146,25 +157,7 @@ public class MenuManager : MonoBehaviour
         switch (currentState)
         {
             case CURRENT_MENU_STATE.MAIN_MENU:
-                if (cosa.WeaponDown && !isWeaponDownPressed) // Solo ejecuta una vez cuando se presiona
-                {
-                    isWeaponDownPressed = true; // Marcar como presionado
-                    lastInputTime = Time.time; // Actualiza el tiempo
-                }
-                else if (!cosa.WeaponDown)
-                {
-                    isWeaponDownPressed = false; // Se ha liberado el botón
-                }
-
-                if (cosa.WeaponUp && !isWeaponUpPressed) // Solo ejecuta una vez cuando se presiona
-                {
-                    isWeaponUpPressed = true; // Marcar como presionado
-                    lastInputTime = Time.time; // Actualiza el tiempo
-                }
-                else if (!cosa.WeaponUp)
-                {
-                    isWeaponUpPressed = false; // Se ha liberado el botón
-                }
+                ProcessCursorMovement();
 
                 if (cosa.Jump)
                 {
@@ -192,25 +185,7 @@ public class MenuManager : MonoBehaviour
                 break;
 
             case CURRENT_MENU_STATE.OPTIONS:
-                if (cosa.WeaponDown && !isWeaponDownPressed) // Solo ejecuta una vez cuando se presiona
-                {
-                    ChangeCurrentSelectionUntilObjectIsFound();
-                    isWeaponDownPressed = true; // Marcar como presionado
-                }
-                else if (!cosa.WeaponDown)
-                {
-                    isWeaponDownPressed = false; // Se ha liberado el botón
-                }
-
-                if (cosa.WeaponUp && !isWeaponUpPressed) // Solo ejecuta una vez cuando se presiona
-                {
-                    ChangeCurrentSelectionUntilObjectIsFound(false);
-                    isWeaponUpPressed = true; // Marcar como presionado
-                }
-                else if (!cosa.WeaponUp)
-                {
-                    isWeaponUpPressed = false; // Se ha liberado el botón
-                }
+                ProcessCursorMovement();
 
                 if (cosa.Jump)
                 {
@@ -229,23 +204,36 @@ public class MenuManager : MonoBehaviour
 
     public void Inicio()
     {
-        EDebug.Log("Inicio");
+        EDebug.Log("<color=orange>Inicio</color>");
         SceneManager.LoadScene("Scenes/GameLevel");
     }
 
     public void Cargar()
     {
-        EDebug.Log("Cargar");
+        EDebug.Log("<color=orange>Cargar</color>");
     }
 
     public void Options()
     {
-        EDebug.Log("Opciones");
+        EDebug.Log("<color=orange>Opciones</color>");
     }
 
     public void Salir()
     {
-        EDebug.Log("Quitting");
+        EDebug.Log("<color=orange>Quitting</color>");
         Application.Quit();
+    }
+
+    private void ProcessCursorMovement()
+    {
+        if (cosa.Movement.y > 0.1f)
+        {
+            ChangeCurrentSelectionUntilObjectIsFound(false);
+        }
+        else if (cosa.Movement.y < -0.1f)
+        {
+            ChangeCurrentSelectionUntilObjectIsFound();
+        }
+
     }
 }
