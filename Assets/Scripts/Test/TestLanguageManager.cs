@@ -4,15 +4,16 @@ using UnityEngine;
 
 public class TestLanguageManager : MonoBehaviour
 {
+    Input.Actions actions;
     void Start()
     {
-
+        actions = Input.Actions.Instance; 
     }
 
     void Update()
     {
 
-        Vector2 movement = Input.Actions.Instance.Movement;
+        Vector2 movement = actions.Movement;
 
         if (movement.x > 0)
         {
