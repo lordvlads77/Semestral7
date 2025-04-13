@@ -21,31 +21,41 @@ namespace UI
         [SerializeField] Utils.GameStates currentGameState;
         [SerializeField] float menuDeadZone = 0.1f;
         private int selectedElement;
-        private int currentMenuLevel;
+        [SerializeField] private int currentMenuID;
+        private int previousMenuID;
 
         [Header("Other")]
         [SerializeField] private Input.Actions inputReciver;
         [SerializeField] private float distanceFromElement = -73.0f;
+        private bool hasInitMenusIDs = false;
 
-        private void Awake()
+        void InitMenusIDs()
         {
-            ///    inputReciver.
+            const int FIRST_ID = 2_000_000;
+            for (int i = 0; i < menus.Length; i++)
+            {
+                /// override the default value
+                if (menus[i].menuID == 0)
+                {
+                    menus[i].menuID = FIRST_ID - i;
+                }
+
+            }
+
         }
 
         void Start()
         {
             selectedElement = 0;
-            currentMenuLevel = 0;
             Debug.Assert(selector != null, "Necesitamos una imagen para apuntar a los elementos", this);
         }
 
         void Update()
         {
-            if (currentMenuLevel != currentMenu.menuLevel)
+            if (currentMenuID != currentMenu.menuID)
             {
-                ActivateValidMenus();
+                ActivateMenusOfSameMenuID();
                 selectedElement = 0;
-                /// if fist element is not active find 1 that is
                 if (!currentMenu.elements[selectedElement].rectTransform.gameObject.activeInHierarchy)
                 {
                     selectDownUntilFoundActiveElement();
@@ -88,6 +98,11 @@ namespace UI
             {
                 inputReciver = GameManager.Instance.GetComponent<Input.Actions>();
             }
+            if (!hasInitMenusIDs)
+            {
+                InitMenusIDs();
+                hasInitMenusIDs = true;
+            }
 
             GameManager.Instance.Subscribe(OnStateChange);
 
@@ -121,7 +136,7 @@ namespace UI
         {
             selectedElement = 0;
             currentGameState = new_state;
-            ActivateValidMenus();
+            ActivateMenusOfSameGameState();
             selectedElement = 0;
             AjustSelector();
         }
@@ -133,11 +148,13 @@ namespace UI
                 _menu.background.gameObject.SetActive(true);
             }
 
+
             for (int i = 0; i < _menu.elements.Length; i++)
             {
                 if (_menu.elements[i].rectTransform != null)
                 {
-                    _menu.elements[i].rectTransform.gameObject.SetActive(true);
+                    bool shouldTurnOn = !_menu.elements[i].turnOff;
+                    _menu.elements[i].rectTransform.gameObject.SetActive(shouldTurnOn);
                 }
             }
             currentMenu = _menu;
@@ -207,7 +224,7 @@ namespace UI
             {
                 selectDown();
                 safety_var -= 1;
-                if(safety_var < 1)
+                if (safety_var < 1)
                 {
                     break;
                 }
@@ -234,8 +251,7 @@ namespace UI
                 string methodName = currentMenu.elements[selectedElement].eventForUi.GetPersistentMethodName(0);
 
                 hasFunction = methodName != "";
-                EDebug.Log($"hasFunction = {hasFunction}", this);
-                EDebug.Log($"methodName = |{methodName}|", this);
+                EDebug.Log($"<color=green>methodName = |{methodName}|</color>", this);
             }
 
             if (hasFunction)
@@ -249,26 +265,39 @@ namespace UI
 
         }
 
-        public void IncreaseMenuLevel()
+        public void SetMenuID(int _new_menu_ID)
         {
-            currentMenuLevel += 1;
+            previousMenuID = currentMenuID;
+            currentMenuID = _new_menu_ID;
         }
 
-        public void DecreaseMenuLevel()
+        public void SetPreviousMenuID()
         {
-            currentMenuLevel -= 1;
+            currentMenuID = previousMenuID;
         }
 
-        public void SetMenuLevel(int _new_menu_level)
+        private void ActivateMenusOfSameGameState()
         {
-            currentMenuLevel = _new_menu_level;
+            previousMenuID = currentMenuID;
+            for (int i = 0; i < menus.Length; i++)
+            {
+                if (menus[i].associatedGameStates == currentGameState)
+                {
+                    this.ActivateMenuUiElements(ref menus[i]);
+                    currentMenuID = menus[i].menuID;
+                }
+                else
+                {
+                    this.DeactivateMenuUiElements(ref menus[i]);
+                }
+            }
         }
 
-        private void ActivateValidMenus()
+        private void ActivateMenusOfSameMenuID()
         {
             for (int i = 0; i < menus.Length; i++)
             {
-                if (menus[i].associatedGameStates == currentGameState && menus[i].menuLevel == currentMenuLevel)
+                if (menus[i].menuID == currentMenuID)
                 {
                     this.ActivateMenuUiElements(ref menus[i]);
                 }
@@ -276,7 +305,9 @@ namespace UI
                 {
                     this.DeactivateMenuUiElements(ref menus[i]);
                 }
+
             }
+
         }
 
 
@@ -289,6 +320,11 @@ namespace UI
         public RectTransform rectTransform;
 
         public UnityEvent eventForUi;
+
+        /// <summary>
+        /// Controla si un UIElement deberia esta apagado o no
+        /// </summary>
+        public bool turnOff;
     }
 
     [Serializable]
@@ -305,12 +341,9 @@ namespace UI
         public GameStates associatedGameStates;
 
         /// <summary>
-        /// 0 = el menu principal y solo esta activo cuando el menuLevel es 0
-        /// 1 = el sub menu que solo eat activo cuando el menuLevel es 1
-        /// 2 = el sub sub menu que solo eata activo cuando el menuLevel es 2 
-        /// 3 = el sub sub sub menu que solo eata activo cuando el menuLevel es 3  etc.
+        /// el numero indentificador del Menu
         /// </summary>
-        public int menuLevel;
+        public int menuID;
 
     }
 
