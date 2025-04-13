@@ -57,7 +57,8 @@ namespace Input
 
         private PlaInputActions InitStuff()
         {
-            if (_inputActions != null) return _inputActions;
+            if(_inputActions != null) 
+                return _inputActions;
             _inputActions = new PlaInputActions();
             Crouch = false;
             Pause = false;
@@ -67,11 +68,9 @@ namespace Input
             WeaponDown = false;
             AttackHeavy = false;
             CurrentWeapon = WeaponType.Unarmed;
-            EDebug.Log("Input Actions ► Awake");
+            EDebug.Log("Input Actions ► Initialized");
             return _inputActions;
         }
-
-
 
         private void OnEnable()
         {
@@ -121,10 +120,11 @@ namespace Input
             _inputActions.Player.LeftButton.started += OnDogeStarted;
             _inputActions.Player.LeftButton.performed += OnDogeHeld;
             _inputActions.Player.LeftButton.canceled += OnDogeCanceled;
-
+            
+            EDebug.Log("Input Actions ► Enabled");
         }
 
-
+        
 
         private void OnDisable()
         {
@@ -293,7 +293,7 @@ namespace Input
             AttackHeavy = !AttackHeavy;
             OnAttackHeavySwing?.Invoke();
         }
-
+        
         #region Dodge
 
         private void OnDogeStarted(InputAction.CallbackContext context)
