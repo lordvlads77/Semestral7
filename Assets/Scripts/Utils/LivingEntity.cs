@@ -253,7 +253,7 @@ namespace Utils
             sb.Append(this.name);
             sb.Append(SaveDialogOptions());
             sb.Append("/");
-            //sb.Append(SaveNameCustomization());
+            sb.Append(SaveNameCustomization());
             sb.Append('/');
             sb.Append(this.isPlayer);
             sb.Append('/');
