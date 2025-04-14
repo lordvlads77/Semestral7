@@ -10,8 +10,6 @@ namespace SaveSystem
     [DefaultExecutionOrder(-1)]
     public sealed class SaveSystemPrefabScript : MonoBehaviour
     {
-        [TextArea(minLines: 5, maxLines: 15), SerializeField]
-        string Level_Data;
         public void SaveLevel()
         {
             SaveSystem.SaveLevelData();
