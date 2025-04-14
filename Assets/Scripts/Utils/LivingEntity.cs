@@ -244,18 +244,18 @@ namespace Utils
             _health = health;
         }
 
+        #region SAVING
         public string SaveLivingEntity()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("/");
             sb.Append("LE");
             sb.Append("/");
-            sb.Append(this.name);
-            sb.Append(SaveDialogOptions());
+            sb.Append(entityName);
+            //sb.Append(SaveDialogOptions());
             sb.Append("/");
             sb.Append(SaveNameCustomization());
             sb.Append('/');
-            sb.Append(this.isPlayer);
+            sb.Append(isPlayer ? 1 : 0);
             sb.Append('/');
             sb.Append(maxHealth);
             sb.Append('/');
@@ -267,7 +267,7 @@ namespace Utils
             sb.Append('/');
             sb.Append(SaveDamegeType());
             sb.Append('/');
-            sb.Append(_health);
+            sb.Append(GetHealth());
             sb.Append('/');
             sb.Append(_mood);
             sb.Append('/');
@@ -282,7 +282,6 @@ namespace Utils
             sb.Append(transform.position.y);
             sb.Append('/');
             sb.Append(transform.position.z);
-            sb.Append('/');
 
             return sb.ToString();
         }
@@ -292,6 +291,7 @@ namespace Utils
         {
             StringBuilder sb = new StringBuilder();
             List<DialogOption> options = dialogOptions.dialogOptions;
+            //Localization.Translate
 
             sb.Append("/");
             sb.Append(options.Count);
@@ -312,27 +312,10 @@ namespace Utils
             return sb.ToString();
         }
 
-/**
-    [Serializable]
-    public class ResponseOption
-    {
-        public string response;
-        public float moodChange;
-        public DialogOption nextDialog;
-        public UnityEvent onResponse;
-
-        public virtual void OnResponse()
-        {
-            EDebug.Log($"Response: {response}");
-            onResponse?.Invoke();
-        }
-    }
-*/
 
         private string SaveNameCustomization()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("/");
             sb.Append(nameCustomization.isMale ? 1 : 0);
             sb.Append(nameCustomization.includeName ? 1 : 0);
             sb.Append(nameCustomization.includeLastName ? 1 : 0);
@@ -349,11 +332,15 @@ namespace Utils
         private string SaveDamegeType()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("/");
             sb.Append((int)damageTypeResistance);
 
             return sb.ToString();
         }
+
+        #endregion
+
+
+        #region LOADING
 
         public void loadData(string _data)
         {
@@ -361,13 +348,13 @@ namespace Utils
             int index = 0;
             if (dataDivided[index] != "LE")
             {
-                EDebug.Log("Datos incompatibles", this);
+                EDebug.LogError("Datos incompatibles", this);
                 EDebug.Log(_data, this);
                 return;
             }
 
             index += 1;
-            this.name = dataDivided[index];
+            entityName = dataDivided[index];
 
             index += 1;
             //loadDataSaveDialogOptions(dataDivided, ref index);
@@ -409,44 +396,16 @@ namespace Utils
             index += 1;
 
             gameState = (GameStates)int.Parse(dataDivided[index]);
-            index += 1;
 
             Vector3 entity_pos = Vector3.zero;
 
+            index += 1;
             entity_pos.x = float.Parse(dataDivided[index]);
             index += 1;
             entity_pos.y = float.Parse(dataDivided[index]);
             index += 1;
             entity_pos.z = float.Parse(dataDivided[index]);
             transform.position = entity_pos;
-
-        }
-
-
-        // TODO : TERMINA ESTA FUNCION.
-        private void loadDataSaveDialogOptions(string[] _data, ref int index)
-        {
-            index += 1;
-            int dialogOptionsCount = int.Parse(_data[index]);
-            List<DialogOption> dialogOptions = new List<DialogOption>();
-
-            for (int i = 0; i < dialogOptionsCount; i++)
-            {
-                DialogOption dialogOption = new DialogOption();
-                index += 1;
-                dialogOption.npcDialog = _data[index];
-
-                index += 1;
-                int responsCount = int.Parse(_data[index]);
-                List<ResponseOption> all_reponses = new List<ResponseOption>();
-                for (int j = 0; j < responsCount; j++)
-                {
-                    index += 1;
-                    ResponseOption responsOption = new ResponseOption();
-
-                }
-
-            }
 
         }
 
@@ -462,30 +421,13 @@ namespace Utils
             nameCustomization.replaceNameWithNickname = (boolArray[6] - '0') >= 1;
             nameCustomization.lastNameThenName = (boolArray[7] - '0') >= 1;
             nameCustomization.useTitleDividers = (boolArray[8] - '0') >= 1;
-
         }
-        /**
-         
-            [Serializable]
-            public class NameCustomization
-            {
-                public bool isMale;
-                public bool includeName;
-                public bool includeLastName;
-                public bool includeNickname;
-                public bool includeTitle;
-                public bool startsWithTitle;
-                public bool replaceNameWithNickname;
-                public bool lastNameThenName;
-                public bool useTitleDividers;
-            }
-
-         */
 
         private void loadDamageType(string[] _data, ref int index)
         {
             damageTypeResistance = (DamageType)int.Parse(_data[index]);
         }
 
+        #endregion
     }
 }
