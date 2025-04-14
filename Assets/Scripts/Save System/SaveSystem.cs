@@ -1,23 +1,129 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using Entity;
 using UnityEngine;
 using Utils;
 
-public static class SaveSystem
+namespace SaveSystem
 {
-
-    public static string SaveLivingEntity(LivingEntity entity)
+    public static class SaveSystem
     {
-        StringBuilder sb = new StringBuilder();
-        sb.Append("/");
-        sb.Append("LE");
-        sb.Append("/");
-        sb.Append(entity.name);
+        const string LEVEL_DATA_KEY = "level_data";
+
+        const string SEPARATOR = "|*|";
+
+        public static void SaveLevelData()
+        {
+            CreateKeyIfOneDoesNotExist();
+            LivingEntity[] allLivingEntities = GameObject.FindObjectsByType<LivingEntity>(FindObjectsSortMode.None);
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append(SavePlayerData(allLivingEntities));
+            sb.Append(SaveEnemyData(allLivingEntities));
+
+            PlayerPrefs.SetString(LEVEL_DATA_KEY, sb.ToString());
+            PlayerPrefs.Save();
+        }
+
+        public static void LoadLevelData()
+        {
+            CreateKeyIfOneDoesNotExist();
+            string raw_data = PlayerPrefs.GetString(LEVEL_DATA_KEY);
+            if (raw_data == "")
+            {
+                EDebug.LogError("No data exist to load");
+
+                return;
+            }
+
+            int index = 0;
+            string[] data_divided = raw_data.Split(SEPARATOR);
+            LivingEntity[] allLivingEntities = GameObject.FindObjectsByType<LivingEntity>(FindObjectsSortMode.None);
+
+            LoadPlayerData(allLivingEntities, data_divided, ref index);
+            LoadEnemyData(allLivingEntities, data_divided, ref index);
+
+            EDebug.Log("<color=orange>Loading data </color>");
+            EDebug.Log($"<color=orange>Total elements = {data_divided.Length}</color>");
+            EDebug.Log($"<color=orange>Current Index = {index}</color>");
+
+        }
+
+        #region SAVING_ENTITIES
+
+        private static string SavePlayerData(LivingEntity[] _allLivingEntities)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            for (int i = 0; i < _allLivingEntities.Length; ++i)
+            {
+                if (_allLivingEntities[i].isPlayer)
+                {
+                    sb.Append(_allLivingEntities[i].SaveLivingEntity());
+                }
+            }
+
+            return sb.ToString();
+        }
+
+        private static string SaveEnemyData(LivingEntity[] _allLivingEntities)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            for (int i = 0; i < _allLivingEntities.Length; ++i)
+            {
+                if (_allLivingEntities[i].gameObject.TryGetComponent<Enemy>(out Enemy result))
+                {
+                    sb.Append(SEPARATOR);
+                    sb.Append(result.SaveLivingEntity());
+                }
+            }
+
+            return sb.ToString();
+        }
+
+        #endregion
 
 
-        return sb.ToString();
+        #region LOADING_ENTITIES
+
+        private static void LoadPlayerData(LivingEntity[] allLivingEntities, string[] data_divided, ref int index)
+        {
+            for (int i = 0; i < allLivingEntities.Length; ++i)
+            {
+                if (allLivingEntities[i].isPlayer)
+                {
+                    allLivingEntities[i].loadData(data_divided[index]);
+                    index += 1;
+
+                }
+            }
+        }
+
+        private static void LoadEnemyData(LivingEntity[] allLivingEntities, string[] data_divided, ref int index)
+        {
+            for (int i = 0; i < allLivingEntities.Length; ++i)
+            {
+                if (allLivingEntities[i].gameObject.TryGetComponent<Enemy>(out Enemy result))
+                {
+                    result.loadData(data_divided[index]);
+                    index += 1;
+                }
+            }
+        }
+
+        #endregion
+
+        public static void CreateKeyIfOneDoesNotExist()
+        {
+            if (!PlayerPrefs.HasKey(LEVEL_DATA_KEY))
+            {
+                PlayerPrefs.SetString(LEVEL_DATA_KEY, "");
+            }
+        }
+
     }
 
-
 }
+
