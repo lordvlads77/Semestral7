@@ -11,7 +11,6 @@ public sealed class PauseMenuScript : MonoBehaviour
     }
 
 
-
     public void Options()
     {
         EDebug.Log("Options");
