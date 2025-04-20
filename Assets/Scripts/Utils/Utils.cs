@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Scriptables;
 using UnityEngine;
 using UnityEngine.Events;
+using Random = UnityEngine.Random;
 
 namespace Utils
 {
@@ -31,11 +32,11 @@ namespace Utils
 
     public enum WeaponType
     {
+        Unarmed,
         LightSword,
         GreatSword,
         NamePending3,
-        NamePending4,
-        Unarmed
+        NamePending4
     }
 
     public enum DamageType
@@ -56,11 +57,14 @@ namespace Utils
         Thrower = 2,
     }
 
-    public enum ENEMY_STATE
+    public enum EnemyState
     {
-        ALIVE = 0,
-        DYING = 1,
-        DEAD = 2,
+        Idle, 
+        Chasing,
+        Attacking,
+        Fleeing,
+        Dying,
+        Dead
     }
     
     public static class Localization
@@ -147,6 +151,15 @@ namespace Utils
             camRight.y = 0;
             return new[] { camForward.normalized, camRight.normalized };
         }
+
+        public static Vector3 RandomPos(float radius, Vector3 origin)
+        {
+            Vector3 randomPos = Random.insideUnitSphere * radius;
+            randomPos += origin;
+            return randomPos;
+        }
+        public static bool RandBool() { return Random.value < 0.5f; }
+        public static bool WeightedRandBool(float weight) { return Random.value <= weight; }
     }
 
     public static class CombatUtils
@@ -242,28 +255,24 @@ namespace Utils
         public static GameManager GetOrCreateGameManager()
         {
             GameManager gm = GameManager.Instance;
-            if (gm == null)
-            {
-                GameObject newGm = new GameObject("GameManager")
-                { transform = { position = new Vector3(0, 10 ,0) } };
-                gm = newGm.AddComponent<GameManager>();
-                newGm.AddComponent<Input.Actions>();
-                UnityEngine.Object.DontDestroyOnLoad(newGm);
-                EDebug.Log("GameManager was not found, a new one was created.");
-            }
+            if (gm != null) return gm; 
+            GameObject newGm = new GameObject("GameManager")
+            { transform = { position = new Vector3(0, 10 ,0) } };
+            gm = newGm.AddComponent<GameManager>();
+            newGm.AddComponent<Input.Actions>();
+            UnityEngine.Object.DontDestroyOnLoad(newGm);
+            EDebug.Log("GameManager was not found, a new one was created.");
             return gm;
         }
     }
 
-    [Serializable]
-    public class DialogOption
+    [Serializable] public class DialogOption
     {
         public string npcDialog;
         public List<ResponseOption> userResponses;
     }
 
-    [Serializable]
-    public class ResponseOption
+    [Serializable] public class ResponseOption
     {
         public string response;
         public float moodChange;
@@ -277,8 +286,7 @@ namespace Utils
         }
     }
 
-    [Serializable]
-    public class WeaponStatistics
+    [Serializable] public class WeaponStatistics
     {
         public DamageType damageType;                //Type of damage
         public float damage;                         //Flat damage number
@@ -289,9 +297,18 @@ namespace Utils
         [Range(0, 1)] public float critRate;          //Chance of landing a critical hit
         [Range(1, 5)] public float critDamage;        //Multiplier for critical hits
     }
+    
+    [Serializable] public class HurtFXVars
+    {
+        public int blinks = 1;
+        public SkinnedMeshRenderer renderer;
+        public Material[] ogMaterials;
+        public Material[] hitMaterials;
+        public float animTime = 0.1f;
+        public Coroutine DamageFXCoroutine;
+    }
 
-    [Serializable]
-    public class NameCustomization
+    [Serializable] public class NameCustomization
     {
         public bool isMale;
         public bool includeName;

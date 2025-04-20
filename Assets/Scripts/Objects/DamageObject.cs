@@ -40,7 +40,7 @@ namespace Objects
             }
         }
         
-        private void Update()
+        private void FixedUpdate()
         {
             List<LivingEntity> entities = new List<LivingEntity>(_timers.Keys);
             for (int i = 0; i < entities.Count; i++)
