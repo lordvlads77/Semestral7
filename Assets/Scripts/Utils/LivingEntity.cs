@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Entity;
 using Scriptables;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -13,9 +14,12 @@ namespace Utils
         public DialogOptions dialogOptions;
         public NameCustomization nameCustomization;
         public CustomDialogSprites dialogSprites;
+        public HurtFXVars hurtFXVars;
+        protected HurtFX HurtFX;
 
         [Header("Living Entity Variables")]
         public bool isPlayer;
+        [SerializeField] private WeaponType weaponTypeOverride;
         [Tooltip("The particle systems that will play when the entity takes damage (Will be skipped if none are present)")]
         public ParticleSystem[] dmgParticles;
         [Tooltip("The particle systems that will play when the entity takes LETHAL damage (Will be skipped if none are present)")]
@@ -28,7 +32,7 @@ namespace Utils
         [SerializeField] public int armorDurability = 3;
         [SerializeField] private DamageType damageTypeResistance;
         
-        public float _health;
+        private float _health;
         private float _mood;
         public bool isInDialog;
         [HideInInspector] public bool isDead;
@@ -65,8 +69,14 @@ namespace Utils
         
         private void Awake()
         {
+            HurtFX = GetComponent<HurtFX>();
+            if (HurtFX == null) { HurtFX = gameObject.AddComponent<HurtFX>(); }
+            
             _health = maxHealth;
-            Weapon = WeaponType.Unarmed;
+            Weapon = weaponTypeOverride;
+            entityName = HasCustomName()? this.entityName : MiscUtils.GetRandomName(
+                MiscUtils.GetOrCreateGameManager().randomNames, this.nameCustomization);
+            
             if (!isPlayer) return;
             
             IInput = (Input.Actions.Instance != null)? Input.Actions.Instance : MiscUtils.GetOrCreateGameManager().gameObject.GetComponent<Input.Actions>();
@@ -78,6 +88,8 @@ namespace Utils
             IInput.OnWeaponUpToggledEvent += _wUTHandler;
             IInput.OnWeaponRightToggledEvent += _wRTHandler;
             IInput.OnWeaponDownToggledEvent += _wDTHandler;
+            hurtFXVars.ogMaterials = hurtFXVars.renderer.materials;
+            OnAwoken();
         }
         
         private void OnDestroy()
@@ -147,12 +159,23 @@ namespace Utils
                 }
 
                 if (armorClass > 1) ReduceArmorDurability();
+                OnDamageTaken();
             }
+            OnHurtButNoDamage();
         }
-        
+
+        protected virtual void OnDamageTaken()
+        {
+            HurtFX?.Hit(hurtFXVars);
+        }
+        protected virtual void OnHurtButNoDamage(){}
+        protected virtual void OnHealed(){}
+        public virtual void OnAwoken(){}
+
         public virtual void Heal(float amount)
         {
             _health = Mathf.Min(maxHealth, _health + amount);
+            OnHealed();
         }
         
         protected virtual float GetDamageReduction(float armorPiercing)
@@ -235,12 +258,8 @@ namespace Utils
         /// <param name="health"></param>
         public void SetHealth(float health)
         {
-            if(health > maxHealth)
-            {
-                _health = maxHealth;
-                return;
-            }
-            _health = health;
+            _health = Mathf.Clamp(health, 0, maxHealth);
+            // If 0 death
         }
         
     }

@@ -63,7 +63,6 @@ namespace Character
             IInput = (Input.Actions.Instance != null)? Input.Actions.Instance : MiscUtils.GetOrCreateGameManager().gameObject.GetComponent<Input.Actions>();
             if (_cam) _cm = _cam.GetComponent<ThirdPersonCamera>();
             if (!_cm) _cm = GetComponent<ThirdPersonCamera>(); // You had the script here, right
-            SetHealth(GetMaxHealth());
         }
         
         private void OnEnable()
@@ -217,12 +216,6 @@ namespace Character
         public void IncreaseMaxHealth(float amount)
         {
             maxHealth += amount;
-            _health = maxHealth;
-        }
-        private Boolean NpcCloseBy()
-        {
-            // Check if there is an NPC close by
-            return false;
         }
         
         private bool IsGrounded()

@@ -18,6 +18,7 @@ public sealed class GameManager : Singleton<GameManager>
     public CanvasPrefabs canvasPrefabs;
     public Canvas NpcCanvas { get; private set; }
     public GameObject NpcPrompt { get; private set; }
+    public GameObject EnemySpawnHolder { get; private set; }
     
     [Header("Other Settings")]
     [SerializeField, Range(0.1f, 5f)] private float npcRange = 1.5f;
@@ -41,7 +42,17 @@ public sealed class GameManager : Singleton<GameManager>
         SetGameState(GameStates.Joining);
         CheckForMissingScripts();
         Localization.LoadLanguage(CurrentLanguage);
+        if (EnemySpawnHolder == null) GetOrCreateEnemySpawnHolder();
         InvokeRepeating(nameof(LazyUpdate), 1f, 1f);
+    }
+
+    public GameObject GetOrCreateEnemySpawnHolder()
+    {
+        if (EnemySpawnHolder != null) return EnemySpawnHolder;
+        EnemySpawnHolder = Instantiate(new GameObject());
+        EnemySpawnHolder.name = "EnemySpawnHolder";
+        EnemySpawnHolder.transform.position = new Vector3(0, 0, 0);
+        return EnemySpawnHolder;
     }
     
     public void SetLanguage(Language language)
