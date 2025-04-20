@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Entity;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Utils;
 
 namespace SaveSystem
@@ -10,6 +11,8 @@ namespace SaveSystem
     public static class SaveSystem
     {
         const string LEVEL_DATA_KEY = "level_data";
+
+        const string LEVEL_INDEX_KEY = "level_key";
 
         const string SEPARATOR = "|*|";
 
@@ -22,6 +25,7 @@ namespace SaveSystem
             sb.Append(SavePlayerData(allLivingEntities));
             sb.Append(SaveEnemyData(allLivingEntities));
 
+            PlayerPrefs.SetInt(LEVEL_INDEX_KEY, SceneManager.GetActiveScene().buildIndex);
             PlayerPrefs.SetString(LEVEL_DATA_KEY, sb.ToString());
             PlayerPrefs.Save();
         }
@@ -121,6 +125,16 @@ namespace SaveSystem
             {
                 PlayerPrefs.SetString(LEVEL_DATA_KEY, "");
             }
+
+            if (!PlayerPrefs.HasKey(LEVEL_INDEX_KEY) )
+            {
+                PlayerPrefs.SetInt(LEVEL_INDEX_KEY, SceneManager.GetActiveScene().buildIndex);
+            }
+        }
+
+        public static bool DoesSaveFileExist()
+        {
+            return PlayerPrefs.HasKey(LEVEL_DATA_KEY);
         }
 
     }
