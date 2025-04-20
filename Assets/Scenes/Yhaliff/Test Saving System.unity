@@ -122,6 +122,33 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &196323515 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7287252503280434267, guid: 3fa6f75475fe23348a647d2378563fd7,
+    type: 3}
+  m_PrefabInstance: {fileID: 754097451}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &196323519
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 196323515}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &260074164
 GameObject:
   m_ObjectHideFlags: 0
@@ -741,7 +768,14 @@ MonoBehaviour:
     dialogBox: {fileID: 0}
     dialogOption: {fileID: 0}
     nameDivider: {fileID: 0}
+  hurtFXVars:
+    blinks: 1
+    renderer: {fileID: 0}
+    ogMaterials: []
+    hitMaterials: []
+    animTime: 0.1
   isPlayer: 0
+  weaponTypeOverride: 0
   dmgParticles: []
   criticalDmgParticles: []
   maxHealth: 100
@@ -749,7 +783,6 @@ MonoBehaviour:
   armorClass: 1
   armorDurability: 3
   damageTypeResistance: 0
-  _health: 0
   isInDialog: 1
   isDead: 0
   canTakeDamage: 1
@@ -905,7 +938,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dabe3a858a341e04bb41fa5820c1f73f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Level_Data: 
 --- !u!1001 &754097451
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -969,6 +1001,11 @@ PrefabInstance:
       propertyPath: entityName
       value: Bitch face
       objectReference: {fileID: 0}
+    - target: {fileID: 5036558476236289596, guid: 3fa6f75475fe23348a647d2378563fd7,
+        type: 3}
+      propertyPath: detectionRange
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 7287252503280434267, guid: 3fa6f75475fe23348a647d2378563fd7,
         type: 3}
       propertyPath: m_Name
@@ -977,8 +1014,39 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7287252503280434267, guid: 3fa6f75475fe23348a647d2378563fd7,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 196323519}
   m_SourcePrefab: {fileID: 100100000, guid: 3fa6f75475fe23348a647d2378563fd7, type: 3}
+--- !u!1 &889769736 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7287252503280434267, guid: 3fa6f75475fe23348a647d2378563fd7,
+    type: 3}
+  m_PrefabInstance: {fileID: 1729696906}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &889769740
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 889769736}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &930823132
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1042,6 +1110,11 @@ PrefabInstance:
       propertyPath: entityName
       value: Scuk mah clock
       objectReference: {fileID: 0}
+    - target: {fileID: 5036558476236289596, guid: 3fa6f75475fe23348a647d2378563fd7,
+        type: 3}
+      propertyPath: detectionRange
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 7287252503280434267, guid: 3fa6f75475fe23348a647d2378563fd7,
         type: 3}
       propertyPath: m_Name
@@ -1050,7 +1123,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7287252503280434267, guid: 3fa6f75475fe23348a647d2378563fd7,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1298950436}
   m_SourcePrefab: {fileID: 100100000, guid: 3fa6f75475fe23348a647d2378563fd7, type: 3}
 --- !u!1 &956356134
 GameObject:
@@ -1277,6 +1354,33 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1298950432 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7287252503280434267, guid: 3fa6f75475fe23348a647d2378563fd7,
+    type: 3}
+  m_PrefabInstance: {fileID: 930823132}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &1298950436
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1298950432}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &1355625469
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1659,6 +1763,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5036558476236289596, guid: 3fa6f75475fe23348a647d2378563fd7,
         type: 3}
+      propertyPath: detectionRange
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5036558476236289596, guid: 3fa6f75475fe23348a647d2378563fd7,
+        type: 3}
       propertyPath: nameCustomization.includeTitle
       value: 1
       objectReference: {fileID: 0}
@@ -1680,7 +1789,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7287252503280434267, guid: 3fa6f75475fe23348a647d2378563fd7,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 889769740}
   m_SourcePrefab: {fileID: 100100000, guid: 3fa6f75475fe23348a647d2378563fd7, type: 3}
 --- !u!1001 &1739177122
 PrefabInstance:
@@ -2211,7 +2324,14 @@ MonoBehaviour:
     dialogBox: {fileID: 0}
     dialogOption: {fileID: 0}
     nameDivider: {fileID: 0}
+  hurtFXVars:
+    blinks: 1
+    renderer: {fileID: 0}
+    ogMaterials: []
+    hitMaterials: []
+    animTime: 0.1
   isPlayer: 0
+  weaponTypeOverride: 0
   dmgParticles: []
   criticalDmgParticles: []
   maxHealth: 100
@@ -2219,7 +2339,6 @@ MonoBehaviour:
   armorClass: 1
   armorDurability: 3
   damageTypeResistance: 0
-  _health: 0
   isInDialog: 1
   isDead: 0
   canTakeDamage: 1
@@ -2925,7 +3044,14 @@ MonoBehaviour:
     dialogBox: {fileID: 0}
     dialogOption: {fileID: 0}
     nameDivider: {fileID: 0}
+  hurtFXVars:
+    blinks: 1
+    renderer: {fileID: 0}
+    ogMaterials: []
+    hitMaterials: []
+    animTime: 0.1
   isPlayer: 0
+  weaponTypeOverride: 0
   dmgParticles: []
   criticalDmgParticles: []
   maxHealth: 100
@@ -2933,7 +3059,6 @@ MonoBehaviour:
   armorClass: 1
   armorDurability: 3
   damageTypeResistance: 0
-  _health: 0
   isInDialog: 1
   isDead: 0
   canTakeDamage: 1
@@ -4073,7 +4198,14 @@ MonoBehaviour:
     dialogBox: {fileID: 0}
     dialogOption: {fileID: 0}
     nameDivider: {fileID: 0}
+  hurtFXVars:
+    blinks: 1
+    renderer: {fileID: 0}
+    ogMaterials: []
+    hitMaterials: []
+    animTime: 0.1
   isPlayer: 0
+  weaponTypeOverride: 0
   dmgParticles: []
   criticalDmgParticles: []
   maxHealth: 100
@@ -4081,7 +4213,6 @@ MonoBehaviour:
   armorClass: 1
   armorDurability: 3
   damageTypeResistance: 0
-  _health: 0
   isInDialog: 1
   isDead: 0
   canTakeDamage: 1
