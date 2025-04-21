@@ -54,7 +54,7 @@ namespace Character
         private bool canDodge = true;
         private Rigidbody rb;
         
-        private void Awake()
+        protected override void OnAwoken()
         {
             anim = GetComponent<Animator>();
             controller = GetComponent<CharacterController>();
@@ -147,9 +147,9 @@ namespace Character
             if (isDodging == false)
             {
                 if (IInput.Jump && IsGrounded())
-            {
-                Jump();
-            }
+                {
+                    Jump();
+                }
             }
             if (IInput.Doge)
             {

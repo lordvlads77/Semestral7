@@ -29,6 +29,7 @@ public class Weapon : MonoBehaviour
         if (livingEntity == null) return;
         if (livingEntity.entityName != _owner)
             CombatUtils.Attack(_lEntity, livingEntity);
+        inUse = false;
     }
     
 }

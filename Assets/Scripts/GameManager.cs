@@ -139,4 +139,10 @@ public sealed class GameManager : Singleton<GameManager>
         EDebug.Log(Localization.Translate("log.debug_lang"));
     }
     
+    [ContextMenu("Set to Play")] public void SetGamestateToPlay()
+    {
+        SetGameState(GameStates.Playing);
+        EDebug.Log("Done! You're playing now");
+    }
+    
 }

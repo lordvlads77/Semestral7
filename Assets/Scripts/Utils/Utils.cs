@@ -51,9 +51,8 @@ namespace Utils
     
     public enum EnemyType 
     {
-        None = 0,
-        Chaser = 1,
-        Thrower = 2,
+        Melee = 0,
+        Wizard = 1
     }
 
     public enum EnemyState
@@ -169,6 +168,8 @@ namespace Utils
                 EDebug.LogError($"WeaponStats not found for WeaponType: {weapon}");
                 return;
             }
+
+            EDebug.Log(attacker.entityName + "Attacked ► " + target.entityName);
             target.TakeDamage(
                 attacker.transform.position, //Change this later to the actual point of impact for particles
                 attacker.transform.forward,
@@ -220,7 +221,7 @@ namespace Utils
                 0.0f,
                 0.0f,
                 0.0f,
-                0.0f,
+                0.1f,
                 2.0f);
 
         }

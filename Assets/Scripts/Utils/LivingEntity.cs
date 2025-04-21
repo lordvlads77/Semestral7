@@ -72,13 +72,15 @@ namespace Utils
             HurtFX = GetComponent<HurtFX>();
             if (HurtFX == null) { HurtFX = gameObject.AddComponent<HurtFX>(); }
             
-            _health = maxHealth;
+            _health = GetMaxHealth();
             Weapon = weaponTypeOverride;
             entityName = HasCustomName()? this.entityName : MiscUtils.GetRandomName(
                 MiscUtils.GetOrCreateGameManager().randomNames, this.nameCustomization);
             
-            if (!isPlayer) return;
+            EDebug.Log("LivingEntity ► Awake: " + this.entityName.ToString());
+            OnAwoken();
             
+            if (!isPlayer) return;
             IInput = (Input.Actions.Instance != null)? Input.Actions.Instance : MiscUtils.GetOrCreateGameManager().gameObject.GetComponent<Input.Actions>();
             _wLTHandler = () => ChangeWeapon(WeaponType.LightSword);
             _wUTHandler = () => ChangeWeapon(WeaponType.GreatSword);
@@ -89,7 +91,6 @@ namespace Utils
             IInput.OnWeaponRightToggledEvent += _wRTHandler;
             IInput.OnWeaponDownToggledEvent += _wDTHandler;
             hurtFXVars.ogMaterials = hurtFXVars.renderer.materials;
-            OnAwoken();
         }
         
         private void OnDestroy()
@@ -131,6 +132,7 @@ namespace Utils
                 if (Random.value < critRate)
                     finalDamage *= critDmg; // Rand -> 0 - 1 The higher the critRate, the higher the chance of crit
                 _health -= finalDamage;
+                EDebug.Log(this.entityName + "Took " + finalDamage + " damage. Health: " + _health);
                 if (_health <= 0 && !isDead)
                 {
                     isDead = true;
@@ -170,7 +172,7 @@ namespace Utils
         }
         protected virtual void OnHurtButNoDamage(){}
         protected virtual void OnHealed(){}
-        public virtual void OnAwoken(){}
+        protected virtual void OnAwoken(){}
 
         public virtual void Heal(float amount)
         {
