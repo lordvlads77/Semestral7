@@ -86,6 +86,7 @@ namespace Character
         
         private void Update()
         {
+            if(gameState != GameStates.Playing) { return; }
             if (isDead) {
                 stateManager.EnterMovementState(MovementState.Dead, this);
                 return;

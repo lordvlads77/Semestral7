@@ -17,6 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GameLevel.unity
     guid: 2e378ea956f086146a6f1ec8efebe62f
+  - enabled: 1
+    path: Assets/Scenes/Yhaliff/Yhaliff test Level.unity
+    guid: 9e89352653d095540b16afc9234a91ad
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 1fee60b202b1fd34a94805ab53544dfe,
       type: 3}
