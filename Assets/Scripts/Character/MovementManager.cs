@@ -69,6 +69,8 @@ namespace Character
         {
             IInput.OnCrouchToggledEvent += ToggleCrouch;
             IInput.OnAttackTriggeredEvent += Punch;
+            MiscUtils.GetOrCreateGameManager().Subscribe(OnStateChange);
+            OnStateChange(MiscUtils.GetOrCreateGameManager().GameState);
         }
         private void OnDestroy()
         {
@@ -82,6 +84,7 @@ namespace Character
         private void UnSubscribe()
         {
             IInput.OnCrouchToggledEvent -= ToggleCrouch;
+            GameManager.TryGetInstance()?.Unsubscribe(OnStateChange);
         }
         
         private void Update()
@@ -257,6 +260,11 @@ namespace Character
         public void StartSwordAndShieldCombat()
         {
             // Should take out the weapons, change stance 
+        }
+        
+        private void OnStateChange(GameStates state)
+        {
+            gameState = state;
         }
         
     }
