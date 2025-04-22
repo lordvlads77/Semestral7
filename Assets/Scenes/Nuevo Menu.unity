@@ -1021,6 +1021,7 @@ MonoBehaviour:
   Menuoptions: {fileID: 645742359}
   SFX: {fileID: 444241472}
   Music: {fileID: 876808407}
+  textSwitcher: {fileID: 1464731619}
   inputCooldown: 0.2
 --- !u!1 &600645274
 GameObject:
@@ -3823,6 +3824,7 @@ GameObject:
   - component: {fileID: 1464731616}
   - component: {fileID: 1464731618}
   - component: {fileID: 1464731617}
+  - component: {fileID: 1464731619}
   m_Layer: 5
   m_Name: 'Lenguage Selecionado '
   m_TagString: Untagged
@@ -3891,6 +3893,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1464731615}
   m_CullTransparentMesh: 1
+--- !u!114 &1464731619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1464731615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d1207cb0775e4842ace29c880d96a4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textsToSwitchInto:
+  - EN
+  - ES
+  desiredIndex: 0
 --- !u!1 &1486504913
 GameObject:
   m_ObjectHideFlags: 0
