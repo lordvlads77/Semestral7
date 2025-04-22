@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Entity;
 using Scriptables;
 using UnityEngine;
+using UnityEngine.UIElements;
 using Utils;
 
 [DefaultExecutionOrder(-25)]
@@ -17,9 +18,11 @@ public sealed class GameManager : Singleton<GameManager>
     public CanvasPrefabs canvasPrefabs;
     public Canvas NpcCanvas { get; private set; }
     public GameObject NpcPrompt { get; private set; }
+    public GameObject EnemySpawnHolder { get; private set; }
     
     [Header("Other Settings")]
     [SerializeField, Range(0.1f, 5f)] private float npcRange = 1.5f;
+    public Language CurrentLanguage { get; private set; } = Language.En;
     
     private List<LivingEntity> _nearbyNpc = new List<LivingEntity>();
     public GameObject player;
@@ -37,8 +40,27 @@ public sealed class GameManager : Singleton<GameManager>
     {
         EDebug.Log("GameManager Awake");
         SetGameState(GameStates.Joining);
-       // CheckForMissingScripts();
+        CheckForMissingScripts();
+        Localization.LoadLanguage(CurrentLanguage);
+        if (EnemySpawnHolder == null) GetOrCreateEnemySpawnHolder();
         InvokeRepeating(nameof(LazyUpdate), 1f, 1f);
+    }
+
+    public GameObject GetOrCreateEnemySpawnHolder()
+    {
+        if (EnemySpawnHolder != null) return EnemySpawnHolder;
+        EnemySpawnHolder = Instantiate(new GameObject());
+        EnemySpawnHolder.name = "EnemySpawnHolder";
+        EnemySpawnHolder.transform.position = new Vector3(0, 0, 0);
+        return EnemySpawnHolder;
+    }
+    
+    public void SetLanguage(Language language)
+    {
+        if (CurrentLanguage == language) return;
+        CurrentLanguage = language;
+        Localization.LoadLanguage(language);
+        EDebug.Log($"Language changed to: {language}");
     }
     
     private void LazyUpdate() // This updates only once per second
@@ -112,5 +134,15 @@ public sealed class GameManager : Singleton<GameManager>
         return sprite.ToArray();
     }
     
+    [ContextMenu("Print current language")] public void PrintDebugLanguage()
+    {
+        EDebug.Log(Localization.Translate("log.debug_lang"));
+    }
+    
+    [ContextMenu("Set to Play")] public void SetGamestateToPlay()
+    {
+        SetGameState(GameStates.Playing);
+        EDebug.Log("Done! You're playing now");
+    }
     
 }

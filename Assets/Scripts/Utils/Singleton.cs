@@ -82,8 +82,9 @@ namespace Utils
                 DontDestroyOnLoad(gameObject);
                 OnAwake();
             }
-            else
+            else if (_instance != this)
             {
+                EDebug.LogError($"[Singleton] Duplicate instance of {typeof(T)} found. Destroying: {gameObject.name}");
                 Destroy(gameObject);
             }
         }

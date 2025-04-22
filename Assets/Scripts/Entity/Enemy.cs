@@ -1,115 +1,234 @@
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using Utils;
+using Random = UnityEngine.Random;
 
 namespace Entity
 {
     [RequireComponent(typeof(NavMeshAgent))]
     public class Enemy : LivingEntity
     {
+        private readonly int _animDirV = Animator.StringToHash("DirV");
+        private readonly int _animDirH = Animator.StringToHash("DirH");
+        private readonly int _animSpeed = Animator.StringToHash("Speed");
+        private readonly int _animHealth = Animator.StringToHash("Health%");
+        private readonly int _animType = Animator.StringToHash("AnimType");
+        private readonly int _animAttack = Animator.StringToHash("Attack");
+        private readonly int _animHit = Animator.StringToHash("Hit");
+        private readonly int _animDying = Animator.StringToHash("Dying");
+        private readonly int _animDead = Animator.StringToHash("Dead");
+        private readonly int _animFlee = Animator.StringToHash("Flee");
+        
+        [Header("Enemy stuff")]
+        private Animator _animator;
+        private Transform _home;
+        [SerializeField, Range(1,50)] private float homeRadius = 5f;
+        [SerializeField] private bool homeBound = true; // Will the enemy return to home if it's outside the home radius?
+        private bool _coward;
+        private float HealthPercent => GetHealth() / maxHealth;
+        private Coroutine _dieRoutine;
+        private Coroutine _attackRoutine;
+        [SerializeField] private Weapon weapon;
 
-        [SerializeField] BoxCollider boxCollider;
-        [SerializeField] Rigidbody body;
-
-        [SerializeField] public Animator animator;
-
-        private readonly int chaseAnimationID = Animator.StringToHash("enemy_chase");
-        private readonly int attackAnimationID = Animator.StringToHash("enemy_attack");
-
-        [Header("AI Components")]
-        [SerializeField] NavMeshAgent agent;
-        [SerializeField] LivingEntity player;
-
-        private float realHealth = 10f;
+        [Header("AI Components")] 
+        [SerializeField, Range(2f, 50f)] private float detectionRange;
+        [SerializeField] private NavMeshAgent agent;
+        [SerializeField] private LivingEntity player;
 
         [Header("Enemy properties")]
-        [SerializeField] public Utils.ENEMY_STATE enemy_state = Utils.ENEMY_STATE.ALIVE;
-
-        [Range(0f, 20f)]
-        [SerializeField] float damage = 1.0f;
-
-        [Range(0f, 5f)]
-        [SerializeField] float speed = 1.0f;
-
-        [field: Range(0f, 100f)]
-        [field: SerializeField]
-        float health
-        {
-            get { return realHealth; }
-            set
-            {
-                realHealth = value;
-                this.SetHealth(realHealth);
-            }
-        }
-
-        [SerializeField] float attackCooldown = .4f;
-        [SerializeField] float timeInsdeAttackRange = 0f;
-
-
-        [Range(0f, 5f)]
-        [SerializeField] float attackRange = 1.0f;
+        public EnemyState curState = EnemyState.Idle;
+        [SerializeField, Range(0f,4f)] private float walkSpeed = 1.0f;
+        [SerializeField, Range(0f,8f)] private float runSpeed = 1.0f;
+        [SerializeField] private Vector2 minMaxAttackCooldown = new (0.5f , 2.5f);
+        private float _attackCooldown;
+        [SerializeField] private float timeWithinAttackRange = 0f;
+        [SerializeField, Range(0f,3f)] private float attackRange = 0.75f;
+        
+        [Header("Enemy Type")]
+        [SerializeField] private EnemyType enemyType = EnemyType.Melee;
+        
 
         private void Start()
         {
+            _coward = Random.value < 0.3f;
             agent = GetComponent<NavMeshAgent>();
-            GameObject temp_player = GameObject.FindGameObjectWithTag("Player");
-            EDebug.Assert(temp_player != null, "could not find player character", this);
-            player = temp_player.GetComponent<LivingEntity>();
-
-
-            boxCollider = GetComponentInChildren<BoxCollider>();
-            body = GetComponentInChildren<Rigidbody>();
-            animator = GetComponentInChildren<Animator>();
-
-
-            animator.SetBool(chaseAnimationID, true);
-
-            agent.speed = speed;
-
-            SetHealth(health);
+            GameObject tempPlayer = GameObject.FindGameObjectWithTag("Player");
+            EDebug.Assert(tempPlayer != null, "Couldn't find player character", this);
+            player = tempPlayer.GetComponent<LivingEntity>();
+            _animator = GetComponent<Animator>();
+            agent.speed = walkSpeed;
+            runSpeed = Mathf.Max(walkSpeed, runSpeed);
+            SearchForHome();
+            _animator.SetFloat(_animHealth, HealthPercent);
+            InvokeRepeating(nameof(LazyUpdate), 1f, 1f);
         }
 
-        private void Update()
+        private void SearchForHome()
         {
-            if (gameState != GameStates.Playing) { return; }
-
-
-            Vector3 PlayerPosition = player.transform.position;
-            GoToDestination(PlayerPosition);
-            float distance = Vector3.Distance(PlayerPosition, agent.transform.position);
-
-            if (enemy_state == ENEMY_STATE.DYING)
+            Transform spawnPoint = null;
+            Collider[] colliders = Physics.OverlapSphere(transform.position, homeRadius);
+            foreach (Collider coll in colliders)
             {
-                if (animator.GetBool("enemy_is_dead"))
+                if (!coll.CompareTag("EnemySpawnPoint")) continue;
+                spawnPoint = coll.transform;
+                break;
+            }
+            if (spawnPoint == null)
+            {
+                GameManager gm = MiscUtils.GetOrCreateGameManager();
+                if (gm.EnemySpawnHolder == null)
                 {
-                    enemy_state = ENEMY_STATE.DEAD;
-                    gameObject.SetActive(false);
+                    gm.GetOrCreateEnemySpawnHolder();
                 }
-                return;
+                GameObject newSpawnPoint = new GameObject("EnemySpawnPoint") {
+                    tag = "EnemySpawnPoint", transform = { position = transform.position } };
+                SphereCollider sphere = newSpawnPoint.AddComponent<SphereCollider>();
+                sphere.radius = 0.1f; sphere.isTrigger = true;
+                newSpawnPoint.transform.SetParent(MiscUtils.GetOrCreateGameManager().EnemySpawnHolder.transform);
+                spawnPoint = newSpawnPoint.transform;
             }
+            _home = spawnPoint;
+        }
+        
+        private void LazyUpdate() // This updates only once per second
+        {
+            if (gameState is GameStates.Paused or GameStates.Joining) return;
+            UpdateStates();
+        }
 
-            //EDebug.Log("agent radius = " + agent.radius + "\nDistance = " + distance);
-            if (!(attackRange >= distance) && enemy_state == ENEMY_STATE.ALIVE)
+        private bool PlayerInRange() {
+            return Vector3.Distance(player.transform.position, transform.position) < detectionRange;
+        }
+
+        private bool InHomeRange()
+        {
+            return Vector3.Distance(transform.position, _home.position) <= homeRadius;
+        }
+
+        private void UpdateStates()
+        {
+            if (gameState is GameStates.Paused or GameStates.Joining) return;
+            switch (curState)
             {
-                timeInsdeAttackRange = 0.0f;
-                animator.SetBool(attackAnimationID, false);
-                return;
+                default:
+                case EnemyState.Idle:
+                    if (PlayerInRange())
+                    {
+                        curState = EnemyState.Chasing;
+                        break;
+                    }
+                    if (MathUtils.WeightedRandBool(0.3f))
+                    {
+                        Vector3 randomDestination = (homeBound)? 
+                            MathUtils.RandomPos(homeRadius, _home.position) :
+                            MathUtils.RandomPos(2f, transform.position);
+                        GoToDestination(randomDestination);
+                    }
+                    break;
+                case EnemyState.Chasing:
+                    if (!PlayerInRange())
+                    {
+                        if (homeBound)
+                        {
+                            curState = EnemyState.Fleeing;
+                            GoToDestination(_home.position);
+                            break;
+                        }
+                        curState = EnemyState.Idle;
+                    }
+                    break;
             }
+        }
 
-            timeInsdeAttackRange += Time.deltaTime;
-            if (timeInsdeAttackRange > attackCooldown)
+        [ContextMenu("On Damage Taken")] protected override void OnDamageTaken()
+        {
+            _animator.SetFloat(_animHealth, HealthPercent);
+            float[] possibleValues = { 0f, 0.5f, 1f };
+            float rand = possibleValues[Random.Range(0, possibleValues.Length)];
+            _animator.SetFloat(_animType, rand);
+            _animator.SetTrigger(_animHit);
+            HurtFX?.Hit(hurtFXVars);
+            if (curState is EnemyState.Idle or EnemyState.Chasing && _coward && HealthPercent <= 0.25f && !InHomeRange())
+                curState = EnemyState.Fleeing;
+        }
+
+        private void FixedUpdate()
+        {
+            if (gameState != GameStates.Playing) return;
+
+            switch (curState)
             {
-
-                Vector3 direction = PlayerPosition - transform.position;
-                timeInsdeAttackRange = 0.0f;
-                animator.SetBool(attackAnimationID, true);
-
-                //player.TakeDamage(damage, transform.position, direction);
-                CombatUtils.Attack(this, player);
+                case EnemyState.Idle:
+                    agent.speed = walkSpeed;
+                    return;
+                case EnemyState.Chasing:
+                    agent.speed = runSpeed;
+                    GoToDestination(MathUtils.RandomPos(0.25f ,player.transform.position));
+                    if (Vector3.Distance(player.transform.position, transform.position) <= attackRange)
+                        StartCoroutine(AttackRoutine());
+                    break;
+                case EnemyState.Fleeing:
+                    if (InHomeRange())
+                        curState = EnemyState.Idle;
+                    else
+                    {
+                        agent.speed = runSpeed * 1.25f;
+                        GoToDestination(_home.position);
+                    }
+                    break;
+                
             }
+        }
+
+        private void LateUpdate()
+        {
+            if (gameState != GameStates.Playing) return;
+            Vector3 toPlayer = (player.transform.position - transform.position).normalized;
+            Vector3 localDirection = transform.InverseTransformDirection(agent.velocity.normalized);
+            float x = 0, y = 0;
+            if (PlayerInRange()) {
+                Vector3 lookDirection = new Vector3(toPlayer.x, 0, toPlayer.z);
+                transform.rotation = Quaternion.LookRotation(lookDirection);
+                y = Mathf.Clamp(localDirection.z, -1f, 1f);
+                x = Mathf.Clamp(localDirection.x, -1f, 1f);
+            } else {
+                y = Mathf.Clamp(localDirection.z, -1f, 1f);
+                x = Mathf.Clamp(localDirection.x, -1f, 1f);
+            }
+            _animator.SetFloat(_animDirV, y);
+            _animator.SetFloat(_animDirH, x);
+        }
+
+        private IEnumerator AttackRoutine()
+        {
+            if (_attackRoutine != null) yield break;
+            EDebug.Log("AttackRoutine called by:" + this.entityName.ToString());
+            _attackCooldown = Random.Range(minMaxAttackCooldown.x, minMaxAttackCooldown.y);
+            _attackRoutine = StartCoroutine(PerformAttack());
+        }
+
+        private IEnumerator PerformAttack()
+        {
+            weapon.inUse = true;
+            _animator.SetInteger(_animType, (MathUtils.RandBool())? 0 : 1);
+            _animator.SetTrigger(_animAttack);
+            yield return new WaitForSeconds(0.5f);
+            while (_animator.GetCurrentAnimatorStateInfo(0).IsName("AttackA") || 
+                   _animator.GetCurrentAnimatorStateInfo(0).IsName("AttackB"))
+            { yield return null; }
+            weapon.inUse = false;
+            yield return new WaitForSeconds(_attackCooldown);
+            _attackRoutine = null;
+        }
+        
+        private IEnumerator DieRoutine()
+        {
+            //_animDead / _animDying
+            yield return new WaitForSeconds(1f);
+            curState = EnemyState.Dead;
+            gameObject.SetActive(false);
         }
 
         private void OnEnable()
@@ -155,8 +274,8 @@ namespace Entity
         {
             base.Die();
             //gameObject.SetActive(false);
-            animator.SetBool("enemy_dead", true);
-            enemy_state = ENEMY_STATE.DYING;
+            _animator.SetBool("enemy_dead", true);
+            curState = EnemyState.Dying;
         }
 
         public void OnStateChange(GameStates state)
