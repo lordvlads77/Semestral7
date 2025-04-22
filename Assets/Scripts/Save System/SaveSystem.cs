@@ -43,7 +43,11 @@ namespace SaveSystem
 
             int index = 0;
             string[] data_divided = raw_data.Split(SEPARATOR);
+
+            LoadGameScene();
+
             LivingEntity[] allLivingEntities = GameObject.FindObjectsByType<LivingEntity>(FindObjectsSortMode.None);
+
 
             LoadPlayerData(allLivingEntities, data_divided, ref index);
             LoadEnemyData(allLivingEntities, data_divided, ref index);
@@ -116,6 +120,15 @@ namespace SaveSystem
                 }
             }
         }
+
+
+        private static void LoadGameScene()
+        {
+            if(SceneManager.GetActiveScene().buildIndex != PlayerPrefs.GetInt(LEVEL_INDEX_KEY))
+            {
+                SceneManager.LoadScene(PlayerPrefs.GetInt(LEVEL_INDEX_KEY));
+            }
+        } 
 
         #endregion
 
