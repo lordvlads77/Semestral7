@@ -9,7 +9,7 @@ namespace UI
     /// <summary>
     /// A slider but the values are represented by blocks
     /// </summary>
-    public class BlockySlider : MonoBehaviour
+    public sealed class BlockySlider : MonoBehaviour
     {
         [SerializeField] Color filledColor = Color.white;
         [SerializeField] Color emptyColor = Color.black;
@@ -20,8 +20,10 @@ namespace UI
         [Tooltip("This is what the slider will use to visually represent the values")]
         [SerializeField] Image[] blocks;
 
-        [Tooltip("This is the value represented by the slider ")]
+        [Tooltip("This is the percentage represented by the slider ")]
         [field: SerializeField, Range(0.0f, 1.0f)] public float percent { get; private set; } = 0.5f;
+
+        [Tooltip("This is the value represented by the slider ")]
         public int currentTurnedOnBlockCount { get; private set; } = 0;
         public int desiredTurnedOnBlockCount { get; private set; } = 0;
 
