@@ -23,6 +23,9 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private BlockySlider SFX;
     [SerializeField] private BlockySlider Music;
 
+    [Header("TextSwitcher")]
+    [SerializeField] private UI.TextSwitcher textSwitcher;
+
 
     [SerializeField] private float inputCooldown = 0.2f; // Tiempo de espera entre inputs
     private float lastInputTime = 0f;
@@ -107,6 +110,7 @@ public class MenuManager : MonoBehaviour
         //selector.gameObject.SetActive(false);
         currentSelection = 0;
         ChangeSelectorPosition();
+        EDebug.Assert(textSwitcher != null, $"El script necesita un {nameof(TextSwitcher)}", this);
     }
 
     /*  public void OnIntroFiniched()
@@ -234,13 +238,18 @@ public class MenuManager : MonoBehaviour
                     Music.decreaseBlocks();
                 }
 
+                if (currentSelection == 2 && rightKeyPressed)
+                {
+                    textSwitcher.IncreaseIndex();
+                }
+                if (currentSelection == 2 && leftKeyPressed)
+                {
+                    textSwitcher.DecreaseIndex();
+                }
+
 
                 if (cosa.Jump)
                 {
-                    if (currentSelection == 0)
-                    {
-                        SFX.increaseBlocks();
-                    }
                     if (currentSelection == 3)
                     {
                         desiredState = CURRENT_MENU_STATE.MAIN_MENU;
@@ -258,6 +267,7 @@ public class MenuManager : MonoBehaviour
 
     public void Cargar()
     {
+        SaveSystem.SaveSystem.LoadLevelData();
         EDebug.Log("<color=orange>Cargar</color>");
     }
 
