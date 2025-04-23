@@ -10,7 +10,7 @@ namespace UI
     {
         private Text selfText;
         [SerializeField] private string[] textsToSwitchInto;
-        [field: Header("controls for TextSwitcher")]
+        [field:Header("controls for TextSwitcher")]
         [SerializeField] public int currentIndex { get; private set; }
         [SerializeField] private int desiredIndex;
 
