@@ -31,6 +31,12 @@ namespace Character
         private double _theta = Math.PI / 2;
         private float _tTheta = 0.5f;
         private double _alpha = -Math.PI / 2;
+        
+        [SerializeField]
+        private float maxLockDistance = 10f;
+        
+        private bool _wasZTargetPressedLastFrame = false;
+        private Collider[] _currentEnemies = new Collider[0];
     
         [Serializable] public struct CameraSettings
         {
@@ -83,29 +89,56 @@ namespace Character
         
         void Update()
         {
-            if (_input.ZTarget && !lockTarget)
+            bool isZTargetPressed = _input.ZTarget;
+
+            // Si se acaba de presionar
+            if (isZTargetPressed && !_wasZTargetPressedLastFrame)
             {
-                FindClosestTarget();
+                _currentEnemies = Physics.OverlapSphere(transform.position, 10f, LayerMask.GetMask("Enemy"));
+                FindClosestTarget(_currentEnemies);
             }
+
+            // Si se acaba de soltar
+            if (!isZTargetPressed && _wasZTargetPressedLastFrame)
+            {
+                _currentEnemies = new Collider[0]; // Limpiamos
+            }
+
+            _wasZTargetPressedLastFrame = isZTargetPressed;
+
             if (lockTarget == null && _lockIndicator != null)
             {
                 _lockIndicator.SetActive(false);
             }
         }
 
-        void FindClosestTarget()
+        void FindClosestTarget(Collider[] enemies)
         {
-            float maxDistance = 10f; // Ajusta según necesites
-            Collider[] enemies = Physics.OverlapSphere(transform.position, maxDistance, LayerMask.GetMask("Enemy"));
-    
-            if (enemies.Length > 0)
+            float closestDistance = Mathf.Infinity;
+            Transform closest = null;
+
+            foreach (Collider enemy in enemies)
             {
-                lockTarget = enemies[0].transform; // Puedes mejorar esto para elegir el más cercano
-                //isLocked = true;
+                float distance = Vector3.Distance(transform.position, enemy.transform.position);
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    closest = enemy.transform;
+                }
+            }
+
+            if (closest != null)
+            {
+                lockTarget = closest;
+
                 if (_lockIndicator == null && lockIndicatorPrefab != null)
                 {
                     _lockIndicator = Instantiate(lockIndicatorPrefab);
                 }
+            }
+            else
+            {
+                lockTarget = null;
             }
         }
         private void LateUpdate() // FixedUpdate → LateUpdate (This prevents jittering / choppy movement)
@@ -216,6 +249,40 @@ namespace Character
                 Gizmos.color = Color.blue;
                 Gizmos.DrawWireSphere(lookAt.transform.position, settings.GetCameraDistance());
             }
+        }
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, maxLockDistance);
+
+#if UNITY_EDITOR
+            Collider[] enemies = Physics.OverlapSphere(transform.position, maxLockDistance, LayerMask.GetMask("Enemy"));
+
+            float closestDistance = Mathf.Infinity;
+            Transform closestTarget = null;
+
+            foreach (Collider enemy in enemies)
+            {
+                if (!enemy) continue;
+
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawLine(transform.position, enemy.transform.position);
+
+                float distance = Vector3.Distance(transform.position, enemy.transform.position);
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    closestTarget = enemy.transform;
+                }
+            }
+
+            if (closestTarget)
+            {
+                Gizmos.color = Color.green;
+                Gizmos.DrawLine(transform.position, closestTarget.position);
+                Gizmos.DrawSphere(closestTarget.position + Vector3.up * 2f, 0.3f); // Marcador visual
+            }
+#endif
         }
     }
 }

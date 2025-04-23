@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Entity;
+using FMOD.Studio;
+using FMODUnity;
 using Scriptables;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -39,11 +41,22 @@ public sealed class GameManager : Singleton<GameManager>
     protected override void OnAwake()
     {
         EDebug.Log("GameManager Awake");
+        LoadFModBank();
         SetGameState(GameStates.Joining);
         CheckForMissingScripts();
         Localization.LoadLanguage(CurrentLanguage);
         if (EnemySpawnHolder == null) GetOrCreateEnemySpawnHolder();
         InvokeRepeating(nameof(LazyUpdate), 1f, 1f);
+    }
+
+    private void LoadFModBank()
+    {
+        EDebug.Log("Loading FMOD Bank...");
+        try {
+            RuntimeManager.LoadBank("Master", true);
+            EDebug.Log("FMOD Bank loaded successfully.");
+        }
+        catch (Exception ex) { EDebug.LogError($"Error loading FMOD Bank: {ex.Message}"); }
     }
 
     public GameObject GetOrCreateEnemySpawnHolder()
@@ -137,6 +150,12 @@ public sealed class GameManager : Singleton<GameManager>
     [ContextMenu("Print current language")] public void PrintDebugLanguage()
     {
         EDebug.Log(Localization.Translate("log.debug_lang"));
+    }
+    
+    [ContextMenu("Set to Play")] public void SetGamestateToPlay()
+    {
+        SetGameState(GameStates.Playing);
+        EDebug.Log("Done! You're playing now");
     }
     
 }

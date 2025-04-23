@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using FMOD.Studio;
 using Scriptables;
 using UnityEngine;
 using UnityEngine.Events;
@@ -52,9 +53,8 @@ namespace Utils
     
     public enum EnemyType 
     {
-        None = 0,
-        Chaser = 1,
-        Thrower = 2,
+        Melee = 0,
+        Wizard = 1
     }
 
     public enum EnemyState
@@ -66,12 +66,17 @@ namespace Utils
         Dying,
         Dead
     }
-    
+
+    public static class FModInt
+    {
+        //private static readonly Bank Bank = MiscUtils.;
+    }
+
     public static class Localization
     {
         private static readonly Dictionary<string, string> Translations = new Dictionary<string, string>();
         private static Language _lang = Language.En;
-        private static GameManager _gm = GameManager.Instance;
+        private static readonly GameManager Gm = MiscUtils.GetOrCreateGameManager();
 
         public static void LoadLanguage(Language language)
         { // This method is public, however it's already called by "Translate" so it shouldn't be needed outside... 
@@ -108,8 +113,8 @@ namespace Utils
 
         public static string Translate(string key)
         {
-            if (Translations.Count == 0 || _lang != _gm.CurrentLanguage)
-                LoadLanguage(_gm.CurrentLanguage);
+            if (Translations.Count == 0 || _lang != Gm.CurrentLanguage)
+                LoadLanguage(Gm.CurrentLanguage);
             if (Translations.TryGetValue(key, out string value))
                 return value;
             EDebug.LogError($"Translation not found for key: {key}");
@@ -178,6 +183,8 @@ namespace Utils
                 EDebug.LogError($"WeaponStats not found for WeaponType: {weapon}");
                 return;
             }
+
+            EDebug.Log(attacker.entityName + "Attacked ► " + target.entityName);
             target.TakeDamage(
                 attacker.transform.position, //Change this later to the actual point of impact for particles
                 attacker.transform.forward,
@@ -229,7 +236,7 @@ namespace Utils
                 0.0f,
                 0.0f,
                 0.0f,
-                0.0f,
+                0.1f,
                 2.0f);
 
         }

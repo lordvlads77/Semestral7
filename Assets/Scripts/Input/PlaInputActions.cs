@@ -570,7 +570,7 @@ public partial class @PlaInputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""24556542-b325-400f-88b1-44e291679d68"",
-                    ""path"": ""<Keyboard>/leftShift"",
+                    ""path"": ""<Keyboard>/x"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",

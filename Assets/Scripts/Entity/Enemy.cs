@@ -41,9 +41,14 @@ namespace Entity
         public EnemyState curState = EnemyState.Idle;
         [SerializeField, Range(0f,4f)] private float walkSpeed = 1.0f;
         [SerializeField, Range(0f,8f)] private float runSpeed = 1.0f;
-        [SerializeField] private float attackCooldown = 0.4f;
+        [SerializeField] private Vector2 minMaxAttackCooldown = new (0.5f , 2.5f);
+        private float _attackCooldown;
         [SerializeField] private float timeWithinAttackRange = 0f;
         [SerializeField, Range(0f,3f)] private float attackRange = 0.75f;
+        
+        [Header("Enemy Type")]
+        [SerializeField] private EnemyType enemyType = EnemyType.Melee;
+        
 
         private void Start()
         {
@@ -151,7 +156,6 @@ namespace Entity
 
         private void FixedUpdate()
         {
-            
             if (gameState != GameStates.Playing) return;
 
             switch (curState)
@@ -161,7 +165,7 @@ namespace Entity
                     return;
                 case EnemyState.Chasing:
                     agent.speed = runSpeed;
-                    GoToDestination(player.transform.position);
+                    GoToDestination(MathUtils.RandomPos(0.25f ,player.transform.position));
                     if (Vector3.Distance(player.transform.position, transform.position) <= attackRange)
                         StartCoroutine(AttackRoutine());
                     break;
@@ -200,6 +204,8 @@ namespace Entity
         private IEnumerator AttackRoutine()
         {
             if (_attackRoutine != null) yield break;
+            EDebug.Log("AttackRoutine called by:" + this.entityName.ToString());
+            _attackCooldown = Random.Range(minMaxAttackCooldown.x, minMaxAttackCooldown.y);
             _attackRoutine = StartCoroutine(PerformAttack());
         }
 
@@ -208,12 +214,12 @@ namespace Entity
             weapon.inUse = true;
             _animator.SetInteger(_animType, (MathUtils.RandBool())? 0 : 1);
             _animator.SetTrigger(_animAttack);
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds(0.5f);
             while (_animator.GetCurrentAnimatorStateInfo(0).IsName("AttackA") || 
                    _animator.GetCurrentAnimatorStateInfo(0).IsName("AttackB"))
             { yield return null; }
             weapon.inUse = false;
-            yield return new WaitForSeconds(attackCooldown);
+            yield return new WaitForSeconds(_attackCooldown);
             _attackRoutine = null;
         }
         

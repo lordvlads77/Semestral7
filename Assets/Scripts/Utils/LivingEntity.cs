@@ -20,6 +20,7 @@ namespace Utils
 
         [Header("Living Entity Variables")]
         public bool isPlayer;
+        [SerializeField] protected LayerMask groundLayers;
         [SerializeField] private WeaponType weaponTypeOverride;
         [Tooltip("The particle systems that will play when the entity takes damage (Will be skipped if none are present)")]
         public ParticleSystem[] dmgParticles;
@@ -72,15 +73,18 @@ namespace Utils
         {
             HurtFX = GetComponent<HurtFX>();
             if (HurtFX == null) { HurtFX = gameObject.AddComponent<HurtFX>(); }
-
-            _health = maxHealth;
+            groundLayers = (groundLayers == 0)? LayerMask.GetMask("Default", "Ground") : groundLayers;
+            
+            _health = GetMaxHealth();
             Weapon = weaponTypeOverride;
             entityName = HasCustomName() ? this.entityName : MiscUtils.GetRandomName(
                 MiscUtils.GetOrCreateGameManager().randomNames, this.nameCustomization);
-
+            
+            EDebug.Log("LivingEntity ► Awake: " + this.entityName.ToString());
+            OnAwoken();
+            
             if (!isPlayer) return;
-
-            IInput = (Input.Actions.Instance != null) ? Input.Actions.Instance : MiscUtils.GetOrCreateGameManager().gameObject.GetComponent<Input.Actions>();
+            IInput = (Input.Actions.Instance != null)? Input.Actions.Instance : MiscUtils.GetOrCreateGameManager().gameObject.GetComponent<Input.Actions>();
             _wLTHandler = () => ChangeWeapon(WeaponType.LightSword);
             _wUTHandler = () => ChangeWeapon(WeaponType.GreatSword);
             _wRTHandler = () => ChangeWeapon(WeaponType.NamePending3);
@@ -89,8 +93,8 @@ namespace Utils
             IInput.OnWeaponUpToggledEvent += _wUTHandler;
             IInput.OnWeaponRightToggledEvent += _wRTHandler;
             IInput.OnWeaponDownToggledEvent += _wDTHandler;
-            hurtFXVars.ogMaterials = hurtFXVars.renderer.materials;
-            OnAwoken();
+            if (hurtFXVars != null && hurtFXVars.renderer != null) hurtFXVars.ogMaterials = hurtFXVars.renderer.materials;
+            else EDebug.LogError("hurtFXVars or the renderer are not initialized/set", this);
         }
 
         private void OnDestroy()
@@ -132,6 +136,7 @@ namespace Utils
                 if (Random.value < critRate)
                     finalDamage *= critDmg; // Rand -> 0 - 1 The higher the critRate, the higher the chance of crit
                 _health -= finalDamage;
+                EDebug.Log(this.entityName + "Took " + finalDamage + " damage. Health: " + _health);
                 if (_health <= 0 && !isDead)
                 {
                     isDead = true;
@@ -169,9 +174,9 @@ namespace Utils
         {
             HurtFX?.Hit(hurtFXVars);
         }
-        protected virtual void OnHurtButNoDamage() { }
-        protected virtual void OnHealed() { }
-        public virtual void OnAwoken() { }
+        protected virtual void OnHurtButNoDamage(){}
+        protected virtual void OnHealed(){}
+        protected virtual void OnAwoken(){}
 
         public virtual void Heal(float amount)
         {
