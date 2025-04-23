@@ -556,8 +556,8 @@ GameObject:
   m_Component:
   - component: {fileID: 330585546}
   - component: {fileID: 330585545}
-  - component: {fileID: 330585544}
   - component: {fileID: 330585547}
+  - component: {fileID: 330585548}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -565,14 +565,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &330585544
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 330585543}
-  m_Enabled: 1
 --- !u!20 &330585545
 Camera:
   m_ObjectHideFlags: 0
@@ -683,6 +675,20 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!114 &330585548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330585543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nonRigidbodyVelocity: 0
+  attenuationObject: {fileID: 0}
 --- !u!4 &335754241 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4537826558316698, guid: 04da108a79352fd408b092086312e147,
@@ -763,6 +769,51 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4467901374961038486, guid: 0331b169005eb1d469455efaa6b9024a,
+        type: 3}
+      propertyPath: entityName
+      value: The trainer of Dummies
+      objectReference: {fileID: 0}
+    - target: {fileID: 4467901374961038486, guid: 0331b169005eb1d469455efaa6b9024a,
+        type: 3}
+      propertyPath: hurtFXVars.renderer
+      value: 
+      objectReference: {fileID: 1759833120}
+    - target: {fileID: 4467901374961038486, guid: 0331b169005eb1d469455efaa6b9024a,
+        type: 3}
+      propertyPath: hurtFXVars.ogMaterials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4467901374961038486, guid: 0331b169005eb1d469455efaa6b9024a,
+        type: 3}
+      propertyPath: hurtFXVars.hitMaterials.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4467901374961038486, guid: 0331b169005eb1d469455efaa6b9024a,
+        type: 3}
+      propertyPath: hurtFXVars.ogMaterials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 53405847abfaac84cb45cd7eb52dce90, type: 2}
+    - target: {fileID: 4467901374961038486, guid: 0331b169005eb1d469455efaa6b9024a,
+        type: 3}
+      propertyPath: hurtFXVars.hitMaterials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 4df3b97eb711d774a8cb4ee157e2fc15, type: 2}
+    - target: {fileID: 4467901374961038486, guid: 0331b169005eb1d469455efaa6b9024a,
+        type: 3}
+      propertyPath: hurtFXVars.hitMaterials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 955b8e54c5a73b143a9d968abf8083aa, type: 2}
+    - target: {fileID: 4467901374961038486, guid: 0331b169005eb1d469455efaa6b9024a,
+        type: 3}
+      propertyPath: hurtFXVars.hitMaterials.Array.data[2]
+      value: 
+      objectReference: {fileID: 2100000, guid: 7c7de859cb2aaf0448c6a343b10d7d18, type: 2}
+    - target: {fileID: 4467901374961038486, guid: 0331b169005eb1d469455efaa6b9024a,
+        type: 3}
+      propertyPath: hurtFXVars.hitMaterials.Array.data[3]
+      value: 
+      objectReference: {fileID: 2100000, guid: 4c2f889d803b24b47ab763fbfa54b972, type: 2}
     - target: {fileID: 5283364167300879048, guid: 0331b169005eb1d469455efaa6b9024a,
         type: 3}
       propertyPath: m_IsActive
@@ -982,6 +1033,9 @@ MonoBehaviour:
     - {fileID: 2100000, guid: 4c2f889d803b24b47ab763fbfa54b972, type: 2}
     animTime: 0.5
   isPlayer: 0
+  groundLayers:
+    serializedVersion: 2
+    m_Bits: 0
   weaponTypeOverride: 1
   dmgParticles: []
   criticalDmgParticles: []
@@ -2079,6 +2133,9 @@ MonoBehaviour:
     hitMaterials: []
     animTime: 0.1
   isPlayer: 0
+  groundLayers:
+    serializedVersion: 2
+    m_Bits: 0
   weaponTypeOverride: 0
   dmgParticles: []
   criticalDmgParticles: []
@@ -2268,6 +2325,16 @@ PrefabInstance:
         type: 3}
       propertyPath: hurtFXVars.blinks
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3797058045696758372, guid: 94cd54f3e49f0224684d2023ea43391f,
+        type: 3}
+      propertyPath: groundLayer.m_Bits
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3797058045696758372, guid: 94cd54f3e49f0224684d2023ea43391f,
+        type: 3}
+      propertyPath: groundLayers.m_Bits
+      value: 257
       objectReference: {fileID: 0}
     - target: {fileID: 3797058045696758372, guid: 94cd54f3e49f0224684d2023ea43391f,
         type: 3}
@@ -2484,6 +2551,12 @@ SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: 137887168096388578, guid: 04da108a79352fd408b092086312e147,
     type: 3}
   m_PrefabInstance: {fileID: 1756845166}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &1759833120 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7587662495711344193, guid: 0331b169005eb1d469455efaa6b9024a,
+    type: 3}
+  m_PrefabInstance: {fileID: 359219960}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &1790195586 stripped
 Transform:

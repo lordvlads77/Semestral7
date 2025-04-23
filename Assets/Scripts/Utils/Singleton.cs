@@ -29,7 +29,7 @@ namespace Utils
                 {
                     if (_instance == null)
                     {
-                        if (_isCreating) // If creation is already in progress, wait until it's done.
+                        if (_isCreating)
                         {
                             while (_instance == null)
                             {
@@ -87,6 +87,7 @@ namespace Utils
                 EDebug.LogError($"[Singleton] Duplicate instance of {typeof(T)} found. Destroying: {gameObject.name}");
                 Destroy(gameObject);
             }
+            else OnAwake();
         }
         
         protected virtual void OnAwake()

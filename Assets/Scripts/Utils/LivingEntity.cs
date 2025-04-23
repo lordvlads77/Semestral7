@@ -20,6 +20,7 @@ namespace Utils
 
         [Header("Living Entity Variables")]
         public bool isPlayer;
+        [SerializeField] protected LayerMask groundLayers;
         [SerializeField] private WeaponType weaponTypeOverride;
         [Tooltip("The particle systems that will play when the entity takes damage (Will be skipped if none are present)")]
         public ParticleSystem[] dmgParticles;
@@ -72,6 +73,7 @@ namespace Utils
         {
             HurtFX = GetComponent<HurtFX>();
             if (HurtFX == null) { HurtFX = gameObject.AddComponent<HurtFX>(); }
+            groundLayers = (groundLayers == 0)? LayerMask.GetMask("Default", "Ground") : groundLayers;
             
             _health = GetMaxHealth();
             Weapon = weaponTypeOverride;
@@ -91,7 +93,8 @@ namespace Utils
             IInput.OnWeaponUpToggledEvent += _wUTHandler;
             IInput.OnWeaponRightToggledEvent += _wRTHandler;
             IInput.OnWeaponDownToggledEvent += _wDTHandler;
-            hurtFXVars.ogMaterials = hurtFXVars.renderer.materials;
+            if (hurtFXVars != null && hurtFXVars.renderer != null) hurtFXVars.ogMaterials = hurtFXVars.renderer.materials;
+            else EDebug.LogError("hurtFXVars or the renderer are not initialized/set", this);
         }
 
         private void OnDestroy()

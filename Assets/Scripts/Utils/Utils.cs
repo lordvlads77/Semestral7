@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using FMOD.Studio;
 using Scriptables;
 using UnityEngine;
 using UnityEngine.Events;
@@ -65,12 +66,17 @@ namespace Utils
         Dying,
         Dead
     }
-    
+
+    public static class FModInt
+    {
+        //private static readonly Bank Bank = MiscUtils.;
+    }
+
     public static class Localization
     {
         private static readonly Dictionary<string, string> Translations = new Dictionary<string, string>();
         private static Language _lang = Language.En;
-        private static GameManager _gm = GameManager.Instance;
+        private static readonly GameManager Gm = MiscUtils.GetOrCreateGameManager();
 
         public static void LoadLanguage(Language language)
         { // This method is public, however it's already called by "Translate" so it shouldn't be needed outside... 
@@ -107,8 +113,8 @@ namespace Utils
 
         public static string Translate(string key)
         {
-            if (Translations.Count == 0 || _lang != _gm.CurrentLanguage)
-                LoadLanguage(_gm.CurrentLanguage);
+            if (Translations.Count == 0 || _lang != Gm.CurrentLanguage)
+                LoadLanguage(Gm.CurrentLanguage);
             if (Translations.TryGetValue(key, out string value))
                 return value;
             EDebug.LogError($"Translation not found for key: {key}");

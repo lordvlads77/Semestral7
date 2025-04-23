@@ -27,7 +27,6 @@ namespace Character
         [Tooltip("X= Forward, Y= Backward, Z= Sideways")]
         public Vector3 crouchSpeeds = new Vector3(1f, 0.75f, 0.75f);
         [SerializeField] private float groundYOffset;
-        [SerializeField] private LayerMask groundLayer;
         [SerializeField, Range(5f, 15f)] private float gravity = 9.81f;
         [SerializeField] private float jumpHeight = 2f;
         [HideInInspector] public Vector3 dir;
@@ -243,7 +242,7 @@ namespace Character
         {
             Vector3 vec = this.transform.position;
             _spherePos = new Vector3(vec.x, vec.y - groundYOffset, vec.z);
-            return Physics.CheckSphere(_spherePos, controller.radius - 0.05f, groundLayer);
+            return Physics.CheckSphere(_spherePos, controller.radius - 0.05f, groundLayers);
         }
         
         private void ApplyGravity()
