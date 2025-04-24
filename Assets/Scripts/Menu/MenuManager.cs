@@ -27,12 +27,6 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private UI.TextSwitcher textSwitcher;
 
 
-    [SerializeField] private float inputCooldown = 0.2f; // Tiempo de espera entre inputs
-    private float lastInputTime = 0f;
-
-    private bool isWeaponDownPressed = false;
-    private bool isWeaponUpPressed = false;
-
     enum CURRENT_MENU_STATE
     {
         INTRO,
@@ -42,6 +36,7 @@ public class MenuManager : MonoBehaviour
 
     private void OnEnable()
     {
+        textSwitcher.textChanged += this.OnLanguageChange;
         /*
         Actions.Instance.OnWeaponDownToggledEvent += OnWeaponDown;
         Actions.Instance.OnWeaponUpToggledEvent += OnWeaponUp;
@@ -60,6 +55,8 @@ public class MenuManager : MonoBehaviour
             Actions.Instance.OnAttackTriggeredEvent -= OnJump;
             */
         }
+
+        textSwitcher.textChanged -= this.OnLanguageChange;
     }
 
     #region INPUT_EVENTS
@@ -342,4 +339,22 @@ public class MenuManager : MonoBehaviour
         }
 
     }
+
+
+    private void OnLanguageChange(string language)
+    {
+        //EDebug.Log($"<color=orange> language chosen |{language}|</color>", this);
+
+        switch (language)
+        {
+            case "EN":
+                LanguageManager.Instance.setLanguage(Utils.Languege.English);
+                break;
+            case "ES":
+                LanguageManager.Instance.setLanguage(Utils.Languege.Spanish);
+                break;
+        }
+
+    }
+
 }
