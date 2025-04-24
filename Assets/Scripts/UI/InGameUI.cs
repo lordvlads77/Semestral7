@@ -52,6 +52,9 @@ namespace UI
 
         void Update()
         {
+            ElementSelectionType selectionType = currentMenu.elements[selectedElement].elementSelectionType;
+
+
             if (currentMenuID != currentMenu.menuID)
             {
                 ActivateMenusOfSameMenuID();
@@ -68,20 +71,24 @@ namespace UI
 
             if (inputReciver.Movement.y > menuDeadZone)
             {
-                EDebug.Log("DOWN");
                 selectDownUntilFoundActiveElement();
             }
 
             else if (inputReciver.Movement.y < -menuDeadZone)
             {
-                EDebug.Log("UP");
                 selectUpUntilFoundActiveElement();
             }
 
             if (inputReciver.Jump)
             {
-                ExecuteButtonFunction();
+                ExecuteFunctionForUIElement();
             }
+
+            if (selectionType == ElementSelectionType.TWO_SIDED)
+            {
+                twoSidedLogic();
+            }
+
 
 
             AjustSelector();
@@ -240,7 +247,7 @@ namespace UI
             selector.rectTransform.anchoredPosition = new Vector2(distanceFromElement, 0);
         }
 
-        private void ExecuteButtonFunction()
+        private void ExecuteFunctionForUIElement()
         {
             int PersistentEventCount = currentMenu.elements[selectedElement].eventForUi.GetPersistentEventCount();
 
@@ -311,6 +318,31 @@ namespace UI
         }
 
 
+        private void twoSidedLogic()
+        {
+            if (inputReciver.Movement.x > 0.1f)
+            {
+                BlockySlider slider = currentMenu.elements[selectedElement].blockySlider;
+                if (slider == null)
+                {
+                    EDebug.LogError($"This UIElement does not have a {nameof(BlockySlider)} attach one please", this);
+                    return;
+                }
+                slider.increaseBlocks();
+            }
+            else if (inputReciver.Movement.x < -0.1f)
+            {
+                BlockySlider slider = currentMenu.elements[selectedElement].blockySlider;
+                if (slider == null)
+                {
+                    EDebug.LogError($"This UIElement does not have a {nameof(BlockySlider)} attach one please", this);
+                    return;
+                }
+                slider.decreaseBlocks();
+            }
+
+        }
+
     }
 
 
@@ -325,6 +357,13 @@ namespace UI
         /// Controla si un UIElement deberia esta apagado o no
         /// </summary>
         public bool turnOff;
+
+        /// <summary>
+        ///  OPCIONAL : es para los de tipo ElementSelectionType.TWO_SIDED
+        /// </summary>
+        public BlockySlider blockySlider;
+
+        public ElementSelectionType elementSelectionType;
     }
 
     [Serializable]
@@ -340,11 +379,19 @@ namespace UI
         /// </summary>
         public GameStates associatedGameStates;
 
+
         /// <summary>
         /// el numero indentificador del Menu
         /// </summary>
         public int menuID;
 
+    }
+
+    [Serializable]
+    public enum ElementSelectionType
+    {
+        REGULAR = 0, //  preciona la barrar de enter o espacio el button 'A' para hacer algo
+        TWO_SIDED = 1, // precionar le para moverte de lada a lada en otras palabras 'D' y 'A'
     }
 
 }
