@@ -212,6 +212,52 @@ MonoBehaviour:
   m_PointerBehavior: 0
   m_CursorLockBehavior: 0
   m_ScrollDeltaPerTick: 6
+--- !u!1 &128858254
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 128858255}
+  - component: {fileID: 128858256}
+  m_Layer: 0
+  m_Name: ====== Change Language in Real Time
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &128858255
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 128858254}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 640, y: 428.3333, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &128858256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 128858254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7518c762805bc242aec76e93ede9da5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shouldChangeLanguage: 1
+  <desiredLanguage>k__BackingField: 0
 --- !u!1 &188154655
 GameObject:
   m_ObjectHideFlags: 0
@@ -640,7 +686,6 @@ MonoBehaviour:
   SFX: {fileID: 444241472}
   Music: {fileID: 876808407}
   textSwitcher: {fileID: 1464731619}
-  inputCooldown: 0.2
 --- !u!1001 &645742349
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1268,6 +1313,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   languageContainer: {fileID: 11400000, guid: 35aba9674bfb26b46b6e9e087d2ed6a4, type: 2}
+  uiText: {fileID: 0}
 --- !u!114 &645742361
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1281,6 +1327,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   languageContainer: {fileID: 11400000, guid: ed19e01c9f8c6c843b769d8ae01a53d7, type: 2}
+  uiText: {fileID: 0}
 --- !u!114 &645742362
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1294,6 +1341,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   languageContainer: {fileID: 11400000, guid: bd5ca76ce383b7949be2792630e428d5, type: 2}
+  uiText: {fileID: 0}
 --- !u!1 &687247387
 GameObject:
   m_ObjectHideFlags: 0
@@ -1788,6 +1836,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   languageContainer: {fileID: 11400000, guid: e4b1e152d1ac05340a416cfc3ee45fb7, type: 2}
+  uiText: {fileID: 0}
 --- !u!1 &1101555313
 GameObject:
   m_ObjectHideFlags: 0
@@ -3371,6 +3420,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   languageContainer: {fileID: 11400000, guid: 6a4996aa285ba374d8bb54c938ea33aa, type: 2}
+  uiText: {fileID: 0}
 --- !u!1 &1646990338
 GameObject:
   m_ObjectHideFlags: 0
@@ -3546,6 +3596,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   languageContainer: {fileID: 11400000, guid: c6f221c20517f3b449855232e4e6c68e, type: 2}
+  uiText: {fileID: 0}
 --- !u!1 &1763761641
 GameObject:
   m_ObjectHideFlags: 0
@@ -3683,6 +3734,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   languageContainer: {fileID: 11400000, guid: ecf3e64fb54509b4a9df822027cb31fb, type: 2}
+  uiText: {fileID: 0}
 --- !u!1 &1939825791 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8311370337226040689, guid: 3eeed4605ea6a6543bb72d0cc15e8df8,
@@ -3702,6 +3754,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   languageContainer: {fileID: 11400000, guid: 5f1b29a492ccbb44f89438db3ab8edac, type: 2}
+  uiText: {fileID: 0}
 --- !u!1 &1947727417
 GameObject:
   m_ObjectHideFlags: 0
@@ -3796,6 +3849,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   languageContainer: {fileID: 11400000, guid: 94c2003d200293947a50fb20d9974b02, type: 2}
+  uiText: {fileID: 0}
 --- !u!114 &2000053762
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3809,6 +3863,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   languageContainer: {fileID: 11400000, guid: 90dd7f13580a46d44bd27780e7cdcbb9, type: 2}
+  uiText: {fileID: 0}
 --- !u!1 &2104401755
 GameObject:
   m_ObjectHideFlags: 0
@@ -4418,3 +4473,4 @@ SceneRoots:
   - {fileID: 7619930}
   - {fileID: 188154657}
   - {fileID: 1585749905}
+  - {fileID: 128858255}
