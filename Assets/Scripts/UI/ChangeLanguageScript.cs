@@ -10,7 +10,7 @@ namespace UI
     {
         [SerializeField] Scriptables.MultiLanguageContainer languageContainer;
 
-         Text uiText;
+        [SerializeField] Text uiText;
 
 
         private void OnEnable()
