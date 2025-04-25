@@ -27,7 +27,7 @@ namespace Character
         
         public GameObject lockIndicatorPrefab; // Asigna un prefab desde el Inspector
         private GameObject _lockIndicator;
-
+        public static float shakeStrength = 0f;
 
         private double _theta = Math.PI / 2;
         private float _tTheta = 0.5f;
@@ -193,7 +193,15 @@ namespace Character
         
             Vector3 newCameraPosition = new Vector3(x, y , z);
             Vector3 offsetCameraPosition = newCameraPosition + settings.GetOffset().x * cam.transform.right + settings.GetOffset().y * cam.transform.up;
-            cam.transform.position = offsetCameraPosition;
+            Vector3 shakeOffset = Vector3.zero;
+            if (shakeStrength > 0f)
+            {
+                shakeOffset = UnityEngine.Random.insideUnitSphere * shakeStrength;
+                shakeStrength *= 0.9f; // Se va disipando con el tiempo
+                if (shakeStrength < 0.01f) shakeStrength = 0f;
+            }
+
+            cam.transform.position = offsetCameraPosition + shakeOffset;
             _trueLookAt.transform.position = lookAt.transform.position + +settings.GetOffset().x * cam.transform.right + settings.GetOffset().y * cam.transform.up;
             if (_input.ZTarget && lockTarget)
             {

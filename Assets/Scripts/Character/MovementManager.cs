@@ -13,6 +13,7 @@ namespace Character
         private static readonly int AnimJump = Animator.StringToHash("Jump");
         private static readonly int AnimAttack = Animator.StringToHash("Attack");
         private static readonly int AnimGrounded = Animator.StringToHash("Grounded");
+        private static readonly int DogeAnim = Animator.StringToHash("Doge");
         // Added those fields to avoid string lookups in the animator (Slightly better performance)
 
         [Header("Movement Settings")]
@@ -119,7 +120,7 @@ namespace Character
                 camRight.y = 0;
                 camForward.Normalize();
                 camRight.Normalize();
-
+                anim.SetTrigger(DogeAnim);
                 // Convertir el input a dirección en el mundo según cámara
                 dodgeDirection = (camForward * inputDir.z + camRight * inputDir.x).normalized;
             }
@@ -175,41 +176,79 @@ namespace Character
             }
         }
         
-        private void GetDirectionAndMove()
-        {
-            horizontalInput = IInput.Movement.x;
-            verticalInput = IInput.Movement.y;
-            anim.SetFloat(AnimVInput, verticalInput);
-            anim.SetFloat(AnimHInput, horizontalInput);
-            Vector3[] camVec = MathUtils.CanonBasis(_cam.transform);
-            dir = (camVec[0] * verticalInput + camVec[1] * horizontalInput).normalized;
+private void GetDirectionAndMove()
+{
+    horizontalInput = IInput.Movement.x;
+    verticalInput = IInput.Movement.y;
+    anim.SetFloat(AnimVInput, verticalInput);
+    anim.SetFloat(AnimHInput, horizontalInput);
 
-            Vector3 speeds = walkSpeeds;
-            if (IInput.LeftBumper)
-                speeds = runSpeeds;
-            else if (stateManager.CurrentMovementState == MovementState.Crouch)
-                speeds = crouchSpeeds;
-            else if (stateManager.CurrentMovementState == MovementState.Sprint)
-                speeds = sprintSpeeds;
-            
-            float forwardSpeed = Mathf.Lerp(0, speeds.x, Mathf.Abs(verticalInput));
-            float backwardSpeed = Mathf.Lerp(0, speeds.y, Mathf.Abs(verticalInput));
-            float sideSpeed = Mathf.Lerp(0, speeds.z, Mathf.Abs(horizontalInput));
-            
-            if (verticalInput > 0)
-                currentMovementSpeed = forwardSpeed;
-            else if (verticalInput < 0)
-                currentMovementSpeed = backwardSpeed;
-            else
-                currentMovementSpeed = sideSpeed;
-            if (verticalInput != 0 && horizontalInput != 0)
-                currentMovementSpeed = Mathf.Lerp(currentMovementSpeed, sideSpeed, 0.5f);
-            
-            if (dir.magnitude > 0)
-                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(camVec[0]), Time.deltaTime * 10f);
-            
-            controller.Move(dir * (currentMovementSpeed * Time.deltaTime));
+    bool isZLock = _cm != null && _cm.type == CameraTypes.Locked && _cm.lockTarget != null;
+
+    if (isZLock)
+    {
+        // Si estamos en Z-Lock, mover hacia el objetivo
+        Vector3 toTarget = (_cm.lockTarget.position - transform.position);
+        toTarget.y = 0; // Mantener solo el movimiento horizontal
+        Vector3 forward = toTarget.normalized;
+        Vector3 right = Vector3.Cross(Vector3.up, forward);
+
+        // Movimiento orbital y radial
+        dir = (right * horizontalInput + forward * verticalInput).normalized;
+
+        // Girar el jugador hacia el objetivo
+        if (toTarget.sqrMagnitude > 0.01f)
+        {
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                Quaternion.LookRotation(forward),
+                Time.deltaTime * 10f
+            );
         }
+    }
+    else
+    {
+        // Si no estamos en Z-Lock, movimiento normal basado en la cámara
+        Vector3[] camVec = MathUtils.CanonBasis(_cam.transform);
+        dir = (camVec[0] * verticalInput + camVec[1] * horizontalInput).normalized;
+
+        // Girar el jugador hacia la dirección del movimiento
+        if (dir.magnitude > 0)
+        {
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                Quaternion.LookRotation(camVec[0]),
+                Time.deltaTime * 10f
+            );
+        }
+    }
+
+    // Seleccionar la velocidad apropiada
+    Vector3 speeds = walkSpeeds;
+    if (IInput.LeftBumper)
+        speeds = runSpeeds;
+    else if (stateManager.CurrentMovementState == MovementState.Crouch)
+        speeds = crouchSpeeds;
+    else if (stateManager.CurrentMovementState == MovementState.Sprint)
+        speeds = sprintSpeeds;
+
+    float forwardSpeed = Mathf.Lerp(0, speeds.x, Mathf.Abs(verticalInput));
+    float backwardSpeed = Mathf.Lerp(0, speeds.y, Mathf.Abs(verticalInput));
+    float sideSpeed = Mathf.Lerp(0, speeds.z, Mathf.Abs(horizontalInput));
+
+    if (verticalInput > 0)
+        currentMovementSpeed = forwardSpeed;
+    else if (verticalInput < 0)
+        currentMovementSpeed = backwardSpeed;
+    else
+        currentMovementSpeed = sideSpeed;
+
+    if (verticalInput != 0 && horizontalInput != 0)
+        currentMovementSpeed = Mathf.Lerp(currentMovementSpeed, sideSpeed, 0.5f);
+
+    // Mover el personaje
+    controller.Move(dir * (currentMovementSpeed * Time.deltaTime));
+}
         
         private void Jump()
         {
