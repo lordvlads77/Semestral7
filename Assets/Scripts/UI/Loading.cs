@@ -5,6 +5,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Utils;
 
+/// <summary>
+/// TODO : IMPLEMENTAR ESTO EN OTRO LUGARES 
+/// </summary>
 public sealed class Loading : MonoBehaviour
 {
     enum LOAD_PART : byte

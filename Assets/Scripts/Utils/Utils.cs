@@ -83,7 +83,7 @@ namespace Utils
         private static readonly GameManager Gm = MiscUtils.GetOrCreateGameManager();
         public static float GetSingleVolume(SoundType soundType)
         {
-            if (!Gm.LoadedData) SaveSystem.SaveSystem.LoadLevelData();
+            if (!Gm.LoadedData) SaveSystem.SaveSystem.LoadEverything();
             switch (soundType)
             {
                 default:

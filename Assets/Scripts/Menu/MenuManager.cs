@@ -282,7 +282,7 @@ public class MenuManager : MonoBehaviour
 
     public void Cargar()
     {
-        SaveSystem.SaveSystem.LoadLevelData();
+        SaveSystem.SaveSystem.LoadEverything();
         EDebug.Log("<color=orange>Cargar</color>");
     }
 
