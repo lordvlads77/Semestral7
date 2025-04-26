@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Entity;
 using FMOD.Studio;
@@ -23,10 +24,14 @@ public sealed class GameManager : Singleton<GameManager>
     public GameObject EnemySpawnHolder { get; private set; }
     
     [Header("Other Settings")]
+    [SerializeField, Range(0.1f, 60f), Tooltip("Set in minutes")] private float saveDataWarningTime = 5f;
+    private Coroutine _saveDataWarningCoroutine;
     [SerializeField, Range(0.1f, 5f)] private float npcRange = 1.5f;
     public Language CurrentLanguage { get; private set; } = Language.En;
     
     private List<LivingEntity> _nearbyNpc = new List<LivingEntity>();
+    public bool SavedData { get; private set; }
+    public bool LoadedData { get; private set; }
     public GameObject player;
     
     private Dialog Dialog {
@@ -109,11 +114,36 @@ public sealed class GameManager : Singleton<GameManager>
     public void Subscribe(Action<GameStates> function)
     {
         _eventHandler += function;
+        SaveSystem.SaveSystem.OnSaveData += OnDataSaved;
+        SaveSystem.SaveSystem.OnLoadData += OnDataLoaded;
     }
 
     public void Unsubscribe(Action<GameStates> function)
     {
         _eventHandler -= function;
+        SaveSystem.SaveSystem.OnSaveData -= OnDataSaved;
+        SaveSystem.SaveSystem.OnLoadData -= OnDataLoaded;
+    }
+
+    public void OnDataSaved()
+    {
+        SavedData = true;
+        if (_saveDataWarningCoroutine != null)
+            StopCoroutine(_saveDataWarningCoroutine);
+        _saveDataWarningCoroutine = StartCoroutine(SaveDataWarn());
+        EDebug.Log("Saved Data");
+    }
+    
+    public void OnDataLoaded()
+    {
+        LoadedData = true;
+        EDebug.Log("Loaded Data");
+    }
+    
+    private IEnumerator SaveDataWarn()
+    {
+        yield return new WaitForSeconds(saveDataWarningTime*60f);
+        SavedData = false;
     }
     
     public Canvas GetOrCreateNpcCanvas()

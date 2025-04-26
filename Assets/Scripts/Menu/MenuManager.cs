@@ -43,6 +43,8 @@ public class MenuManager : MonoBehaviour
         Actions.Instance.OnWeaponUpToggledEvent += OnWeaponUp;
         Actions.Instance.OnAttackTriggeredEvent += OnJump;
         */
+        if(SFX != null) 
+            SFX.OnBlockChangeAction += VolumeChanged;
     }
 
     private void OnDisable()
@@ -58,6 +60,11 @@ public class MenuManager : MonoBehaviour
         }
 
         textSwitcher.textChanged -= this.OnLanguageChange;
+    }
+
+    private void VolumeChanged(float val)
+    {
+        
     }
 
     #region INPUT_EVENTS

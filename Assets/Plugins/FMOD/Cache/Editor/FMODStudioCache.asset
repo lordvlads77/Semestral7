@@ -1,5 +1,141 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8716512986444678519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Environment/BirdChirps
+  m_EditorClassIdentifier: 
+  Path: event:/Environment/BirdChirps
+  Guid:
+    Data1: 35595683
+    Data2: 1118107179
+    Data3: -1498121281
+    Data4: -1829881413
+  Banks:
+  - {fileID: 6399889152869365080}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 14500
+--- !u!114 &-7414960983562479780
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/BGM/MusicTrack
+  m_EditorClassIdentifier: 
+  Name: MusicTrack
+  StudioPath: 
+  Min: 0
+  Max: 2
+  Default: 1
+  ID:
+    data1: 4136757393
+    data2: 1261280483
+  Type: 2
+  IsGlobal: 0
+  Labels:
+  - FiresideTales
+  - KingsFeast
+  - MarketDay
+  Exists: 1
+--- !u!114 &-3858828436086090353
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Environment/BGM
+  m_EditorClassIdentifier: 
+  Path: event:/Environment/BGM
+  Guid:
+    Data1: 1364725534
+    Data2: 1262464435
+    Data3: 1320345535
+    Data4: 598717747
+  Banks:
+  - {fileID: 6399889152869365080}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters:
+  - {fileID: -7414960983562479780}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 398000
+--- !u!114 &-3566968348346626569
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/LivingEntity/Footsteps/Wood
+  m_EditorClassIdentifier: 
+  Path: event:/LivingEntity/Footsteps/Wood
+  Guid:
+    Data1: 1292892762
+    Data2: 1151592133
+    Data3: 80196773
+    Data4: -1306875889
+  Banks:
+  - {fileID: 6399889152869365080}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 147
+--- !u!114 &-1509083129533940571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/LivingEntity/Footsteps/Grass
+  m_EditorClassIdentifier: 
+  Path: event:/LivingEntity/Footsteps/Grass
+  Guid:
+    Data1: 526454493
+    Data2: 1203409079
+    Data3: -231798644
+    Data4: -1065771964
+  Banks:
+  - {fileID: 6399889152869365080}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 147
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15,13 +151,19 @@ MonoBehaviour:
   EditorBanks:
   - {fileID: 1684379180787156491}
   - {fileID: 6399889152869365080}
-  EditorEvents: []
+  EditorEvents:
+  - {fileID: -3858828436086090353}
+  - {fileID: -3566968348346626569}
+  - {fileID: -8716512986444678519}
+  - {fileID: 4451888386886277690}
+  - {fileID: -1509083129533940571}
+  - {fileID: 9019863335796548931}
   EditorParameters: []
   MasterBanks:
   - {fileID: 6399889152869365080}
   StringsBanks:
   - {fileID: 1684379180787156491}
-  cacheTime: 638809621681519049
+  cacheTime: 638811973700494414
   cacheVersion: 131624
 --- !u!114 &1684379180787156491
 MonoBehaviour:
@@ -38,11 +180,38 @@ MonoBehaviour:
   Path: Assets/Resources/Audio/Banks/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638809621681519049
+  lastModified: 638811973700494414
   FileSizes:
   - Name: Desktop
-    Value: 712
+    Value: 1084
   Exists: 1
+--- !u!114 &4451888386886277690
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/LivingEntity/Footsteps/Generic
+  m_EditorClassIdentifier: 
+  Path: event:/LivingEntity/Footsteps/Generic
+  Guid:
+    Data1: -1164115492
+    Data2: 1316733731
+    Data3: -129220673
+    Data4: 1733400082
+  Banks:
+  - {fileID: 6399889152869365080}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 147
 --- !u!114 &6399889152869365080
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58,8 +227,35 @@ MonoBehaviour:
   Path: Assets/Resources/Audio/Banks/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638809621681519049
+  lastModified: 638811973700479296
   FileSizes:
   - Name: Desktop
-    Value: 1036
+    Value: 5448448
   Exists: 1
+--- !u!114 &9019863335796548931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/LivingEntity/Footsteps/Carpet
+  m_EditorClassIdentifier: 
+  Path: event:/LivingEntity/Footsteps/Carpet
+  Guid:
+    Data1: 1693326815
+    Data2: 1152585483
+    Data3: 1662313643
+    Data4: -488148596
+  Banks:
+  - {fileID: 6399889152869365080}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 147

@@ -1,5 +1,3 @@
-// Ignore Spelling: SFX
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,9 +12,7 @@ namespace SaveSystem
     public static class SaveSystem
     {
         const string LEVEL_DATA_KEY = "level_data";
-
         const string LEVEL_INDEX_KEY = "level_key";
-
         public const string SFX_KEY = "sfx_volume";
 
         public const string MUSIC_KEY = "music_volume";
@@ -24,7 +20,7 @@ namespace SaveSystem
         public const string MASTER_VOLUME_KEY = "master_volume";
 
         const string SEPARATOR = "|*|";
-
+        
         public static Action OnSaveData;
         public static Action OnLoadData;
 
@@ -50,7 +46,6 @@ namespace SaveSystem
             if (string.IsNullOrWhiteSpace(raw_data))
             {
                 EDebug.LogError("No data exist to load");
-
                 return;
             }
 
@@ -60,7 +55,6 @@ namespace SaveSystem
             LoadGameScene();
 
             LivingEntity[] allLivingEntities = GameObject.FindObjectsByType<LivingEntity>(FindObjectsSortMode.None);
-
 
             LoadPlayerData(allLivingEntities, data_divided, ref index);
             LoadEnemyData(allLivingEntities, data_divided, ref index);
@@ -177,6 +171,8 @@ namespace SaveSystem
         {
             return PlayerPrefs.HasKey(LEVEL_DATA_KEY);
         }
+        
+        
 
     }
 
