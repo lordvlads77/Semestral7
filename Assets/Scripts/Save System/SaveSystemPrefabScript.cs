@@ -17,7 +17,7 @@ namespace SaveSystem
 
         public void LoadLevel()
         {
-            SaveSystem.LoadLevelData();
+            SaveSystem.LoadEverything();
         }
     }
 
