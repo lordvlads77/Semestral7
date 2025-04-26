@@ -22,6 +22,7 @@ public class MenuManager : MonoBehaviour
     [Header("BlockySlider")]
     [SerializeField] private BlockySlider SFX;
     [SerializeField] private BlockySlider Music;
+    [SerializeField] private BlockySlider Master;
 
     [Header("TextSwitcher")]
     [SerializeField] private UI.TextSwitcher textSwitcher;
@@ -47,6 +48,8 @@ public class MenuManager : MonoBehaviour
         Actions.Instance.OnWeaponUpToggledEvent += OnWeaponUp;
         Actions.Instance.OnAttackTriggeredEvent += OnJump;
         */
+        if(SFX != null) 
+            SFX.OnBlockChangeAction += VolumeChanged;
     }
 
     private void OnDisable()
@@ -60,6 +63,11 @@ public class MenuManager : MonoBehaviour
             Actions.Instance.OnAttackTriggeredEvent -= OnJump;
             */
         }
+    }
+
+    private void VolumeChanged(float val)
+    {
+        
     }
 
     #region INPUT_EVENTS

@@ -66,10 +66,41 @@ namespace Utils
         Dying,
         Dead
     }
-
-    public static class FModInt
+    
+    public enum SoundType
     {
-        //private static readonly Bank Bank = MiscUtils.;
+        Master,
+        Music,
+        SFX
+    }
+
+    /* "sfx_volume"
+    "music_volume"
+    "master_volume" */
+    
+    public static class FmodUtils
+    {
+        private static readonly GameManager Gm = MiscUtils.GetOrCreateGameManager();
+        public static float GetSingleVolume(SoundType soundType)
+        {
+            if (!Gm.LoadedData) SaveSystem.SaveSystem.LoadLevelData();
+            switch (soundType)
+            {
+                default:
+                case SoundType.Master:
+                    return PlayerPrefs.GetFloat("master_volume", 1.0f);
+                case SoundType.Music:
+                    return PlayerPrefs.GetFloat("music_volume", 1.0f);
+                case SoundType.SFX:
+                    return PlayerPrefs.GetFloat("sfx_volume", 1.0f);
+            }
+        }
+
+        public static float GetCompositeVolume(SoundType soundType)
+        {
+            float frac = (soundType == SoundType.Master)? 1.0f : GetSingleVolume(SoundType.Master);
+            return GetSingleVolume(soundType) * frac;
+        }
     }
 
     public static class Localization
@@ -328,8 +359,7 @@ namespace Utils
         public bool useTitleDividers;
     }
 
-    [Serializable]
-    public class CanvasPrefabs
+    [Serializable] public class CanvasPrefabs
     {
         [Header("Canvas Sprites")]
         public RandomSprite[] canvasSprites;
@@ -342,8 +372,7 @@ namespace Utils
         // (I'd like it if you added a header for each category)
     }
 
-    [Serializable]
-    public class CustomDialogSprites
+    [Serializable] public class CustomDialogSprites
     {
         public Sprite dialogBox;
         public Sprite dialogOption;
