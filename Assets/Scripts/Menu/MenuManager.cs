@@ -22,6 +22,7 @@ public class MenuManager : MonoBehaviour
     [Header("BlockySlider")]
     [SerializeField] private BlockySlider SFX;
     [SerializeField] private BlockySlider Music;
+    [SerializeField] private BlockySlider Master;
 
     [Header("TextSwitcher")]
     [SerializeField] private UI.TextSwitcher textSwitcher;
@@ -237,9 +238,19 @@ public class MenuManager : MonoBehaviour
 
                 if (currentSelection == 2 && rightKeyPressed)
                 {
+                    Master.increaseBlocks();
+                }
+
+                if (currentSelection == 2 && leftKeyPressed)
+                {
+                    Master.decreaseBlocks();
+                }
+
+                if (currentSelection == 3 && rightKeyPressed)
+                {
                     textSwitcher.IncreaseIndex();
                 }
-                if (currentSelection == 2 && leftKeyPressed)
+                if (currentSelection == 3 && leftKeyPressed)
                 {
                     textSwitcher.DecreaseIndex();
                 }
@@ -348,10 +359,10 @@ public class MenuManager : MonoBehaviour
         switch (language)
         {
             case "EN":
-                LanguageManager.Instance.setLanguage(Utils.Languege.English);
+                LanguageManager.Instance.setLanguage(Utils.Language.En);
                 break;
             case "ES":
-                LanguageManager.Instance.setLanguage(Utils.Languege.Spanish);
+                LanguageManager.Instance.setLanguage(Utils.Language.Es);
                 break;
         }
 

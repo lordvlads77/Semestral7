@@ -11,16 +11,16 @@ public sealed class ChangeLanguageInRealTime : MonoBehaviour
     [Tooltip("☐ = do NOT change Language,\n☑ = DO change Language ")]
     [SerializeField] private bool shouldChangeLanguage = true;
 
-    private Utils.Languege currentLanguage;
+    private Utils.Language currentLanguage;
 
-    [field: SerializeField] public Utils.Languege desiredLanguage { get; private set; }
+    [field: SerializeField] public Utils.Language desiredLanguage { get; private set; }
 
 
     private void FixedUpdate()
     {
         if (!shouldChangeLanguage) { return; }
 
-        if (currentLanguage != desiredLanguage && desiredLanguage != Utils.Languege.COUNT)
+        if (currentLanguage != desiredLanguage )
         {
             LanguageManager.Instance.setLanguage(desiredLanguage);
         }
@@ -41,7 +41,7 @@ public sealed class ChangeLanguageInRealTime : MonoBehaviour
         LanguageManager.TryGetInstance()?.UnSubscribe(OnLanguageChange);
     }
 
-    private void OnLanguageChange(Utils.Languege _language)
+    private void OnLanguageChange(Utils.Language _language)
     {
         currentLanguage = _language;
     }

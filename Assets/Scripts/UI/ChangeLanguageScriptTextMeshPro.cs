@@ -29,7 +29,7 @@ namespace UI
         }
 
 
-        public void OnLanguageChange(Utils.Languege newLanguage)
+        public void OnLanguageChange(Utils.Language newLanguage)
         {
             LanguageContainer container = languageContainer.findLanguageContainerOfLanguage(newLanguage);
             uiText.text = container.text;

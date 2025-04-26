@@ -11,7 +11,7 @@ namespace Scriptables
     {
         public LanguageContainer[] languageContainers;
 
-        public LanguageContainer findLanguageContainerOfLanguage(Utils.Languege selected_lang) {
+        public LanguageContainer findLanguageContainerOfLanguage(Utils.Language selected_lang) {
             LanguageContainer result = default;
 
             for (int i = 0; i < languageContainers.Length; ++i)
@@ -33,7 +33,7 @@ namespace Scriptables
     public struct LanguageContainer
     {
         [TextArea] public string text;
-        public Utils.Languege language;
+        public Utils.Language language;
     }
 
 }

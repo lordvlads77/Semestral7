@@ -1,3 +1,6 @@
+// Ignore Spelling: SFX
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -14,7 +17,16 @@ namespace SaveSystem
 
         const string LEVEL_INDEX_KEY = "level_key";
 
+        public const string SFX_KEY = "sfx_volume";
+
+        public const string MUSIC_KEY = "music_volume";
+
+        public const string MASTER_VOLUME_KEY = "master_volume";
+
         const string SEPARATOR = "|*|";
+
+        public static Action OnSaveData;
+        public static Action OnLoadData;
 
         public static void SaveLevelData()
         {
@@ -28,13 +40,14 @@ namespace SaveSystem
             PlayerPrefs.SetInt(LEVEL_INDEX_KEY, SceneManager.GetActiveScene().buildIndex);
             PlayerPrefs.SetString(LEVEL_DATA_KEY, sb.ToString());
             PlayerPrefs.Save();
+            OnSaveData?.Invoke();
         }
 
         public static void LoadLevelData()
         {
             CreateKeyIfOneDoesNotExist();
             string raw_data = PlayerPrefs.GetString(LEVEL_DATA_KEY);
-            if (raw_data == "")
+            if (string.IsNullOrWhiteSpace(raw_data))
             {
                 EDebug.LogError("No data exist to load");
 
@@ -55,7 +68,7 @@ namespace SaveSystem
             EDebug.Log("<color=orange>Loading data </color>");
             EDebug.Log($"<color=orange>Total elements = {data_divided.Length}</color>");
             EDebug.Log($"<color=orange>Current Index = {index}</color>");
-
+            OnLoadData?.Invoke();
         }
 
         #region SAVING_ENTITIES
@@ -124,11 +137,11 @@ namespace SaveSystem
 
         private static void LoadGameScene()
         {
-            if(SceneManager.GetActiveScene().buildIndex != PlayerPrefs.GetInt(LEVEL_INDEX_KEY))
+            if (SceneManager.GetActiveScene().buildIndex != PlayerPrefs.GetInt(LEVEL_INDEX_KEY))
             {
                 SceneManager.LoadScene(PlayerPrefs.GetInt(LEVEL_INDEX_KEY));
             }
-        } 
+        }
 
         #endregion
 
@@ -139,9 +152,24 @@ namespace SaveSystem
                 PlayerPrefs.SetString(LEVEL_DATA_KEY, "");
             }
 
-            if (!PlayerPrefs.HasKey(LEVEL_INDEX_KEY) )
+            if (!PlayerPrefs.HasKey(LEVEL_INDEX_KEY))
             {
                 PlayerPrefs.SetInt(LEVEL_INDEX_KEY, SceneManager.GetActiveScene().buildIndex);
+            }
+
+            if (!PlayerPrefs.HasKey(SFX_KEY))
+            {
+                PlayerPrefs.SetFloat(SFX_KEY, 0.5f);
+            }
+
+            if (!PlayerPrefs.HasKey(MUSIC_KEY))
+            {
+                PlayerPrefs.SetFloat(MUSIC_KEY, 0.5f);
+            }
+
+            if (!PlayerPrefs.HasKey(MASTER_VOLUME_KEY))
+            {
+                PlayerPrefs.SetFloat(MASTER_VOLUME_KEY, 0.5f);
             }
         }
 
