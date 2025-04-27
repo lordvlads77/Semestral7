@@ -121,3 +121,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healingAmount: 20
+  onHitPar: {fileID: 1917001649819368666, guid: fb0cbf296a0aeae42816986b72615f77,
+    type: 3}
