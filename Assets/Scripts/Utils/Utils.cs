@@ -8,10 +8,19 @@ using Random = UnityEngine.Random;
 
 namespace Utils
 {
-    public enum Language
-    {
+    public enum Language // NOTE: This enum is used for localization...
+    {                   // JSON files are named after the enum values and MUST be lowercase
         En,
         Es
+    }
+    
+    [System.Flags] public enum EventConditions
+    {
+        None = 0,
+        OnEnable = 1 << 0,
+        OnAwake = 1 << 1,
+        OnStart = 1 << 2,
+        OnBoolCommand = 1 << 3,
     }
     
     public enum GameStates : byte
@@ -73,10 +82,6 @@ namespace Utils
         Music,
         SFX
     }
-
-    /* "sfx_volume"
-    "music_volume"
-    "master_volume" */
     
     public static class FmodUtils
     {
@@ -377,6 +382,12 @@ namespace Utils
         public Sprite dialogBox;
         public Sprite dialogOption;
         public Sprite nameDivider;
+    }
+
+    [Serializable] public class EventSoundType
+    {
+        public EventInstance EventI;
+        public SoundType soundType;
     }
 
 }
