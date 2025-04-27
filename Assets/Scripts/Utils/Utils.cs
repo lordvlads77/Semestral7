@@ -88,7 +88,7 @@ namespace Utils
         private static readonly GameManager Gm = MiscUtils.GetOrCreateGameManager();
         public static float GetSingleVolume(SoundType soundType)
         {
-            if (!Gm.LoadedData) SaveSystem.SaveSystem.LoadLevelData();
+            if (!Gm.LoadedData) SaveSystem.SaveSystem.LoadEverything();
             switch (soundType)
             {
                 default:
@@ -174,13 +174,14 @@ namespace Utils
         }
     }
 
+    /*
     [Serializable]
     public enum Languege : int
     {
         English = 0,
         Spanish,
         COUNT,/// NOTE : Cuando agregas un lenguage nuevo tienes que ponerlos antes que el COUNT
-    }
+    }*/
 
     public static class MathUtils
     {

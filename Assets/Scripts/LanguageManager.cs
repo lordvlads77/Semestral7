@@ -6,22 +6,22 @@ using UnityEngine;
 [DefaultExecutionOrder(-10)]
 public class LanguageManager : Utils.Singleton<LanguageManager>
 {
-    public Utils.Languege currentLanguage { get; private set; } = Utils.Languege.English;
+    public Utils.Language currentLanguage { get; private set; } = Utils.Language.En;
 
-    Action<Utils.Languege> currentAction = null;
+    Action<Utils.Language> currentAction = null;
 
 
-    public void Subscribe(Action<Utils.Languege> method)
+    public void Subscribe(Action<Utils.Language> method)
     {
         currentAction += method;
     }
 
-    public void UnSubscribe(Action<Utils.Languege> method)
+    public void UnSubscribe(Action<Utils.Language> method)
     {
         currentAction -= method;
     }
 
-    public void setLanguage(Utils.Languege newLanguage)
+    public void setLanguage(Utils.Language newLanguage)
     {
         currentLanguage = newLanguage;
         if (currentAction != null) { currentAction.Invoke(currentLanguage); }

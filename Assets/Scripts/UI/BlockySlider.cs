@@ -20,6 +20,7 @@ namespace UI
         [Tooltip("This is what the slider will use to visually represent the values")]
         [SerializeField] Image[] blocks;
 
+        [field: Header("Valores para controlar el BlockySlider")]
         [Tooltip("This is the percentage represented by the slider ")]
         [field: SerializeField, Range(0.0f, 1.0f)] public float percent { get; private set; } = 0.5f;
 
@@ -27,6 +28,7 @@ namespace UI
         public int currentTurnedOnBlockCount { get; private set; } = 0;
         public int desiredTurnedOnBlockCount { get; private set; } = 0;
 
+        [field: Header("Evento para saber cuando cambia la variable percent")]
         public Action<float> OnBlockChangeAction;
 
 
@@ -98,6 +100,11 @@ namespace UI
             {
                 desiredTurnedOnBlockCount = 0;
             }
+        }
+
+        public void setBlocks(int _blocks)
+        {
+            desiredTurnedOnBlockCount = Math.Clamp(_blocks, 0, blocks.Length - 1);
         }
 
         private void UpdateBlocks()

@@ -13,8 +13,14 @@ namespace SaveSystem
     {
         const string LEVEL_DATA_KEY = "level_data";
         const string LEVEL_INDEX_KEY = "level_key";
+        public const string SFX_KEY = "sfx_volume";
+
+        public const string MUSIC_KEY = "music_volume";
+
+        public const string MASTER_VOLUME_KEY = "master_volume";
+
         const string SEPARATOR = "|*|";
-        
+
         public static Action OnSaveData;
         public static Action OnLoadData;
 
@@ -33,7 +39,7 @@ namespace SaveSystem
             OnSaveData?.Invoke();
         }
 
-        public static void LoadLevelData()
+        public static void LoadEverything()
         {
             CreateKeyIfOneDoesNotExist();
             string raw_data = PlayerPrefs.GetString(LEVEL_DATA_KEY);
@@ -59,7 +65,79 @@ namespace SaveSystem
             OnLoadData?.Invoke();
         }
 
-        #region SAVING_ENTITIES
+        public static void LoadLevelEntitiesData()
+        {
+            CreateKeyIfOneDoesNotExist();
+
+            string raw_data = PlayerPrefs.GetString(LEVEL_DATA_KEY);
+            if (string.IsNullOrWhiteSpace(raw_data))
+            {
+                EDebug.LogError("No data exist to load");
+                return;
+            }
+
+            int index = 0;
+            string[] data_divided = raw_data.Split(SEPARATOR);
+
+            LivingEntity[] allLivingEntities = GameObject.FindObjectsByType<LivingEntity>(FindObjectsSortMode.None);
+
+            LoadPlayerData(allLivingEntities, data_divided, ref index);
+            LoadEnemyData(allLivingEntities, data_divided, ref index);
+        }
+
+        public static void LoadLevel()
+        {
+            CreateKeyIfOneDoesNotExist();
+            LoadGameScene();
+
+
+        }
+
+        public static void SaveVolume(SoundType soundType, float _newVolume)
+        {
+            switch (soundType)
+            {
+                case SoundType.Master:
+                    SaveFloatValue(MASTER_VOLUME_KEY, _newVolume);
+                    break;
+
+                case SoundType.Music:
+                    SaveFloatValue(MUSIC_KEY, _newVolume);
+                    break;
+
+                case SoundType.SFX:
+                    SaveFloatValue(SFX_KEY, _newVolume);
+                    break;
+
+            }
+            /// FERCHO LLAMA TU COSA AQUI
+
+        }
+
+        public static float GetVolume(SoundType soundType)
+        {
+            CreateKeyIfOneDoesNotExist();
+            float result = -1f;
+
+            switch (soundType)
+            {
+                case SoundType.Master:
+                    result = PlayerPrefs.GetFloat(MASTER_VOLUME_KEY);
+                    break;
+
+                case SoundType.Music:
+
+                    result = PlayerPrefs.GetFloat(MUSIC_KEY);
+                    break;
+
+                case SoundType.SFX:
+                    result = PlayerPrefs.GetFloat(SFX_KEY);
+                    break;
+            }
+            return result;
+        }
+
+        #region SAVING_FUNCTIONS
 
         private static string SavePlayerData(LivingEntity[] _allLivingEntities)
         {
@@ -92,10 +170,16 @@ namespace SaveSystem
             return sb.ToString();
         }
 
+        private static void SaveFloatValue(string key, float _newValue)
+        {
+            CreateKeyIfOneDoesNotExist();
+            PlayerPrefs.SetFloat(key, _newValue);
+        }
+
         #endregion
 
 
-        #region LOADING_ENTITIES
+        #region LOADING_FUNCTIONS
 
         private static void LoadPlayerData(LivingEntity[] allLivingEntities, string[] data_divided, ref int index)
         {
@@ -125,11 +209,11 @@ namespace SaveSystem
 
         private static void LoadGameScene()
         {
-            if(SceneManager.GetActiveScene().buildIndex != PlayerPrefs.GetInt(LEVEL_INDEX_KEY))
+            if (SceneManager.GetActiveScene().buildIndex != PlayerPrefs.GetInt(LEVEL_INDEX_KEY))
             {
                 SceneManager.LoadScene(PlayerPrefs.GetInt(LEVEL_INDEX_KEY));
             }
-        } 
+        }
 
         #endregion
 
@@ -140,9 +224,24 @@ namespace SaveSystem
                 PlayerPrefs.SetString(LEVEL_DATA_KEY, "");
             }
 
-            if (!PlayerPrefs.HasKey(LEVEL_INDEX_KEY) )
+            if (!PlayerPrefs.HasKey(LEVEL_INDEX_KEY))
             {
                 PlayerPrefs.SetInt(LEVEL_INDEX_KEY, SceneManager.GetActiveScene().buildIndex);
+            }
+
+            if (!PlayerPrefs.HasKey(SFX_KEY))
+            {
+                PlayerPrefs.SetFloat(SFX_KEY, 0.5f);
+            }
+
+            if (!PlayerPrefs.HasKey(MUSIC_KEY))
+            {
+                PlayerPrefs.SetFloat(MUSIC_KEY, 0.5f);
+            }
+
+            if (!PlayerPrefs.HasKey(MASTER_VOLUME_KEY))
+            {
+                PlayerPrefs.SetFloat(MASTER_VOLUME_KEY, 0.5f);
             }
         }
 
@@ -150,8 +249,8 @@ namespace SaveSystem
         {
             return PlayerPrefs.HasKey(LEVEL_DATA_KEY);
         }
-        
-        
+
+
 
     }
 

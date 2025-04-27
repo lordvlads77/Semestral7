@@ -15,7 +15,7 @@ namespace UI
         [SerializeField] private int desiredIndex;
 
         [Header("Lister")]
-        Action<string> textChanged;
+        [field: SerializeField] public Action<string> textChanged;
 
         void Start()
         {

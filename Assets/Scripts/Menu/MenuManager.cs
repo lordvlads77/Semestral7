@@ -28,12 +28,6 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private UI.TextSwitcher textSwitcher;
 
 
-    [SerializeField] private float inputCooldown = 0.2f; // Tiempo de espera entre inputs
-    private float lastInputTime = 0f;
-
-    private bool isWeaponDownPressed = false;
-    private bool isWeaponUpPressed = false;
-
     enum CURRENT_MENU_STATE
     {
         INTRO,
@@ -43,6 +37,7 @@ public class MenuManager : MonoBehaviour
 
     private void OnEnable()
     {
+        textSwitcher.textChanged += this.OnLanguageChange;
         /*
         Actions.Instance.OnWeaponDownToggledEvent += OnWeaponDown;
         Actions.Instance.OnWeaponUpToggledEvent += OnWeaponUp;
@@ -63,6 +58,8 @@ public class MenuManager : MonoBehaviour
             Actions.Instance.OnAttackTriggeredEvent -= OnJump;
             */
         }
+
+        textSwitcher.textChanged -= this.OnLanguageChange;
     }
 
     private void VolumeChanged(float val)
@@ -248,9 +245,19 @@ public class MenuManager : MonoBehaviour
 
                 if (currentSelection == 2 && rightKeyPressed)
                 {
+                    Master.increaseBlocks();
+                }
+
+                if (currentSelection == 2 && leftKeyPressed)
+                {
+                    Master.decreaseBlocks();
+                }
+
+                if (currentSelection == 3 && rightKeyPressed)
+                {
                     textSwitcher.IncreaseIndex();
                 }
-                if (currentSelection == 2 && leftKeyPressed)
+                if (currentSelection == 3 && leftKeyPressed)
                 {
                     textSwitcher.DecreaseIndex();
                 }
@@ -275,7 +282,7 @@ public class MenuManager : MonoBehaviour
 
     public void Cargar()
     {
-        SaveSystem.SaveSystem.LoadLevelData();
+        SaveSystem.SaveSystem.LoadEverything();
         EDebug.Log("<color=orange>Cargar</color>");
     }
 
@@ -350,4 +357,22 @@ public class MenuManager : MonoBehaviour
         }
 
     }
+
+
+    private void OnLanguageChange(string language)
+    {
+        //EDebug.Log($"<color=orange> language chosen |{language}|</color>", this);
+
+        switch (language)
+        {
+            case "EN":
+                LanguageManager.Instance.setLanguage(Utils.Language.En);
+                break;
+            case "ES":
+                LanguageManager.Instance.setLanguage(Utils.Language.Es);
+                break;
+        }
+
+    }
+
 }

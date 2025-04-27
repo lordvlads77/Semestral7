@@ -775,6 +775,9 @@ MonoBehaviour:
     hitMaterials: []
     animTime: 0.1
   isPlayer: 0
+  groundLayers:
+    serializedVersion: 2
+    m_Bits: 0
   weaponTypeOverride: 0
   dmgParticles: []
   criticalDmgParticles: []
@@ -1490,7 +1493,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1739177136}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &1595975445
+--- !u!1001 &1639325103
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -1573,10 +1576,70 @@ PrefabInstance:
       propertyPath: entityName
       value: Sir Player <Kinght of the kingdom and fondler of breasts>
       objectReference: {fileID: 0}
+    - target: {fileID: 3797058045696758372, guid: 94cd54f3e49f0224684d2023ea43391f,
+        type: 3}
+      propertyPath: hurtFXVars.blinks
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3797058045696758372, guid: 94cd54f3e49f0224684d2023ea43391f,
+        type: 3}
+      propertyPath: groundLayer.m_Bits
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3797058045696758372, guid: 94cd54f3e49f0224684d2023ea43391f,
+        type: 3}
+      propertyPath: groundLayers.m_Bits
+      value: 257
+      objectReference: {fileID: 0}
+    - target: {fileID: 3797058045696758372, guid: 94cd54f3e49f0224684d2023ea43391f,
+        type: 3}
+      propertyPath: hurtFXVars.animTime
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 3797058045696758372, guid: 94cd54f3e49f0224684d2023ea43391f,
+        type: 3}
+      propertyPath: hurtFXVars.renderer
+      value: 
+      objectReference: {fileID: 1639325104}
+    - target: {fileID: 3797058045696758372, guid: 94cd54f3e49f0224684d2023ea43391f,
+        type: 3}
+      propertyPath: hurtFXVars.ogMaterials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3797058045696758372, guid: 94cd54f3e49f0224684d2023ea43391f,
+        type: 3}
+      propertyPath: hurtFXVars.hitMaterials.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3797058045696758372, guid: 94cd54f3e49f0224684d2023ea43391f,
+        type: 3}
+      propertyPath: hurtFXVars.ogMaterials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: ccae2dc6cf6f0c4479b782fedd0c8172, type: 2}
+    - target: {fileID: 3797058045696758372, guid: 94cd54f3e49f0224684d2023ea43391f,
+        type: 3}
+      propertyPath: hurtFXVars.hitMaterials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 4df3b97eb711d774a8cb4ee157e2fc15, type: 2}
+    - target: {fileID: 3797058045696758372, guid: 94cd54f3e49f0224684d2023ea43391f,
+        type: 3}
+      propertyPath: hurtFXVars.hitMaterials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 955b8e54c5a73b143a9d968abf8083aa, type: 2}
+    - target: {fileID: 3797058045696758372, guid: 94cd54f3e49f0224684d2023ea43391f,
+        type: 3}
+      propertyPath: hurtFXVars.hitMaterials.Array.data[2]
+      value: 
+      objectReference: {fileID: 2100000, guid: 7c7de859cb2aaf0448c6a343b10d7d18, type: 2}
+    - target: {fileID: 3797058045696758372, guid: 94cd54f3e49f0224684d2023ea43391f,
+        type: 3}
+      propertyPath: hurtFXVars.hitMaterials.Array.data[3]
+      value: 
+      objectReference: {fileID: 2100000, guid: 4c2f889d803b24b47ab763fbfa54b972, type: 2}
     - target: {fileID: 5367782462016838935, guid: 94cd54f3e49f0224684d2023ea43391f,
         type: 3}
       propertyPath: m_Name
-      value: Char_Knight_Black_FxScale
+      value: Char_Knight_Black_FxScale (1)
       objectReference: {fileID: 0}
     - target: {fileID: 5367782462016838935, guid: 94cd54f3e49f0224684d2023ea43391f,
         type: 3}
@@ -1599,6 +1662,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 94cd54f3e49f0224684d2023ea43391f, type: 3}
+--- !u!137 &1639325104 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 4429109959194262414, guid: 94cd54f3e49f0224684d2023ea43391f,
+    type: 3}
+  m_PrefabInstance: {fileID: 1639325103}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1648307594
 GameObject:
   m_ObjectHideFlags: 0
@@ -2331,6 +2400,9 @@ MonoBehaviour:
     hitMaterials: []
     animTime: 0.1
   isPlayer: 0
+  groundLayers:
+    serializedVersion: 2
+    m_Bits: 0
   weaponTypeOverride: 0
   dmgParticles: []
   criticalDmgParticles: []
@@ -3051,6 +3123,9 @@ MonoBehaviour:
     hitMaterials: []
     animTime: 0.1
   isPlayer: 0
+  groundLayers:
+    serializedVersion: 2
+    m_Bits: 0
   weaponTypeOverride: 0
   dmgParticles: []
   criticalDmgParticles: []
@@ -4205,6 +4280,9 @@ MonoBehaviour:
     hitMaterials: []
     animTime: 0.1
   isPlayer: 0
+  groundLayers:
+    serializedVersion: 2
+    m_Bits: 0
   weaponTypeOverride: 0
   dmgParticles: []
   criticalDmgParticles: []
@@ -4405,4 +4483,4 @@ SceneRoots:
   - {fileID: 1729696906}
   - {fileID: 754097451}
   - {fileID: 930823132}
-  - {fileID: 1595975445}
+  - {fileID: 1639325103}

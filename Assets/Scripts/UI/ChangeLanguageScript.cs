@@ -10,7 +10,7 @@ namespace UI
     {
         [SerializeField] Scriptables.MultiLanguageContainer languageContainer;
 
-         Text uiText;
+        [SerializeField] Text uiText;
 
 
         private void OnEnable()
@@ -30,7 +30,7 @@ namespace UI
         }
 
 
-        public void OnLanguageChange(Utils.Languege newLanguage)
+        public void OnLanguageChange(Utils.Language newLanguage)
         {
             LanguageContainer container = languageContainer.findLanguageContainerOfLanguage(newLanguage);
             uiText.text = container.text;

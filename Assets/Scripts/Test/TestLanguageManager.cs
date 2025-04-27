@@ -18,13 +18,13 @@ public class TestLanguageManager : MonoBehaviour
         if (movement.x > 0)
         {
             EDebug.Log("setting lang to english");
-            LanguageManager.Instance.setLanguage(Utils.Languege.English);
+            LanguageManager.Instance.setLanguage(Utils.Language.En);
         }
 
         if (movement.x < 0)
         {
             EDebug.Log("setting lang to spanish");
-            LanguageManager.Instance.setLanguage(Utils.Languege.Spanish);
+            LanguageManager.Instance.setLanguage(Utils.Language.Es);
         }
     }
 }
