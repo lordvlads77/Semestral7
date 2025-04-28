@@ -28,12 +28,23 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private UI.TextSwitcher textSwitcher;
 
 
+    [Header("Loading Script")]
+    [SerializeField] private Loading loading;
+
+    private Coroutine _menuMovementCoroutine;
+
+    [Header("Input related")]
+    [SerializeField] float howLongToWaitForNextInput = 1.0f / 30.0f;
+    bool isInputBlocked = false;
+
     enum CURRENT_MENU_STATE
     {
         INTRO,
         MAIN_MENU,
         OPTIONS
     }
+
+    #region LanguageManagerBoilerPlate
 
     private void OnEnable()
     {
@@ -43,7 +54,7 @@ public class MenuManager : MonoBehaviour
         Actions.Instance.OnWeaponUpToggledEvent += OnWeaponUp;
         Actions.Instance.OnAttackTriggeredEvent += OnJump;
         */
-        if(SFX != null) 
+        if (SFX != null)
             SFX.OnBlockChangeAction += VolumeChanged;
     }
 
@@ -64,8 +75,10 @@ public class MenuManager : MonoBehaviour
 
     private void VolumeChanged(float val)
     {
-        
+
     }
+
+    #endregion
 
     #region INPUT_EVENTS
 
@@ -118,11 +131,6 @@ public class MenuManager : MonoBehaviour
         EDebug.Assert(textSwitcher != null, $"El script necesita un {nameof(TextSwitcher)}", this);
     }
 
-    /*  public void OnIntroFiniched()
-      {
-          selector.gameObject.SetActive(true);
-          currentState = CURRENT_MENU_STATE.MAIN_MENU;
-      }*/
 
     #region MOVE_SELECTOR
 
@@ -178,11 +186,7 @@ public class MenuManager : MonoBehaviour
     }
 
     #endregion
-    /* void SkipAnimation() 
-     {
-         OnIntroFiniched();
-         animator.Play(0,0, animator.GetCurrentAnimatorClipInfo(0)[0].clip.length);
-     }*/
+
 
     private void Update()
     {
@@ -265,7 +269,7 @@ public class MenuManager : MonoBehaviour
 
                 if (cosa.Jump)
                 {
-                    if (currentSelection == 3)
+                    if (currentSelection == 4)
                     {
                         desiredState = CURRENT_MENU_STATE.MAIN_MENU;
                     }
@@ -277,7 +281,9 @@ public class MenuManager : MonoBehaviour
     public void Inicio()
     {
         EDebug.Log("<color=orange>Inicio</color>");
-        SceneManager.LoadScene("Scenes/GameLevel");
+        loading.LoadScene();
+        //loading.OnStartChangeScene;
+        //SceneManager.LoadScene("Scenes/GameLevel");
     }
 
     public void Cargar()
@@ -298,17 +304,37 @@ public class MenuManager : MonoBehaviour
         Application.Quit();
     }
 
+    /*
+     
+    if (_menuMovementCoroutine != null)
+                        StopCoroutine(_menuMovementCoroutine );
+                    _menuMovementCoroutine = StartCoroutine(MenuMoveInput()); 
+private IEnumerator MenuMoveInput()
+        {
+            yield return new WaitForSeconds(menuInputCd);
+            // Logic for moving menu stuff
+        } 
+private Coroutine _menuMovementCoroutine; 
+     
+     */
+
     private void ProcessCursorMovement()
     {
+        if (isInputBlocked) { return; }
+
+
         if (cosa.Movement.y > 0.1f)
         {
             ChangeCurrentSelectionUntilObjectIsFound(false);
+            StopCoroutine(BlockInput());
+            _menuMovementCoroutine = StartCoroutine(BlockInput());
         }
         else if (cosa.Movement.y < -0.1f)
         {
             ChangeCurrentSelectionUntilObjectIsFound();
+            StopCoroutine(BlockInput());
+            _menuMovementCoroutine = StartCoroutine(BlockInput());
         }
-
     }
 
     private void UpdateStates()
@@ -375,4 +401,12 @@ public class MenuManager : MonoBehaviour
 
     }
 
+    private IEnumerator BlockInput()
+    {
+        isInputBlocked = true;
+        yield return new WaitForSeconds(howLongToWaitForNextInput);
+        isInputBlocked = false;
+    }
+
 }
+
