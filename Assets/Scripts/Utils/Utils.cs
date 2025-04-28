@@ -20,7 +20,21 @@ namespace Utils
         OnEnable = 1 << 0,
         OnAwake = 1 << 1,
         OnStart = 1 << 2,
-        OnBoolCommand = 1 << 3,
+        OnBoolFalse = 1 << 3,
+        OnBoolTrue = 1 << 4,
+        OnDestroy = 1 << 5,
+        OnDisable = 1 << 6,
+        OnGamePaused = 1 << 7,
+        OnGameUnpaused = 1 << 8,
+        OnTriggerEnter = 1 << 9,
+        OnTriggerExit = 1 << 10,
+    }
+
+    [System.Flags] public enum TriggerConditions
+    {
+        None = 0,
+        ByLayers = 1 << 0,
+        ByTags = 1 << 1,
     }
     
     public enum GameStates : byte
@@ -88,7 +102,7 @@ namespace Utils
         private static readonly GameManager Gm = MiscUtils.GetOrCreateGameManager();
         public static float GetSingleVolume(SoundType soundType)
         {
-            if (!Gm.LoadedData) SaveSystem.SaveSystem.LoadEverything();
+            if (!Gm.LoadedData) SaveSystem.SaveSystem.LoadVolumePrefs();
             switch (soundType)
             {
                 default:

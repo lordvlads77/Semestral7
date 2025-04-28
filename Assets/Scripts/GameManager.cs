@@ -111,8 +111,9 @@ public sealed class GameManager : Singleton<GameManager>
         if (canvasPrefabs == null) EDebug.LogError("CanvasPrefabs can NOT be null! \n Make sure to add it before playing!!");
         if (Dialog == null) Dialog = gameObject.AddComponent<Dialog>();
         if (Actions == null) Actions = gameObject.AddComponent<Input.Actions>();
-        if (SoundManager == null && SoundManager.TryGetInstance() == null)
-            SoundManager = gameObject.AddComponent<SoundManager>();
+        if (SoundManager != null) return;
+        SoundManager = GetComponent<SoundManager>();
+        if (SoundManager == null) SoundManager = gameObject.AddComponent<SoundManager>();
     }
 
     public void Subscribe(Action<GameStates> function)

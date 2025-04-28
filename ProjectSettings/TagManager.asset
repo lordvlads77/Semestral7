@@ -11,6 +11,7 @@ TagManager:
   - DamageDealer
   - NPC
   - EnemySpawnPoint
+  - SoundTrigger
   layers:
   - Default
   - TransparentFX
