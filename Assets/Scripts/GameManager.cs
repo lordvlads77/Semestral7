@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Entity;
+using FMOD;
 using FMOD.Studio;
 using FMODUnity;
 using Scriptables;
@@ -33,6 +34,7 @@ public sealed class GameManager : Singleton<GameManager>
     public bool SavedData { get; private set; }
     public bool LoadedData { get; private set; }
     public GameObject player;
+    public SoundManager SoundManager { get; private set; }
     
     private Dialog Dialog {
         get => Dialog.Instance;
@@ -109,6 +111,9 @@ public sealed class GameManager : Singleton<GameManager>
         if (canvasPrefabs == null) EDebug.LogError("CanvasPrefabs can NOT be null! \n Make sure to add it before playing!!");
         if (Dialog == null) Dialog = gameObject.AddComponent<Dialog>();
         if (Actions == null) Actions = gameObject.AddComponent<Input.Actions>();
+        if (SoundManager != null) return;
+        SoundManager = GetComponent<SoundManager>();
+        if (SoundManager == null) SoundManager = gameObject.AddComponent<SoundManager>();
     }
 
     public void Subscribe(Action<GameStates> function)

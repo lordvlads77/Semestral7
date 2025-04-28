@@ -8,10 +8,33 @@ using Random = UnityEngine.Random;
 
 namespace Utils
 {
-    public enum Language
-    {
+    public enum Language // NOTE: This enum is used for localization...
+    {                   // JSON files are named after the enum values and MUST be lowercase
         En,
         Es
+    }
+    
+    [System.Flags] public enum EventConditions
+    {
+        None = 0,
+        OnEnable = 1 << 0,
+        OnAwake = 1 << 1,
+        OnStart = 1 << 2,
+        OnBoolFalse = 1 << 3,
+        OnBoolTrue = 1 << 4,
+        OnDestroy = 1 << 5,
+        OnDisable = 1 << 6,
+        OnGamePaused = 1 << 7,
+        OnGameUnpaused = 1 << 8,
+        OnTriggerEnter = 1 << 9,
+        OnTriggerExit = 1 << 10,
+    }
+
+    [System.Flags] public enum TriggerConditions
+    {
+        None = 0,
+        ByLayers = 1 << 0,
+        ByTags = 1 << 1,
     }
     
     public enum GameStates : byte
@@ -73,17 +96,13 @@ namespace Utils
         Music,
         SFX
     }
-
-    /* "sfx_volume"
-    "music_volume"
-    "master_volume" */
     
     public static class FmodUtils
     {
         private static readonly GameManager Gm = MiscUtils.GetOrCreateGameManager();
         public static float GetSingleVolume(SoundType soundType)
         {
-            if (!Gm.LoadedData) SaveSystem.SaveSystem.LoadEverything();
+            if (!Gm.LoadedData) SaveSystem.SaveSystem.LoadVolumePrefs();
             switch (soundType)
             {
                 default:
@@ -378,6 +397,12 @@ namespace Utils
         public Sprite dialogBox;
         public Sprite dialogOption;
         public Sprite nameDivider;
+    }
+
+    [Serializable] public class EventSoundType
+    {
+        public EventInstance EventI;
+        public SoundType soundType;
     }
 
 }

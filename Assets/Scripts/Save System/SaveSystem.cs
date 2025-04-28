@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Text;
 using Entity;
 using UnityEngine;
@@ -64,6 +62,14 @@ namespace SaveSystem
             EDebug.Log($"<color=orange>Current Index = {index}</color>");
             OnLoadData?.Invoke();
         }
+        
+        public static void LoadVolumePrefs()
+        {
+            if (!PlayerPrefs.HasKey(MASTER_VOLUME_KEY)) PlayerPrefs.SetFloat(MASTER_VOLUME_KEY, 1.0f);
+            if (!PlayerPrefs.HasKey(MUSIC_KEY)) PlayerPrefs.SetFloat(MUSIC_KEY, 1.0f);
+            if (!PlayerPrefs.HasKey(SFX_KEY)) PlayerPrefs.SetFloat(SFX_KEY, 1.0f);
+            PlayerPrefs.Save();
+        }
 
         public static void LoadLevelEntitiesData()
         {
@@ -93,25 +99,24 @@ namespace SaveSystem
 
         }
 
-        public static void SaveVolume(SoundType soundType, float _newVolume)
+        public static void SaveVolume(SoundType soundType, float newVolume)
         {
             switch (soundType)
             {
                 case SoundType.Master:
-                    SaveFloatValue(MASTER_VOLUME_KEY, _newVolume);
+                    SaveFloatValue(MASTER_VOLUME_KEY, newVolume);
                     break;
 
                 case SoundType.Music:
-                    SaveFloatValue(MUSIC_KEY, _newVolume);
+                    SaveFloatValue(MUSIC_KEY, newVolume);
                     break;
 
                 case SoundType.SFX:
-                    SaveFloatValue(SFX_KEY, _newVolume);
+                    SaveFloatValue(SFX_KEY, newVolume);
                     break;
 
             }
-            /// FERCHO LLAMA TU COSA AQUI
-
+            MiscUtils.GetOrCreateGameManager().SoundManager.ChangeGameVolume();
         }
 
         public static float GetVolume(SoundType soundType)
@@ -122,16 +127,16 @@ namespace SaveSystem
             switch (soundType)
             {
                 case SoundType.Master:
-                    result = PlayerPrefs.GetFloat(MASTER_VOLUME_KEY);
+                    result = PlayerPrefs.GetFloat(MASTER_VOLUME_KEY, 1);
                     break;
 
                 case SoundType.Music:
 
-                    result = PlayerPrefs.GetFloat(MUSIC_KEY);
+                    result = PlayerPrefs.GetFloat(MUSIC_KEY, 1);
                     break;
 
                 case SoundType.SFX:
-                    result = PlayerPrefs.GetFloat(SFX_KEY);
+                    result = PlayerPrefs.GetFloat(SFX_KEY, 1);
                     break;
             }
             return result;
