@@ -769,6 +769,8 @@ MonoBehaviour:
   Music: {fileID: 876808407}
   Master: {fileID: 852430070}
   textSwitcher: {fileID: 1464731619}
+  loading: {fileID: 1470535809}
+  howLongToWaitForNextInput: 0.05
 --- !u!1001 &645742349
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3400,6 +3402,53 @@ MonoBehaviour:
   - EN
   - ES
   desiredIndex: 0
+--- !u!1 &1470535808
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1470535810}
+  - component: {fileID: 1470535809}
+  m_Layer: 0
+  m_Name: Loading Script
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1470535809
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1470535808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68ded38fa0c35c64cbcde602d9a5b48a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneToLoad: Scenes/GameLevel
+  sceneBuildIndex: -1337
+  loadScreen: {fileID: 0}
+--- !u!4 &1470535810
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1470535808}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 696.19104, y: 620.04926, z: -588.91235}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1494539323
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3968,7 +4017,7 @@ GameObject:
   m_Icon: {fileID: 2800000, guid: ee8ce5cd9c0883f4182b5cfd43cfd7fe, type: 3}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1585749901
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4033,6 +4082,7 @@ MonoBehaviour:
       type: 3}
     promptName: {fileID: 1211403597667094122, guid: 8963dde98fd27974da51c95ae8a39cd8,
       type: 3}
+  saveDataWarningTime: 5
   npcRange: 1.5
   player: {fileID: 0}
 --- !u!4 &1585749905
@@ -5198,3 +5248,4 @@ SceneRoots:
   - {fileID: 188154657}
   - {fileID: 1585749905}
   - {fileID: 128858255}
+  - {fileID: 1470535810}
