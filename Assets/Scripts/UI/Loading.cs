@@ -19,10 +19,11 @@ public sealed class Loading : MonoBehaviour
         FINISHED,
     }
 
+    private const int DEFAULT_NO_SCENE_TO_LOAD = -1337;
     private GameStates gameStates;
     [Header("Scene to load into")]
     public string sceneToLoad = "";
-    public int sceneBuildIndex = -1337;
+    public int sceneBuildIndex = DEFAULT_NO_SCENE_TO_LOAD;
 
     /// <summary>
     /// DO NOT MOVE THE SCENE LOCATED IN THIS STRING PLEASE
@@ -37,6 +38,7 @@ public sealed class Loading : MonoBehaviour
 
     [field: Header("event")]
     public event Action OnStartChangeScene;
+    public event Action OnEndChangeScene;
 
     private int currentSceneIndex = 0;
 
@@ -45,14 +47,38 @@ public sealed class Loading : MonoBehaviour
         nextLoad = LOAD_PART.NONE;
     }
 
-    public void ChangeToLoad()
+    public void LoadSceneByName(string scene_name)
+    {
+        sceneToLoad = scene_name;
+        sceneBuildIndex = DEFAULT_NO_SCENE_TO_LOAD;
+        LoadScene();
+    }
+
+    public void LoadSceneByIndex(int _scene_build_index)
+    {
+        sceneBuildIndex = _scene_build_index;
+        LoadScene();
+
+    }
+
+    public void LoadScene()
+    {
+        //OnEndChangeScene += OnLoadingScreenOff;
+        ChangeToLoad();
+        OnLoadingScreenSet();
+    }
+
+    public void ChangeToLoad() // llamar esta para iniciar esto
     {
         DontDestroyOnLoad(gameObject);
         currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         SceneManager.sceneUnloaded += OnSceneUnloaded;
         SceneManager.sceneLoaded += OnSceneLoaded;
-        loadScreen.gameObject.SetActive(true);
-        loadScreen.Play("Loading"); // loading Screen Into
+        if (loadScreen != null)
+        {
+            loadScreen.gameObject.SetActive(true);
+            loadScreen.Play("Loading");
+        }
     }
 
     public void OnLoadingScreenSet()// Termino de cargar la ecena 
@@ -90,22 +116,32 @@ public sealed class Loading : MonoBehaviour
                     yield return new WaitForEndOfFrame();
                 }
 
-                loadScreen.Play("Loading_Screen_Out"); //
+                if (loadScreen != null)
+                {
+                    loadScreen.Play("Loading_Screen_Out"); //
+                }
                 SceneManager.UnloadSceneAsync(testingLoadingSceneName);
                 break;
+            case LOAD_PART.NONE:
+                break;
             default:
-                Debug.LogError("Unhanded case while loading level", this);
+                Debug.LogError($"Unhanded case while loading level '{nextLoad.ToString()}'", this);
                 break;
 
         }
 
+        yield return null;
     }
 
     private void OnSceneUnloaded(Scene scene)
     {
+        if (nextLoad != LOAD_PART.UNLOAD_SCENE)
+        { return; }
+
         GameManager.TryGetInstance()?.Unsubscribe(OnGameStateChange);
         nextLoad = LOAD_PART.LOADING_NEXT;
         SceneManager.sceneUnloaded -= OnSceneUnloaded;
+
         if (sceneBuildIndex >= 0)
         {
             SceneManager.LoadSceneAsync(sceneBuildIndex, LoadSceneMode.Additive);
@@ -114,6 +150,8 @@ public sealed class Loading : MonoBehaviour
         {
             SceneManager.LoadSceneAsync(sceneToLoad, LoadSceneMode.Additive);
         }
+
+        OnEndChangeScene?.Invoke();
     }
 
     public void OnLoadingScreenOff()
