@@ -38,6 +38,8 @@ namespace FMOD
         public Transform followTarget;
         [SerializeField, Tooltip("Set this to true if you want to also, PHYSICALLY follow the target in 3D space")]
         private bool movePhysically = false;
+        [SerializeField, Tooltip("Set this to zero for instant teleportation and a value greater for a smoother movement transition"), Range(0,2)]
+        private float lerpValue = 0.25f;
         [SerializeField, Tooltip("Render area gizmo. (Only visible in play mode)")] 
         private bool renderGizmo = false;
         
@@ -151,8 +153,11 @@ namespace FMOD
         }
         private void LateUpdate() {
             if (!in3DSpace || followTarget == null) return;
-            Set3DSpace(followTarget.position);
-            if (movePhysically) transform.position = followTarget.position;
+            Vector3 targetPosition = (lerpValue > 0.001f)? 
+                Vector3.Lerp(transform.position, followTarget.position, lerpValue*Time.deltaTime) 
+                : followTarget.position;
+            Set3DSpace(targetPosition);
+            if (movePhysically) transform.position = targetPosition;
         }
         
         private void SetParamsNPlay() {
