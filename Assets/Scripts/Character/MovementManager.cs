@@ -13,6 +13,7 @@ namespace Character
         private static readonly int AnimJump = Animator.StringToHash("Jump");
         private static readonly int AnimAttack = Animator.StringToHash("Attack");
         private static readonly int AnimGrounded = Animator.StringToHash("Grounded");
+        private static readonly int DogeAnim = Animator.StringToHash("Doge");
         // Added those fields to avoid string lookups in the animator (Slightly better performance)
 
         [Header("Movement Settings")]
@@ -27,7 +28,6 @@ namespace Character
         [Tooltip("X= Forward, Y= Backward, Z= Sideways")]
         public Vector3 crouchSpeeds = new Vector3(1f, 0.75f, 0.75f);
         [SerializeField] private float groundYOffset;
-        [SerializeField] private LayerMask groundLayer;
         [SerializeField, Range(5f, 15f)] private float gravity = 9.81f;
         [SerializeField] private float jumpHeight = 2f;
         [HideInInspector] public Vector3 dir;
@@ -69,6 +69,8 @@ namespace Character
         {
             IInput.OnCrouchToggledEvent += ToggleCrouch;
             IInput.OnAttackTriggeredEvent += Punch;
+            MiscUtils.GetOrCreateGameManager().Subscribe(OnStateChange);
+            OnStateChange(MiscUtils.GetOrCreateGameManager().GameState);
         }
         private void OnDestroy()
         {
@@ -82,10 +84,12 @@ namespace Character
         private void UnSubscribe()
         {
             IInput.OnCrouchToggledEvent -= ToggleCrouch;
+            GameManager.TryGetInstance()?.Unsubscribe(OnStateChange);
         }
         
         private void Update()
         {
+            if(gameState != GameStates.Playing) { return; }
             if (isDead) {
                 stateManager.EnterMovementState(MovementState.Dead, this);
                 return;
@@ -107,8 +111,25 @@ namespace Character
             canDodge = false;
             canTakeDamage = false;
 
-            dodgeDirection = new Vector3(IInput.Movement.x, 0, IInput.Movement.y).normalized;
-            if (dodgeDirection == Vector3.zero) dodgeDirection = transform.forward;
+            Vector3 inputDir = new Vector3(IInput.Movement.x, 0f, IInput.Movement.y);
+
+            if (inputDir.sqrMagnitude > 0.1f)
+            {
+                // Obtener forward y right planos de la cámara
+                Vector3 camForward = _cam.transform.forward;
+                Vector3 camRight = _cam.transform.right;
+                camForward.y = 0;
+                camRight.y = 0;
+                camForward.Normalize();
+                camRight.Normalize();
+                anim.SetTrigger(DogeAnim);
+                // Convertir el input a dirección en el mundo según cámara
+                dodgeDirection = (camForward * inputDir.z + camRight * inputDir.x).normalized;
+            }
+            else
+            {
+                dodgeDirection = transform.forward;
+            }
 
             _velocity = dodgeDirection * dodgeSpeed;
             float elapsedTime = 0f;
@@ -144,54 +165,92 @@ namespace Character
         
         private void HandleActions() // This method will be refactored later (Inputs n shit)
         {
-            if (isDodging == false)
+            if (!isDodging)
             {
                 if (IInput.Jump && IsGrounded())
                 {
                     Jump();
                 }
             }
-            if (IInput.Doge)
+            if (IInput.Doge && canDodge && !isDodging)
             {
                 StartCoroutine(Dodge());
             }
         }
         
-        private void GetDirectionAndMove()
-        {
-            horizontalInput = IInput.Movement.x;
-            verticalInput = IInput.Movement.y;
-            anim.SetFloat(AnimVInput, verticalInput);
-            anim.SetFloat(AnimHInput, horizontalInput);
-            Vector3[] camVec = MathUtils.CanonBasis(_cam.transform);
-            dir = (camVec[0] * verticalInput + camVec[1] * horizontalInput).normalized;
+private void GetDirectionAndMove()
+{
+    horizontalInput = IInput.Movement.x;
+    verticalInput = IInput.Movement.y;
+    anim.SetFloat(AnimVInput, verticalInput);
+    anim.SetFloat(AnimHInput, horizontalInput);
 
-            Vector3 speeds = walkSpeeds;
-            if (IInput.LeftBumper)
-                speeds = runSpeeds;
-            else if (stateManager.CurrentMovementState == MovementState.Crouch)
-                speeds = crouchSpeeds;
-            else if (stateManager.CurrentMovementState == MovementState.Sprint)
-                speeds = sprintSpeeds;
-            
-            float forwardSpeed = Mathf.Lerp(0, speeds.x, Mathf.Abs(verticalInput));
-            float backwardSpeed = Mathf.Lerp(0, speeds.y, Mathf.Abs(verticalInput));
-            float sideSpeed = Mathf.Lerp(0, speeds.z, Mathf.Abs(horizontalInput));
-            
-            if (verticalInput > 0)
-                currentMovementSpeed = forwardSpeed;
-            else if (verticalInput < 0)
-                currentMovementSpeed = backwardSpeed;
-            else
-                currentMovementSpeed = sideSpeed;
-            if (verticalInput != 0 && horizontalInput != 0)
-                currentMovementSpeed = Mathf.Lerp(currentMovementSpeed, sideSpeed, 0.5f);
-            
-            if (dir.magnitude > 0)
-                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(camVec[0]), Time.deltaTime * 10f);
-            
-            controller.Move(dir * (currentMovementSpeed * Time.deltaTime));
+    bool isZLock = _cm != null && _cm.type == CameraTypes.Locked && _cm.lockTarget != null;
+
+    if (isZLock)
+    {
+        // Si estamos en Z-Lock, mover hacia el objetivo
+        Vector3 toTarget = (_cm.lockTarget.position - transform.position);
+        toTarget.y = 0; // Mantener solo el movimiento horizontal
+        Vector3 forward = toTarget.normalized;
+        Vector3 right = Vector3.Cross(Vector3.up, forward);
+
+        // Movimiento orbital y radial
+        dir = (right * horizontalInput + forward * verticalInput).normalized;
+
+        // Girar el jugador hacia el objetivo
+        if (toTarget.sqrMagnitude > 0.01f)
+        {
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                Quaternion.LookRotation(forward),
+                Time.deltaTime * 10f
+            );
         }
+    }
+    else
+    {
+        // Si no estamos en Z-Lock, movimiento normal basado en la cámara
+        Vector3[] camVec = MathUtils.CanonBasis(_cam.transform);
+        dir = (camVec[0] * verticalInput + camVec[1] * horizontalInput).normalized;
+
+        // Girar el jugador hacia la dirección del movimiento
+        if (dir.magnitude > 0)
+        {
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                Quaternion.LookRotation(camVec[0]),
+                Time.deltaTime * 10f
+            );
+        }
+    }
+
+    // Seleccionar la velocidad apropiada
+    Vector3 speeds = walkSpeeds;
+    if (IInput.LeftBumper)
+        speeds = runSpeeds;
+    else if (stateManager.CurrentMovementState == MovementState.Crouch)
+        speeds = crouchSpeeds;
+    else if (stateManager.CurrentMovementState == MovementState.Sprint)
+        speeds = sprintSpeeds;
+
+    float forwardSpeed = Mathf.Lerp(0, speeds.x, Mathf.Abs(verticalInput));
+    float backwardSpeed = Mathf.Lerp(0, speeds.y, Mathf.Abs(verticalInput));
+    float sideSpeed = Mathf.Lerp(0, speeds.z, Mathf.Abs(horizontalInput));
+
+    if (verticalInput > 0)
+        currentMovementSpeed = forwardSpeed;
+    else if (verticalInput < 0)
+        currentMovementSpeed = backwardSpeed;
+    else
+        currentMovementSpeed = sideSpeed;
+
+    if (verticalInput != 0 && horizontalInput != 0)
+        currentMovementSpeed = Mathf.Lerp(currentMovementSpeed, sideSpeed, 0.5f);
+
+    // Mover el personaje
+    controller.Move(dir * (currentMovementSpeed * Time.deltaTime));
+}
         
         private void Jump()
         {
@@ -222,7 +281,7 @@ namespace Character
         {
             Vector3 vec = this.transform.position;
             _spherePos = new Vector3(vec.x, vec.y - groundYOffset, vec.z);
-            return Physics.CheckSphere(_spherePos, controller.radius - 0.05f, groundLayer);
+            return Physics.CheckSphere(_spherePos, controller.radius - 0.05f, groundLayers);
         }
         
         private void ApplyGravity()
@@ -256,6 +315,11 @@ namespace Character
         public void StartSwordAndShieldCombat()
         {
             // Should take out the weapons, change stance 
+        }
+        
+        private void OnStateChange(GameStates state)
+        {
+            gameState = state;
         }
         
     }

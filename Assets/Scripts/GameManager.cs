@@ -1,6 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Entity;
+using FMOD;
+using FMOD.Studio;
+using FMODUnity;
 using Scriptables;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -21,11 +25,16 @@ public sealed class GameManager : Singleton<GameManager>
     public GameObject EnemySpawnHolder { get; private set; }
     
     [Header("Other Settings")]
+    [SerializeField, Range(0.1f, 60f), Tooltip("Set in minutes")] private float saveDataWarningTime = 5f;
+    private Coroutine _saveDataWarningCoroutine;
     [SerializeField, Range(0.1f, 5f)] private float npcRange = 1.5f;
     public Language CurrentLanguage { get; private set; } = Language.En;
     
     private List<LivingEntity> _nearbyNpc = new List<LivingEntity>();
+    public bool SavedData { get; private set; }
+    public bool LoadedData { get; private set; }
     public GameObject player;
+    public SoundManager SoundManager { get; private set; }
     
     private Dialog Dialog {
         get => Dialog.Instance;
@@ -39,11 +48,22 @@ public sealed class GameManager : Singleton<GameManager>
     protected override void OnAwake()
     {
         EDebug.Log("GameManager Awake");
+        LoadFModBank();
         SetGameState(GameStates.Joining);
         CheckForMissingScripts();
         Localization.LoadLanguage(CurrentLanguage);
         if (EnemySpawnHolder == null) GetOrCreateEnemySpawnHolder();
         InvokeRepeating(nameof(LazyUpdate), 1f, 1f);
+    }
+
+    private void LoadFModBank()
+    {
+        EDebug.Log("Loading FMOD Bank...");
+        try {
+            RuntimeManager.LoadBank("Master", true);
+            EDebug.Log("FMOD Bank loaded successfully.");
+        }
+        catch (Exception ex) { EDebug.LogError($"Error loading FMOD Bank: {ex.Message}"); }
     }
 
     public GameObject GetOrCreateEnemySpawnHolder()
@@ -91,16 +111,44 @@ public sealed class GameManager : Singleton<GameManager>
         if (canvasPrefabs == null) EDebug.LogError("CanvasPrefabs can NOT be null! \n Make sure to add it before playing!!");
         if (Dialog == null) Dialog = gameObject.AddComponent<Dialog>();
         if (Actions == null) Actions = gameObject.AddComponent<Input.Actions>();
+        if (SoundManager != null) return;
+        SoundManager = GetComponent<SoundManager>();
+        if (SoundManager == null) SoundManager = gameObject.AddComponent<SoundManager>();
     }
 
     public void Subscribe(Action<GameStates> function)
     {
         _eventHandler += function;
+        SaveSystem.SaveSystem.OnSaveData += OnDataSaved;
+        SaveSystem.SaveSystem.OnLoadData += OnDataLoaded;
     }
 
     public void Unsubscribe(Action<GameStates> function)
     {
         _eventHandler -= function;
+        SaveSystem.SaveSystem.OnSaveData -= OnDataSaved;
+        SaveSystem.SaveSystem.OnLoadData -= OnDataLoaded;
+    }
+
+    public void OnDataSaved()
+    {
+        SavedData = true;
+        if (_saveDataWarningCoroutine != null)
+            StopCoroutine(_saveDataWarningCoroutine);
+        _saveDataWarningCoroutine = StartCoroutine(SaveDataWarn());
+        EDebug.Log("Saved Data");
+    }
+    
+    public void OnDataLoaded()
+    {
+        LoadedData = true;
+        EDebug.Log("Loaded Data");
+    }
+    
+    private IEnumerator SaveDataWarn()
+    {
+        yield return new WaitForSeconds(saveDataWarningTime*60f);
+        SavedData = false;
     }
     
     public Canvas GetOrCreateNpcCanvas()

@@ -313,6 +313,7 @@ GameObject:
   - component: {fileID: 330585545}
   - component: {fileID: 330585544}
   - component: {fileID: 330585547}
+  - component: {fileID: 330585548}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -438,6 +439,18 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!114 &330585548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330585543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ca911fb1c4391e41a352ec0c67c39e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &401475185 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5106627414721356493, guid: 50a505784449a0d46bbb7aa3558e105b,
@@ -583,6 +596,7 @@ MonoBehaviour:
   viada: {fileID: 1258071252}
   fondoBarra: {fileID: 401475185}
   jugador: {fileID: 205133143}
+  jugadorDamageSys: {fileID: 0}
 --- !u!1 &516895266
 GameObject:
   m_ObjectHideFlags: 0
@@ -656,6 +670,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damageAmount: 20
   armorPiercing: 0
+  camShakeStr: 0.3
+  camShakeFrames: 10
 --- !u!143 &828392809
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1300,6 +1316,7 @@ MonoBehaviour:
   lockTarget: {fileID: 0}
   lockIndicatorPrefab: {fileID: 3834326841812901329, guid: b50df8210c1823a42acc01846beb6de1,
     type: 3}
+  maxLockDistance: 10
   settings:
     offsetX: 0
     offsetY: 0

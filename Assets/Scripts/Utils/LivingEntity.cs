@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using Entity;
 using Scriptables;
 using UnityEngine;
@@ -19,6 +20,7 @@ namespace Utils
 
         [Header("Living Entity Variables")]
         public bool isPlayer;
+        [SerializeField] protected LayerMask groundLayers;
         [SerializeField] private WeaponType weaponTypeOverride;
         [Tooltip("The particle systems that will play when the entity takes damage (Will be skipped if none are present)")]
         public ParticleSystem[] dmgParticles;
@@ -31,7 +33,7 @@ namespace Utils
         [SerializeField] public int armorClass = 1;
         [SerializeField] public int armorDurability = 3;
         [SerializeField] private DamageType damageTypeResistance;
-        
+
         private float _health;
         private float _mood;
         public bool isInDialog;
@@ -66,15 +68,16 @@ namespace Utils
             if (dialogSprites.nameDivider == null) hasSprites = false;
             return hasSprites;
         }
-        
+
         private void Awake()
         {
             HurtFX = GetComponent<HurtFX>();
             if (HurtFX == null) { HurtFX = gameObject.AddComponent<HurtFX>(); }
+            groundLayers = (groundLayers == 0)? LayerMask.GetMask("Default", "Ground") : groundLayers;
             
             _health = GetMaxHealth();
             Weapon = weaponTypeOverride;
-            entityName = HasCustomName()? this.entityName : MiscUtils.GetRandomName(
+            entityName = HasCustomName() ? this.entityName : MiscUtils.GetRandomName(
                 MiscUtils.GetOrCreateGameManager().randomNames, this.nameCustomization);
             
             EDebug.Log("LivingEntity ► Awake: " + this.entityName.ToString());
@@ -90,9 +93,10 @@ namespace Utils
             IInput.OnWeaponUpToggledEvent += _wUTHandler;
             IInput.OnWeaponRightToggledEvent += _wRTHandler;
             IInput.OnWeaponDownToggledEvent += _wDTHandler;
-            hurtFXVars.ogMaterials = hurtFXVars.renderer.materials;
+            if (hurtFXVars != null && hurtFXVars.renderer != null) hurtFXVars.ogMaterials = hurtFXVars.renderer.materials;
+            else EDebug.LogError("hurtFXVars or the renderer are not initialized/set", this);
         }
-        
+
         private void OnDestroy()
         {
             Unsubscribe();
@@ -101,12 +105,12 @@ namespace Utils
         {
             Unsubscribe();
         }
-        
+
         private void ChangeWeapon(WeaponType weapon)
         {
-            Weapon = (Weapon == weapon)? WeaponType.Unarmed : weapon;
+            Weapon = (Weapon == weapon) ? WeaponType.Unarmed : weapon;
         }
-        
+
         public void ChangeMood(float amount)
         {
             _mood = Mathf.Clamp(_mood + amount, -10, 10);
@@ -115,7 +119,7 @@ namespace Utils
         private void Unsubscribe()
         {
             if (!isPlayer) return;
-            if(IInput == null) return;
+            if (IInput == null) return;
             IInput.OnWeaponLeftToggledEvent -= _wLTHandler;
             IInput.OnWeaponUpToggledEvent -= _wUTHandler;
             IInput.OnWeaponRightToggledEvent -= _wRTHandler;
@@ -179,7 +183,7 @@ namespace Utils
             _health = Mathf.Min(maxHealth, _health + amount);
             OnHealed();
         }
-        
+
         protected virtual float GetDamageReduction(float armorPiercing)
         {
             float reduction = 0f;
@@ -194,7 +198,7 @@ namespace Utils
             }
             return Mathf.Max(0, reduction - armorPiercing);
         }
-        
+
         protected virtual void ReduceArmorDurability()
         {
             armorDurability--;
@@ -204,14 +208,14 @@ namespace Utils
                 armorDurability = 3;
             }
         }
-        
+
         private IEnumerator DamageImmunity()
         {
             canTakeDamage = false;
             yield return new WaitForSeconds(dmgImmunityTime);
             canTakeDamage = true;
         }
-        
+
         protected void PlayParticleEffect(ParticleSystem particlePrefab, Vector3 position, Vector3 direction)
         {
             if (particlePrefab == null)
@@ -246,7 +250,7 @@ namespace Utils
             }
             return null;
         }
-        
+
         protected virtual void Die()
         {
             // So... what happens when the entity dies? 
@@ -263,6 +267,193 @@ namespace Utils
             _health = Mathf.Clamp(health, 0, maxHealth);
             // If 0 death
         }
-        
+
+
+        #region SAVING
+        public string SaveLivingEntity()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("LE");
+            sb.Append("/");
+            sb.Append(entityName);
+            //sb.Append(SaveDialogOptions());
+            sb.Append("/");
+            sb.Append(SaveNameCustomization());
+            sb.Append('/');
+            sb.Append(isPlayer ? 1 : 0);
+            sb.Append('/');
+            sb.Append(maxHealth);
+            sb.Append('/');
+            sb.Append(dmgImmunityTime);
+            sb.Append('/');
+            sb.Append(armorClass);
+            sb.Append('/');
+            sb.Append(armorDurability);
+            sb.Append('/');
+            sb.Append(SaveDamegeType());
+            sb.Append('/');
+            sb.Append(GetHealth());
+            sb.Append('/');
+            sb.Append(_mood);
+            sb.Append('/');
+            sb.Append(isDead ? 1 : 0);
+            sb.Append("/");
+            sb.Append(canTakeDamage ? 1 : 0);
+            sb.Append('/');
+            sb.Append((int)gameState);
+            sb.Append('/');
+            sb.Append(transform.position.x);
+            sb.Append('/');
+            sb.Append(transform.position.y);
+            sb.Append('/');
+            sb.Append(transform.position.z);
+
+            return sb.ToString();
+        }
+
+        // TODO : TERMINA ESTA FUNCION recursividad infinita
+        private string SaveDialogOptions()
+        {
+            StringBuilder sb = new StringBuilder();
+            List<DialogOption> options = dialogOptions.dialogOptions;
+            //Localization.Translate
+
+            sb.Append("/");
+            sb.Append(options.Count);
+            for (int i = 0; i < options.Count; ++i)
+            {
+                sb.Append("/");
+                sb.Append(options[i].npcDialog);
+                sb.Append("/");
+                sb.Append(options[i].userResponses.Count);
+                for (int j = 0; j < options[i].userResponses.Count; ++j)
+                {
+                    sb.Append("/");
+                    sb.Append(options[i].userResponses[j].response);
+                    sb.Append("/");
+                    sb.Append(options[i].userResponses[j].moodChange);
+                }
+            }
+            return sb.ToString();
+        }
+
+
+        private string SaveNameCustomization()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(nameCustomization.isMale ? 1 : 0);
+            sb.Append(nameCustomization.includeName ? 1 : 0);
+            sb.Append(nameCustomization.includeLastName ? 1 : 0);
+            sb.Append(nameCustomization.includeNickname ? 1 : 0);
+            sb.Append(nameCustomization.includeTitle ? 1 : 0);
+            sb.Append(nameCustomization.startsWithTitle ? 1 : 0);
+            sb.Append(nameCustomization.replaceNameWithNickname ? 1 : 0);
+            sb.Append(nameCustomization.lastNameThenName ? 1 : 0);
+            sb.Append(nameCustomization.useTitleDividers ? 1 : 0);
+
+            return sb.ToString();
+        }
+
+        private string SaveDamegeType()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append((int)damageTypeResistance);
+
+            return sb.ToString();
+        }
+
+        #endregion
+
+
+        #region LOADING
+
+        public void loadData(string _data)
+        {
+            string[] dataDivided = _data.Split('/');
+            int index = 0;
+            if (dataDivided[index] != "LE")
+            {
+                EDebug.LogError("Datos incompatibles", this);
+                EDebug.Log(_data, this);
+                return;
+            }
+
+            index += 1;
+            entityName = dataDivided[index];
+
+            index += 1;
+            //loadDataSaveDialogOptions(dataDivided, ref index);
+            loadDataCustomization(dataDivided, ref index);
+
+            index += 1;
+            string isPlayerBool = dataDivided[index];
+
+            isPlayer = (isPlayerBool[0] - '0') >= 1;
+            index += 1;
+
+            maxHealth = int.Parse(dataDivided[index]);
+            index += 1;
+
+            dmgImmunityTime = float.Parse(dataDivided[index]);
+            index += 1;
+
+            armorClass = int.Parse(dataDivided[index]);
+            index += 1;
+
+            armorDurability = int.Parse(dataDivided[index]);
+            index += 1;
+
+            loadDamageType(dataDivided, ref index);
+            index += 1;
+
+            _health = int.Parse(dataDivided[index]);
+            index += 1;
+
+            _mood = float.Parse(dataDivided[index]);
+            index += 1;
+
+            string isDeadBool = dataDivided[index];
+            isDead = (isDeadBool[0] - '0') >= 1;
+            index += 1;
+
+            string canTakeDamageBool = dataDivided[index];
+            canTakeDamage = (canTakeDamageBool[0] - '0') >= 1;
+            index += 1;
+
+            gameState = (GameStates)int.Parse(dataDivided[index]);
+
+            Vector3 entity_pos = Vector3.zero;
+
+            index += 1;
+            entity_pos.x = float.Parse(dataDivided[index]);
+            index += 1;
+            entity_pos.y = float.Parse(dataDivided[index]);
+            index += 1;
+            entity_pos.z = float.Parse(dataDivided[index]);
+            transform.position = entity_pos;
+
+        }
+
+        private void loadDataCustomization(string[] _data, ref int index)
+        {
+            string boolArray = _data[index];
+            nameCustomization.isMale = (boolArray[0] - '0') >= 1;
+            nameCustomization.includeName = (boolArray[1] - '0') >= 1;
+            nameCustomization.includeLastName = (boolArray[2] - '0') >= 1;
+            nameCustomization.includeNickname = (boolArray[3] - '0') >= 1;
+            nameCustomization.includeTitle = (boolArray[4] - '0') >= 1;
+            nameCustomization.startsWithTitle = (boolArray[5] - '0') >= 1;
+            nameCustomization.replaceNameWithNickname = (boolArray[6] - '0') >= 1;
+            nameCustomization.lastNameThenName = (boolArray[7] - '0') >= 1;
+            nameCustomization.useTitleDividers = (boolArray[8] - '0') >= 1;
+        }
+
+        private void loadDamageType(string[] _data, ref int index)
+        {
+            damageTypeResistance = (DamageType)int.Parse(_data[index]);
+        }
+
+        #endregion
+
     }
 }

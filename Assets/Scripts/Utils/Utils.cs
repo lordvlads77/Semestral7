@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using FMOD.Studio;
 using Scriptables;
 using UnityEngine;
 using UnityEngine.Events;
@@ -7,10 +8,33 @@ using Random = UnityEngine.Random;
 
 namespace Utils
 {
-    public enum Language
-    {
+    public enum Language // NOTE: This enum is used for localization...
+    {                   // JSON files are named after the enum values and MUST be lowercase
         En,
         Es
+    }
+    
+    [System.Flags] public enum EventConditions
+    {
+        None = 0,
+        OnEnable = 1 << 0,
+        OnAwake = 1 << 1,
+        OnStart = 1 << 2,
+        OnBoolFalse = 1 << 3,
+        OnBoolTrue = 1 << 4,
+        OnDestroy = 1 << 5,
+        OnDisable = 1 << 6,
+        OnGamePaused = 1 << 7,
+        OnGameUnpaused = 1 << 8,
+        OnTriggerEnter = 1 << 9,
+        OnTriggerExit = 1 << 10,
+    }
+
+    [System.Flags] public enum TriggerConditions
+    {
+        None = 0,
+        ByLayers = 1 << 0,
+        ByTags = 1 << 1,
     }
     
     public enum GameStates : byte
@@ -21,6 +45,7 @@ namespace Utils
         Chatting,
         GameOver,
         Idle,
+        Won,
     }
 
     public enum CameraTypes
@@ -65,11 +90,43 @@ namespace Utils
         Dead
     }
     
+    public enum SoundType
+    {
+        Master,
+        Music,
+        SFX
+    }
+    
+    public static class FmodUtils
+    {
+        private static readonly GameManager Gm = MiscUtils.GetOrCreateGameManager();
+        public static float GetSingleVolume(SoundType soundType)
+        {
+            if (!Gm.LoadedData) SaveSystem.SaveSystem.LoadVolumePrefs();
+            switch (soundType)
+            {
+                default:
+                case SoundType.Master:
+                    return PlayerPrefs.GetFloat("master_volume", 1.0f);
+                case SoundType.Music:
+                    return PlayerPrefs.GetFloat("music_volume", 1.0f);
+                case SoundType.SFX:
+                    return PlayerPrefs.GetFloat("sfx_volume", 1.0f);
+            }
+        }
+
+        public static float GetCompositeVolume(SoundType soundType)
+        {
+            float frac = (soundType == SoundType.Master)? 1.0f : GetSingleVolume(SoundType.Master);
+            return GetSingleVolume(soundType) * frac;
+        }
+    }
+
     public static class Localization
     {
         private static readonly Dictionary<string, string> Translations = new Dictionary<string, string>();
         private static Language _lang = Language.En;
-        private static GameManager _gm = GameManager.Instance;
+        private static readonly GameManager Gm = MiscUtils.GetOrCreateGameManager();
 
         public static void LoadLanguage(Language language)
         { // This method is public, however it's already called by "Translate" so it shouldn't be needed outside... 
@@ -106,8 +163,8 @@ namespace Utils
 
         public static string Translate(string key)
         {
-            if (Translations.Count == 0 || _lang != _gm.CurrentLanguage)
-                LoadLanguage(_gm.CurrentLanguage);
+            if (Translations.Count == 0 || _lang != Gm.CurrentLanguage)
+                LoadLanguage(Gm.CurrentLanguage);
             if (Translations.TryGetValue(key, out string value))
                 return value;
             EDebug.LogError($"Translation not found for key: {key}");
@@ -130,6 +187,15 @@ namespace Utils
             }
         }
     }
+
+    /*
+    [Serializable]
+    public enum Languege : int
+    {
+        English = 0,
+        Spanish,
+        COUNT,/// NOTE : Cuando agregas un lenguage nuevo tienes que ponerlos antes que el COUNT
+    }*/
 
     public static class MathUtils
     {
@@ -313,8 +379,7 @@ namespace Utils
         public bool useTitleDividers;
     }
 
-    [Serializable]
-    public class CanvasPrefabs
+    [Serializable] public class CanvasPrefabs
     {
         [Header("Canvas Sprites")]
         public RandomSprite[] canvasSprites;
@@ -327,12 +392,17 @@ namespace Utils
         // (I'd like it if you added a header for each category)
     }
 
-    [Serializable]
-    public class CustomDialogSprites
+    [Serializable] public class CustomDialogSprites
     {
         public Sprite dialogBox;
         public Sprite dialogOption;
         public Sprite nameDivider;
+    }
+
+    [Serializable] public class EventSoundType
+    {
+        public EventInstance EventI;
+        public SoundType soundType;
     }
 
 }
