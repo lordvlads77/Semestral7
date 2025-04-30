@@ -1,19 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Utils;
 
-public class TestLoading : MonoBehaviour
+public sealed class TestLoading : MonoBehaviour
 {
     [Tooltip("☑ = load the level selected\n☐ = DON'T load the level selected")]
     public bool shouldLoad = false;
 
-    [Tooltip("Attach the Loading script here for this to work")]
-    [SerializeField] private Loading loadingScript;
 
-    void Start()
-    {
-        Debug.Assert(loadingScript != null,$"Attach script type of {nameof(Loading)} for this to work",this);
-    }
+    [SerializeField] private string sceneNameToLoad = "";
+    [SerializeField] private int sceneIndexToLoad = -1337;
 
     void Update()
     {
@@ -21,7 +18,7 @@ public class TestLoading : MonoBehaviour
         if (shouldLoad)
         {
             shouldLoad = false;
-            loadingScript.LoadScene();
+            LoadingManager.Instance.LoadSceneByName(sceneNameToLoad);
         }
         
     }
