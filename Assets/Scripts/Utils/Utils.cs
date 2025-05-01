@@ -122,7 +122,7 @@ namespace Utils
         }
     }
     
-    public static class StringUtil
+    public static class StringUtils
     {
         public static string AddSizeTagToString(string input, int size) {
             string strSize = size.ToString();
