@@ -95,8 +95,6 @@ namespace SaveSystem
         {
             CreateKeyIfOneDoesNotExist();
             LoadGameScene();
-
-
         }
 
         public static void SaveVolume(SoundType soundType, float newVolume)
