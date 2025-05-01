@@ -312,6 +312,10 @@ namespace Utils
 
         public static GameManager GetOrCreateGameManager()
         {
+            if (!Application.isPlaying) {
+                EDebug.LogError("Attempted to create GameManager while the application is not playing.");
+                return null;
+            }
             GameManager gm = GameManager.Instance;
             if (gm != null) return gm; 
             GameObject newGm = new GameObject("GameManager")
