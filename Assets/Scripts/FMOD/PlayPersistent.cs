@@ -135,7 +135,8 @@ namespace FMOD
             if (stopConditions.HasFlag(EventConditions.OnStart)) StopEvent();
         }
         private void OnDisable() {
-            MiscUtils.GetOrCreateGameManager().Unsubscribe(OnGameStateChanged);
+            //MiscUtils.GetOrCreateGameManager().Unsubscribe(OnGameStateChanged);
+            GameManager.TryGetInstance()?.Unsubscribe(OnGameStateChanged);
             if (startConditions.HasFlag(EventConditions.OnDisable)) PlayEvent();
             if (stopConditions.HasFlag(EventConditions.OnDisable)) StopEvent();
         }
