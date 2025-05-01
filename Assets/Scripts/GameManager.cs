@@ -36,6 +36,14 @@ public sealed class GameManager : Singleton<GameManager>
     public GameObject player;
     public SoundManager SoundManager { get; private set; }
     
+    private readonly List<Action> _globalUnsubscribeActions = new List<Action>();
+    
+    public void RegisterUnsubscribeAction(Action unsubscribeAction)
+    {
+        if (unsubscribeAction != null && !_globalUnsubscribeActions.Contains(unsubscribeAction))
+            _globalUnsubscribeActions.Add(unsubscribeAction);
+    }
+    
     private Dialog Dialog {
         get => Dialog.Instance;
         set => throw new NotImplementedException();
@@ -50,10 +58,28 @@ public sealed class GameManager : Singleton<GameManager>
         EDebug.Log("GameManager Awake");
         LoadFModBank();
         SetGameState(GameStates.Joining);
-        CheckForMissingScripts();
         Localization.LoadLanguage(CurrentLanguage);
+        CheckForMissingScripts();
         if (EnemySpawnHolder == null) GetOrCreateEnemySpawnHolder();
         InvokeRepeating(nameof(LazyUpdate), 1f, 1f);
+    }
+    
+    protected override void OnApplicationQuit()
+    {
+        applicationIsQuitting = true;
+        foreach (var unsubscribeAction in _globalUnsubscribeActions)
+        {
+            try {
+                EDebug.Log($"Unsubscribing from action: {unsubscribeAction.Method.Name} in script: {unsubscribeAction.Target.GetType().Name}");
+                unsubscribeAction?.Invoke();
+            }
+            catch (Exception ex) {
+                EDebug.LogError($"Error while unsubscribing action: {unsubscribeAction.Method.Name}. Details: {ex.Message}");
+            }
+        }
+        _globalUnsubscribeActions.Clear();
+        base.OnApplicationQuit();
+        EDebug.Log("GameManager is quitting.");
     }
 
     private void LoadFModBank()
@@ -106,6 +132,7 @@ public sealed class GameManager : Singleton<GameManager>
 
     private void CheckForMissingScripts() // Add more as needed :o
     {
+        if (!Application.isPlaying || applicationIsQuitting) return;
         if (weaponStats == null) EDebug.LogError("WeaponStats is null.");
         if (randomNames == null) EDebug.LogError("RandomNames is null.");
         if (canvasPrefabs == null) EDebug.LogError("CanvasPrefabs can NOT be null! \n Make sure to add it before playing!!");

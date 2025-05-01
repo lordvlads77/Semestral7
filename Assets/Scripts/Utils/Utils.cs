@@ -126,8 +126,8 @@ namespace Utils
     {
         private static readonly Dictionary<string, string> Translations = new Dictionary<string, string>();
         private static Language _lang = Language.En;
-        private static readonly GameManager Gm = MiscUtils.GetOrCreateGameManager();
-
+        private static GameManager _gm = MiscUtils.GetOrCreateGameManager();
+        
         public static void LoadLanguage(Language language)
         { // This method is public, however it's already called by "Translate" so it shouldn't be needed outside... 
             try
@@ -163,8 +163,21 @@ namespace Utils
 
         public static string Translate(string key)
         {
-            if (Translations.Count == 0 || _lang != Gm.CurrentLanguage)
-                LoadLanguage(Gm.CurrentLanguage);
+            if (!Application.isPlaying || !Singleton<GameManager>.applicationIsQuitting)
+            {
+                EDebug.LogError($"Translation attempted while GameManager is unavailable. Key: {key}");
+                return key; // Fallback
+            }
+            if (_gm == null)
+            {
+                _gm = Singleton<GameManager>.TryGetInstance();
+                if (_gm == null) {
+                    EDebug.LogError("GameManager is null! Cannot translate.");
+                    return key; // Fallback
+                }
+            }
+            if (Translations.Count == 0 || _lang != _gm.CurrentLanguage)
+                LoadLanguage(_gm.CurrentLanguage);
             if (Translations.TryGetValue(key, out string value))
                 return value;
             EDebug.LogError($"Translation not found for key: {key}");
@@ -312,8 +325,8 @@ namespace Utils
 
         public static GameManager GetOrCreateGameManager()
         {
-            if (!Application.isPlaying) {
-                EDebug.LogError("Attempted to create GameManager while the application is not playing.");
+            if (!Application.isPlaying || Singleton<GameManager>.applicationIsQuitting) {
+                EDebug.LogError("Attempted to create GameManager while the application is not playing or is quitting.");
                 return null;
             }
             GameManager gm = GameManager.Instance;

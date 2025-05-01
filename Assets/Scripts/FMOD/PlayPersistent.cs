@@ -134,7 +134,11 @@ namespace FMOD
         }
         private void OnEnable() {
             if (_quitting) return;
-            MiscUtils.GetOrCreateGameManager().Subscribe(OnGameStateChanged);
+            var gameManager = MiscUtils.GetOrCreateGameManager();
+            if (gameManager != null) {
+                gameManager.Subscribe(OnGameStateChanged);
+                gameManager.RegisterUnsubscribeAction(UnSubscribe);
+            }
             if (startConditions.HasFlag(EventConditions.OnEnable)) PlayEvent();
             if (stopConditions.HasFlag(EventConditions.OnEnable)) StopEvent();
         }
@@ -171,7 +175,11 @@ namespace FMOD
             if (movePhysically) transform.position = targetPosition;
         }
         private void UnSubscribe() {
-            MiscUtils.GetOrCreateGameManager().Unsubscribe(OnGameStateChanged);
+            if (Utils.Singleton<GameManager>.applicationIsQuitting) return;
+            var gameManager = MiscUtils.GetOrCreateGameManager();
+            if (gameManager != null) {
+                gameManager.Unsubscribe(OnGameStateChanged);
+            }
         }
         
         private void SetParamsNPlay() {
