@@ -7,7 +7,8 @@ using Utils;
 
 public sealed class MenuManager : MonoBehaviour
 {
-    Animator animator;
+
+    //Animator animator;
     [SerializeField] RectTransform selector;
     [SerializeField] Transform[] menuItems;
     [SerializeField] Transform[] optionsItems;
@@ -40,9 +41,14 @@ public sealed class MenuManager : MonoBehaviour
 
     [Tooltip("Controls how long to wait until the next 'accept' is accepted")]
     [SerializeField] float acceptedInputDelay = 1.0f / 15.0f;
-    bool isVerticalInputBlocked = false;
+
+    MenuInputType currentInputInUse = MenuInputType.NONE;
+    MenuInputType blockedInput = MenuInputType.NONE;
+
+    //    bool isVerticalInputBlocked = false;
     bool isHorizontalInputBlocked = false;
     bool isAcceptedInputBlocked = false;
+    bool hasVolumeValuesBeenLoaded = false;
 
     enum CURRENT_MENU_STATE
     {
@@ -56,13 +62,25 @@ public sealed class MenuManager : MonoBehaviour
     private void OnEnable()
     {
         textSwitcher.textChanged += this.OnLanguageChange;
-        /*
         Actions.Instance.OnWeaponDownToggledEvent += OnWeaponDown;
         Actions.Instance.OnWeaponUpToggledEvent += OnWeaponUp;
-        Actions.Instance.OnAttackTriggeredEvent += OnJump;
-        */
+        //Actions.Instance.OnAttackTriggeredEvent += OnJump;
         if (SFX != null)
-            SFX.OnBlockChangeAction += VolumeChanged;
+        {
+            SFX.OnBlockChangeAction += SFXVolumeChange;
+
+        }
+
+        if (Music != null)
+        {
+            Music.OnBlockChangeAction += MusicVolumeChange;
+        }
+
+        if (Master != null)
+        {
+            Master.OnBlockChangeAction += MasterVolumeChange;
+        }
+
     }
 
     private void OnDisable()
@@ -77,15 +95,31 @@ public sealed class MenuManager : MonoBehaviour
             */
         }
 
+        Master.OnBlockChangeAction -= MasterVolumeChange;
+        Music.OnBlockChangeAction -= MusicVolumeChange;
+
+        SFX.OnBlockChangeAction -= SFXVolumeChange;
+
         textSwitcher.textChanged -= this.OnLanguageChange;
     }
 
-    private void VolumeChanged(float val)
-    {
+    #endregion
 
+    private void MasterVolumeChange(float val)
+    {
+        SaveSystem.SaveSystem.SaveVolume(SoundType.Master, val);
     }
 
-    #endregion
+    private void SFXVolumeChange(float val)
+    {
+        SaveSystem.SaveSystem.SaveVolume(SoundType.SFX, val);
+    }
+
+    private void MusicVolumeChange(float val)
+    {
+        SaveSystem.SaveSystem.SaveVolume(SoundType.Music, val);
+    }
+
 
     #region INPUT_EVENTS
 
@@ -123,8 +157,7 @@ public sealed class MenuManager : MonoBehaviour
 
     private void Awake()
     {
-        cosa = Actions.Instance;
-        animator = GetComponent<Animator>();
+        cosa = GameManager.Instance.GetComponent<Actions>(); // Actions.Instance;
     }
 
     void Start()
@@ -234,8 +267,11 @@ public sealed class MenuManager : MonoBehaviour
                 ProcessCursorMovement();
                 if (isHorizontalInputBlocked) { return; }
 
+
                 bool rightKeyPressed = cosa.Movement.x > 0.1f;
                 bool leftKeyPressed = cosa.Movement.x < -0.1f;
+
+                loadVolumeValues();
 
                 if (currentSelection == 0 && rightKeyPressed)
                 {
@@ -338,7 +374,7 @@ private Coroutine _menuMovementCoroutine;
 
     private void ProcessCursorMovement()
     {
-        if (isVerticalInputBlocked) { return; }
+        if (MenuInputTypeUtils.haveAnyMatchingBits(currentInputInUse, blockedInput)) { return; }
 
 
         if (cosa.Movement.y > 0.1f)
@@ -356,12 +392,12 @@ private Coroutine _menuMovementCoroutine;
 
         else if (cosa.WeaponDown)
         {
-            Debug.Log("WeaponDown ", this);
+            EDebug.Log("WeaponDown ", this);
         }
 
         else if (cosa.WeaponUp)
         {
-            Debug.Log("WeaponDown ", this);
+            EDebug.Log("WeaponDown ", this);
         }
     }
 
@@ -385,11 +421,13 @@ private Coroutine _menuMovementCoroutine;
                 currentArrayInUse = optionsItems;
                 menuOptions.SetActive(true);
                 menuInicio.SetActive(false);
+
                 // si no existe un elemento zero buscar hasta encontar uno 
                 ChangeCurrentSelectionUntilObjectIsFound();
                 ChangeCurrentSelectionUntilObjectIsFound(false);
 
                 ChangeSelectorPosition();
+
                 break;
 
             case CURRENT_MENU_STATE.MAIN_MENU:
@@ -403,6 +441,7 @@ private Coroutine _menuMovementCoroutine;
                 ChangeCurrentSelectionUntilObjectIsFound(false);
 
                 ChangeSelectorPosition();
+                hasVolumeValuesBeenLoaded = false;
                 break;
 
             default:
@@ -433,9 +472,9 @@ private Coroutine _menuMovementCoroutine;
 
     private IEnumerator BlockVerticalInput()
     {
-        isVerticalInputBlocked = true;
+        blockedInput |= MenuInputType.VERTICAL;
         yield return new WaitForSeconds(verticalInputDelay);
-        isVerticalInputBlocked = false;
+        blockedInput &= MenuInputType.VERTICAL;
     }
 
     private IEnumerator BlockHorizontalInput()
@@ -453,5 +492,28 @@ private Coroutine _menuMovementCoroutine;
     }
 
     #endregion
+
+    private void loadVolumeValues()
+    {
+        if (!hasVolumeValuesBeenLoaded) { hasVolumeValuesBeenLoaded = true; }
+
+        if (SFX != null)
+        {
+            SFX.setPercent(SaveSystem.SaveSystem.GetVolume(SoundType.SFX));
+        }
+
+        if (Music != null)
+        {
+            Music.setPercent(SaveSystem.SaveSystem.GetVolume(SoundType.Music));
+        }
+
+        if (Master != null)
+        {
+            Master.setPercent(SaveSystem.SaveSystem.GetVolume(SoundType.Master));
+        }
+
+
+    }
+
 }
 
