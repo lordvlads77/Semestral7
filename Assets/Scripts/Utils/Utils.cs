@@ -121,6 +121,19 @@ namespace Utils
             return GetSingleVolume(soundType) * frac;
         }
     }
+    
+    public static class StringUtil
+    {
+        public static string AddSizeTagToString(string input, int size) {
+            string strSize = size.ToString();
+            return $"<size={strSize}> {input} </size>";
+        }
+
+        public static string AddColorToString(string input, Color color) {
+            string colorStr = ColorUtility.ToHtmlStringRGBA(color);
+            return $"<color=#{colorStr}> {input} </color>";
+        }
+    }
 
     public static class Localization
     {
