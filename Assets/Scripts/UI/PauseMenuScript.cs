@@ -9,6 +9,16 @@ public sealed class PauseMenuScript : MonoBehaviour
     {
         GameManager.Instance.SetGameState(Utils.GameStates.Playing);
     }
+    
+    public void Save()
+    {
+        EDebug.Log("Save");
+    }
+
+    public void Load()
+    {
+        EDebug.Log("Load");
+    }
 
 
     public void Options()

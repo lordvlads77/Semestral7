@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using Input;
 using UI;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using Utils;
 
-public class MenuManager : MonoBehaviour
+public sealed class MenuManager : MonoBehaviour
 {
-    Animator animator;
+
+    //Animator animator;
     [SerializeField] RectTransform selector;
     [SerializeField] Transform[] menuItems;
     [SerializeField] Transform[] optionsItems;
@@ -16,7 +17,7 @@ public class MenuManager : MonoBehaviour
     [SerializeField] CURRENT_MENU_STATE currentState = CURRENT_MENU_STATE.INTRO;
     CURRENT_MENU_STATE desiredState = CURRENT_MENU_STATE.INTRO;
     [SerializeField] GameObject menuInicio;
-    [SerializeField] GameObject Menuoptions;
+    [SerializeField] GameObject menuOptions;
     Input.Actions cosa;
 
     [Header("BlockySlider")]
@@ -27,6 +28,27 @@ public class MenuManager : MonoBehaviour
     [Header("TextSwitcher")]
     [SerializeField] private UI.TextSwitcher textSwitcher;
 
+    private Coroutine _verticalInputBlock;
+    private Coroutine _horizontalInputBlock;
+    private Coroutine _acceptedInputBlock;
+
+    [Header("Input related")]
+    [Tooltip("Controls how long to wait until the next 'up' or 'down' is accepted")]
+    [SerializeField] float verticalInputDelay = 1.0f / 30.0f;
+
+    [Tooltip("Controls how long to wait until the next 'left' or 'right' is accepted")]
+    [SerializeField] float horizontalInputDelay = 1.0f / 30.0f;
+
+    [Tooltip("Controls how long to wait until the next 'accept' is accepted")]
+    [SerializeField] float acceptedInputDelay = 1.0f / 15.0f;
+
+    MenuInputType currentInputInUse = MenuInputType.NONE;
+    MenuInputType blockedInput = MenuInputType.NONE;
+
+    //    bool isVerticalInputBlocked = false;
+    //  bool isHorizontalInputBlocked = false;
+    bool isAcceptedInputBlocked = false;
+    bool hasVolumeValuesBeenLoaded = false;
 
     enum CURRENT_MENU_STATE
     {
@@ -35,16 +57,29 @@ public class MenuManager : MonoBehaviour
         OPTIONS
     }
 
+    #region LanguageManagerBoilerPlate
+
     private void OnEnable()
     {
         textSwitcher.textChanged += this.OnLanguageChange;
-        /*
         Actions.Instance.OnWeaponDownToggledEvent += OnWeaponDown;
         Actions.Instance.OnWeaponUpToggledEvent += OnWeaponUp;
-        Actions.Instance.OnAttackTriggeredEvent += OnJump;
-        */
-        if(SFX != null) 
-            SFX.OnBlockChangeAction += VolumeChanged;
+        //Actions.Instance.OnAttackTriggeredEvent += OnJump;
+        if (SFX != null)
+        {
+            SFX.OnBlockChangeAction += SFXVolumeChange;
+        }
+
+        if (Music != null)
+        {
+            Music.OnBlockChangeAction += MusicVolumeChange;
+        }
+
+        if (Master != null)
+        {
+            Master.OnBlockChangeAction += MasterVolumeChange;
+        }
+
     }
 
     private void OnDisable()
@@ -52,38 +87,59 @@ public class MenuManager : MonoBehaviour
         Actions local = Actions.TryGetInstance();
         if (local != null)
         {
-            /*
             Actions.Instance.OnWeaponDownToggledEvent -= OnWeaponDown;
             Actions.Instance.OnWeaponUpToggledEvent -= OnWeaponUp;
-            Actions.Instance.OnAttackTriggeredEvent -= OnJump;
-            */
+            ///Actions.Instance.OnAttackTriggeredEvent -= OnJump;
         }
+
+        Master.OnBlockChangeAction -= MasterVolumeChange;
+        Music.OnBlockChangeAction -= MusicVolumeChange;
+
+        SFX.OnBlockChangeAction -= SFXVolumeChange;
 
         textSwitcher.textChanged -= this.OnLanguageChange;
     }
 
-    private void VolumeChanged(float val)
+    #endregion
+
+    private void MasterVolumeChange(float val)
     {
-        
+        SaveSystem.SaveSystem.SaveVolume(SoundType.Master, val);
     }
+
+    private void SFXVolumeChange(float val)
+    {
+        SaveSystem.SaveSystem.SaveVolume(SoundType.SFX, val);
+    }
+
+    private void MusicVolumeChange(float val)
+    {
+        SaveSystem.SaveSystem.SaveVolume(SoundType.Music, val);
+    }
+
 
     #region INPUT_EVENTS
 
     private void OnWeaponDown()
     {
-        ChangeCurrentSelectionUntilObjectIsFound();
+
+        EDebug.Log(StringUtil.addColorToString($"{nameof(OnWeaponDown)}", Color.cyan));
+        //currentInputInUse |= MenuInputType.VERTICAL_DOWN;
+        //ChangeCurrentSelectionUntilObjectIsFound();
     }
 
     private void OnWeaponUp()
     {
-        ChangeCurrentSelectionUntilObjectIsFound(false);
+        //currentInputInUse |= MenuInputType.VERTICAL_UP;
+        //ChangeCurrentSelectionUntilObjectIsFound(false);
+        EDebug.Log(StringUtil.addColorToString($"{nameof(OnWeaponDown)}", Color.cyan));
     }
 
     private void OnJump()
     {
         if (currentState == CURRENT_MENU_STATE.MAIN_MENU && currentSelection == 3)
         {
-            Menuoptions.SetActive(true);
+            menuOptions.SetActive(true);
             currentState = CURRENT_MENU_STATE.OPTIONS;
             currentSelection = 0;
             currentArrayInUse = optionsItems;
@@ -91,7 +147,7 @@ public class MenuManager : MonoBehaviour
         }
         else if (currentState == CURRENT_MENU_STATE.OPTIONS && currentSelection == 3)
         {
-            Menuoptions.SetActive(false);
+            menuOptions.SetActive(false);
             currentState = CURRENT_MENU_STATE.MAIN_MENU;
             currentSelection = 0;
             currentArrayInUse = menuItems;
@@ -103,8 +159,7 @@ public class MenuManager : MonoBehaviour
 
     private void Awake()
     {
-        cosa = Actions.Instance;
-        animator = GetComponent<Animator>();
+        cosa = GameManager.Instance.GetComponent<Actions>(); // Actions.Instance;
     }
 
     void Start()
@@ -118,11 +173,6 @@ public class MenuManager : MonoBehaviour
         EDebug.Assert(textSwitcher != null, $"El script necesita un {nameof(TextSwitcher)}", this);
     }
 
-    /*  public void OnIntroFiniched()
-      {
-          selector.gameObject.SetActive(true);
-          currentState = CURRENT_MENU_STATE.MAIN_MENU;
-      }*/
 
     #region MOVE_SELECTOR
 
@@ -178,23 +228,21 @@ public class MenuManager : MonoBehaviour
     }
 
     #endregion
-    /* void SkipAnimation() 
-     {
-         OnIntroFiniched();
-         animator.Play(0,0, animator.GetCurrentAnimatorClipInfo(0)[0].clip.length);
-     }*/
+
 
     private void Update()
     {
+        currentInputInUse = MenuInputType.NONE;
         UpdateStates();
 
         switch (currentState)
         {
             case CURRENT_MENU_STATE.MAIN_MENU:
-                ProcessCursorMovement();
+                ProcessVerticalMovement();
 
-                if (cosa.Jump)
+                if (cosa.Jump && !isAcceptedInputBlocked)
                 {
+                    _acceptedInputBlock = StartCoroutine(BlockAcceptedInput());
 
                     if (currentSelection == 0)
                     {
@@ -219,77 +267,93 @@ public class MenuManager : MonoBehaviour
                 break;
 
             case CURRENT_MENU_STATE.OPTIONS:
-                ProcessCursorMovement();
-                bool rightKeyPressed = cosa.Movement.x > 0.1f;
-                bool leftKeyPressed = cosa.Movement.x < -0.1f;
+
+                ProcessVerticalMovement();
+                ProcessHorizontalMovement();
+
+                bool rightKeyPressed = MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.HORIZONTAL_RIGHT, currentInputInUse);
+                bool leftKeyPressed = MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.HORIZONTAL_LEFT, currentInputInUse);
+
+                loadVolumeValues();
 
                 if (currentSelection == 0 && rightKeyPressed)
                 {
                     SFX.increaseBlocks();
+                    _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
                 }
 
                 if (currentSelection == 0 && leftKeyPressed)
                 {
                     SFX.decreaseBlocks();
+                    _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
                 }
 
                 if (currentSelection == 1 && rightKeyPressed)
                 {
                     Music.increaseBlocks();
+                    _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
                 }
 
                 if (currentSelection == 1 && leftKeyPressed)
                 {
                     Music.decreaseBlocks();
+                    _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
                 }
 
                 if (currentSelection == 2 && rightKeyPressed)
                 {
                     Master.increaseBlocks();
+                    _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
                 }
 
                 if (currentSelection == 2 && leftKeyPressed)
                 {
                     Master.decreaseBlocks();
+                    _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
                 }
 
                 if (currentSelection == 3 && rightKeyPressed)
                 {
                     textSwitcher.IncreaseIndex();
+                    _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
                 }
+
                 if (currentSelection == 3 && leftKeyPressed)
                 {
                     textSwitcher.DecreaseIndex();
+                    _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
                 }
 
 
-                if (cosa.Jump)
+                if (cosa.Jump && !isAcceptedInputBlocked)
                 {
-                    if (currentSelection == 3)
+                    _acceptedInputBlock = StartCoroutine(BlockAcceptedInput());
+                    if (currentSelection == 4)
                     {
                         desiredState = CURRENT_MENU_STATE.MAIN_MENU;
                     }
                 }
                 break;
         }
+
     }
 
     public void Inicio()
     {
         EDebug.Log("<color=orange>Inicio</color>");
-        SceneManager.LoadScene("Scenes/GameLevel");
+        LoadingManager.Instance.LoadSceneByName("Scenes/GameLevel");
     }
 
     public void Cargar()
     {
-        SaveSystem.SaveSystem.LoadEverything();
         EDebug.Log("<color=orange>Cargar</color>");
+        SaveSystem.SaveSystem.LoadEverything();
     }
 
     public void Options()
     {
-        desiredState = CURRENT_MENU_STATE.OPTIONS;
         EDebug.Log("<color=orange>Opciones</color>");
+        desiredState = CURRENT_MENU_STATE.OPTIONS;
     }
 
     public void Salir()
@@ -298,18 +362,84 @@ public class MenuManager : MonoBehaviour
         Application.Quit();
     }
 
-    private void ProcessCursorMovement()
+    /*
+     
+    if (_menuMovementCoroutine != null)
+                        StopCoroutine(_menuMovementCoroutine );
+                    _menuMovementCoroutine = StartCoroutine(MenuMoveInput()); 
+private IEnumerator MenuMoveInput()
+        {
+            yield return new WaitForSeconds(menuInputCd);
+            // Logic for moving menu stuff
+        } 
+private Coroutine _menuMovementCoroutine; 
+     
+     */
+
+    #region MOVEMENT_PROCESSING
+
+    private void ProcessVerticalMovement()
     {
+        if (MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.ANY_VERTICAL, blockedInput)) { return; }
+
+
         if (cosa.Movement.y > 0.1f)
         {
+            currentInputInUse |= MenuInputType.VERTICAL_UP;
             ChangeCurrentSelectionUntilObjectIsFound(false);
+            StopCoroutine(BlockVerticalInput());
+            _verticalInputBlock = StartCoroutine(BlockVerticalInput());
         }
         else if (cosa.Movement.y < -0.1f)
         {
+
+            currentInputInUse |= MenuInputType.VERTICAL_DOWN;
             ChangeCurrentSelectionUntilObjectIsFound();
+            StopCoroutine(BlockVerticalInput());
+            _verticalInputBlock = StartCoroutine(BlockVerticalInput());
+        }
+
+        else if (cosa.WeaponDown)
+        {
+            currentInputInUse |= MenuInputType.VERTICAL_DOWN;
+
+            ChangeCurrentSelectionUntilObjectIsFound(false);
+            StopCoroutine(BlockVerticalInput());
+            _verticalInputBlock = StartCoroutine(BlockVerticalInput());
+            EDebug.Log("<color=orange>WeaponDown </color>", this);
+        }
+
+        else if (cosa.WeaponUp)
+        {
+            currentInputInUse |= MenuInputType.VERTICAL_UP;
+
+            ChangeCurrentSelectionUntilObjectIsFound();
+            StopCoroutine(BlockVerticalInput());
+            _verticalInputBlock = StartCoroutine(BlockVerticalInput());
+            EDebug.Log("WeaponDown ", this);
+        }
+    }
+
+    private void ProcessHorizontalMovement()
+    {
+        if (MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.ANY_HORIZONTAL, blockedInput)) { return; }
+
+        if (cosa.Movement.x > 0.1f)
+        {
+            currentInputInUse |= MenuInputType.HORIZONTAL_RIGHT;
+            StopCoroutine(BlockHorizontalInput());
+            _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
+        }
+        else if (cosa.Movement.x < -0.1f)
+        {
+            currentInputInUse |= MenuInputType.HORIZONTAL_LEFT;
+            StopCoroutine(BlockHorizontalInput());
+            _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
         }
 
     }
+
+    #endregion
 
     private void UpdateStates()
     {
@@ -322,33 +452,36 @@ public class MenuManager : MonoBehaviour
         {
             case CURRENT_MENU_STATE.INTRO:
 
-                Menuoptions.SetActive(false);
+                menuOptions.SetActive(false);
                 menuInicio.SetActive(true);
                 break;
 
             case CURRENT_MENU_STATE.OPTIONS:
                 currentSelection = 0;
                 currentArrayInUse = optionsItems;
-                Menuoptions.SetActive(true);
+                menuOptions.SetActive(true);
                 menuInicio.SetActive(false);
+
                 // si no existe un elemento zero buscar hasta encontar uno 
                 ChangeCurrentSelectionUntilObjectIsFound();
                 ChangeCurrentSelectionUntilObjectIsFound(false);
 
                 ChangeSelectorPosition();
+
                 break;
 
             case CURRENT_MENU_STATE.MAIN_MENU:
 
                 currentSelection = 0;
                 currentArrayInUse = menuItems;
-                Menuoptions.SetActive(false);
+                menuOptions.SetActive(false);
                 menuInicio.SetActive(true);
                 // si no existe un elemento zero buscar hasta encontar uno 
                 ChangeCurrentSelectionUntilObjectIsFound();
                 ChangeCurrentSelectionUntilObjectIsFound(false);
 
                 ChangeSelectorPosition();
+                hasVolumeValuesBeenLoaded = false;
                 break;
 
             default:
@@ -375,4 +508,52 @@ public class MenuManager : MonoBehaviour
 
     }
 
+    #region Coroutines
+
+    private IEnumerator BlockVerticalInput()
+    {
+        blockedInput |= MenuInputType.ANY_VERTICAL;
+        yield return new WaitForSeconds(verticalInputDelay);
+        blockedInput &= ~MenuInputType.ANY_VERTICAL;
+    }
+
+    private IEnumerator BlockHorizontalInput()
+    {
+        blockedInput |= MenuInputType.ANY_HORIZONTAL;
+        yield return new WaitForSeconds(horizontalInputDelay);
+        blockedInput &= ~MenuInputType.ANY_HORIZONTAL;
+    }
+
+    private IEnumerator BlockAcceptedInput()
+    {
+        isAcceptedInputBlocked = true;
+        yield return new WaitForSeconds(acceptedInputDelay);
+        isAcceptedInputBlocked = false;
+    }
+
+    #endregion
+
+    private void loadVolumeValues()
+    {
+        if (!hasVolumeValuesBeenLoaded) { hasVolumeValuesBeenLoaded = true; }
+
+        if (SFX != null)
+        {
+            SFX.setPercent(SaveSystem.SaveSystem.GetVolume(SoundType.SFX));
+        }
+
+        if (Music != null)
+        {
+            Music.setPercent(SaveSystem.SaveSystem.GetVolume(SoundType.Music));
+        }
+
+        if (Master != null)
+        {
+            Master.setPercent(SaveSystem.SaveSystem.GetVolume(SoundType.Master));
+        }
+
+
+    }
+
 }
+

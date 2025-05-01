@@ -288,7 +288,7 @@ namespace UI
             previousMenuID = currentMenuID;
             for (int i = 0; i < menus.Length; i++)
             {
-                if (menus[i].associatedGameStates == currentGameState)
+                if (menus[i].associatedGameStates != GameStates.Chatting && menus[i].associatedGameStates == currentGameState)
                 {
                     this.ActivateMenuUiElements(ref menus[i]);
                     currentMenuID = menus[i].menuID;

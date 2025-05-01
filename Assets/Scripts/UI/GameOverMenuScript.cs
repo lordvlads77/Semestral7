@@ -27,6 +27,12 @@ namespace UI
             EDebug.Log($"<color=orange>{nameof(this.Menu)} is not implemented yet </color>");
         }
 
+        public void Quit()
+        {
+            EDebug.Log("Quit");
+            SceneManager.LoadScene("Scenes/Nuevo Menu");
+        }
+
     }
 
 }

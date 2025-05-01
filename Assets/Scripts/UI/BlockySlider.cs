@@ -71,7 +71,6 @@ namespace UI
                 temp -= 1;
             }
 
-
         }
 
         private void calculatePercent()
@@ -81,7 +80,26 @@ namespace UI
                 percent = 0.0f;
                 return;
             }
-            percent = blocks.Length / (float)currentTurnedOnBlockCount;
+
+            if (currentTurnedOnBlockCount == blocks.Length)
+            {
+                percent = 1.0f;
+                return;
+            }
+            /// 100 -- 20
+            ///  ? -- 5
+            /// (5 * 100 ) / 20 = 25
+            percent = ((float)currentTurnedOnBlockCount / blocks.Length);
+        }
+
+        public void setPercent(float new_percent)
+        {
+            float clamped_percent = Mathf.Clamp01(new_percent);
+
+            int blocksSet = Mathf.FloorToInt(clamped_percent * this.blocks.Length);
+            setBlocks(blocksSet);
+
+            this.percent = clamped_percent;
         }
 
         public void increaseBlocks()
@@ -104,7 +122,8 @@ namespace UI
 
         public void setBlocks(int _blocks)
         {
-            desiredTurnedOnBlockCount = Math.Clamp(_blocks, 0, blocks.Length - 1);
+            if (blocks.Length < 1) { return; }
+            desiredTurnedOnBlockCount = Math.Clamp(_blocks, 0, blocks.Length);
         }
 
         private void UpdateBlocks()
