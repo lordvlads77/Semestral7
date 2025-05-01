@@ -7,12 +7,19 @@ namespace UI
     [System.Flags]
     public enum MenuInputType : byte
     {
-        NONE = 0,            // 0b0000
-        VERTICAL = 1 << 0,   // 0b0001
-        HORIZONTAL = 1 << 1, // 0b0010
-        ACCEPTED = 1 << 2,   // 0b0100
-        ALL_TYPES = VERTICAL | HORIZONTAL | ACCEPTED,      // 0b0111
-        VERTICAL_OR_HORIZONTAL = VERTICAL | HORIZONTAL,    // 0b0011
+        NONE = 0,
+
+        VERTICAL_DOWN = 0b0000_0001,
+        VERTICAL_UP = 0b0000_0010,
+        HORIZONTAL_LEFT = 0b0000_0100,
+        HORIZONTAL_RIGHT = 0b0000_1000,
+        ACCEPTED = 0b0001_0000,
+
+        ALL = VERTICAL_DOWN | VERTICAL_UP | HORIZONTAL_LEFT | HORIZONTAL_RIGHT | ACCEPTED,
+
+        ANY_VERTICAL = VERTICAL_UP | VERTICAL_DOWN,
+        ANY_HORIZONTAL = HORIZONTAL_RIGHT | HORIZONTAL_LEFT,
+        VERTICAL_OR_HORIZONTAL = ANY_VERTICAL | ANY_HORIZONTAL,
     }
 
     public static class MenuInputTypeUtils
@@ -22,7 +29,7 @@ namespace UI
             return ((int)leftSide & (int)rightSide) > 0;
         }
 
-        public static bool doesSpecificBitMatch(int bit, MenuInputType rightSide)
+        public static bool isBitSet(int bit, MenuInputType rightSide)
         {
             return ((1 << bit) & (int)rightSide) > 0;
         }
