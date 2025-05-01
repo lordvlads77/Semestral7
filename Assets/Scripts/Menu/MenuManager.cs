@@ -46,7 +46,7 @@ public sealed class MenuManager : MonoBehaviour
     MenuInputType blockedInput = MenuInputType.NONE;
 
     //    bool isVerticalInputBlocked = false;
-    bool isHorizontalInputBlocked = false;
+    //  bool isHorizontalInputBlocked = false;
     bool isAcceptedInputBlocked = false;
     bool hasVolumeValuesBeenLoaded = false;
 
@@ -68,7 +68,6 @@ public sealed class MenuManager : MonoBehaviour
         if (SFX != null)
         {
             SFX.OnBlockChangeAction += SFXVolumeChange;
-
         }
 
         if (Music != null)
@@ -88,11 +87,9 @@ public sealed class MenuManager : MonoBehaviour
         Actions local = Actions.TryGetInstance();
         if (local != null)
         {
-            /*
             Actions.Instance.OnWeaponDownToggledEvent -= OnWeaponDown;
             Actions.Instance.OnWeaponUpToggledEvent -= OnWeaponUp;
-            Actions.Instance.OnAttackTriggeredEvent -= OnJump;
-            */
+            ///Actions.Instance.OnAttackTriggeredEvent -= OnJump;
         }
 
         Master.OnBlockChangeAction -= MasterVolumeChange;
@@ -125,12 +122,17 @@ public sealed class MenuManager : MonoBehaviour
 
     private void OnWeaponDown()
     {
-        ChangeCurrentSelectionUntilObjectIsFound();
+
+        EDebug.Log(StringUtil.addColorToString($"{nameof(OnWeaponDown)}", Color.cyan));
+        //currentInputInUse |= MenuInputType.VERTICAL_DOWN;
+        //ChangeCurrentSelectionUntilObjectIsFound();
     }
 
     private void OnWeaponUp()
     {
-        ChangeCurrentSelectionUntilObjectIsFound(false);
+        //currentInputInUse |= MenuInputType.VERTICAL_UP;
+        //ChangeCurrentSelectionUntilObjectIsFound(false);
+        EDebug.Log(StringUtil.addColorToString($"{nameof(OnWeaponDown)}", Color.cyan));
     }
 
     private void OnJump()
@@ -230,12 +232,13 @@ public sealed class MenuManager : MonoBehaviour
 
     private void Update()
     {
+        currentInputInUse = MenuInputType.NONE;
         UpdateStates();
 
         switch (currentState)
         {
             case CURRENT_MENU_STATE.MAIN_MENU:
-                ProcessCursorMovement();
+                ProcessVerticalMovement();
 
                 if (cosa.Jump && !isAcceptedInputBlocked)
                 {
@@ -264,12 +267,12 @@ public sealed class MenuManager : MonoBehaviour
                 break;
 
             case CURRENT_MENU_STATE.OPTIONS:
-                ProcessCursorMovement();
-                if (isHorizontalInputBlocked) { return; }
 
+                ProcessVerticalMovement();
+                ProcessHorizontalMovement();
 
-                bool rightKeyPressed = cosa.Movement.x > 0.1f;
-                bool leftKeyPressed = cosa.Movement.x < -0.1f;
+                bool rightKeyPressed = MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.HORIZONTAL_RIGHT, currentInputInUse);
+                bool leftKeyPressed = MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.HORIZONTAL_LEFT, currentInputInUse);
 
                 loadVolumeValues();
 
@@ -332,6 +335,7 @@ public sealed class MenuManager : MonoBehaviour
                 }
                 break;
         }
+
     }
 
     public void Inicio()
@@ -372,19 +376,24 @@ private Coroutine _menuMovementCoroutine;
      
      */
 
-    private void ProcessCursorMovement()
+    #region MOVEMENT_PROCESSING
+
+    private void ProcessVerticalMovement()
     {
-        if (MenuInputTypeUtils.haveAnyMatchingBits(currentInputInUse, blockedInput)) { return; }
+        if (MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.ANY_VERTICAL, blockedInput)) { return; }
 
 
         if (cosa.Movement.y > 0.1f)
         {
+            currentInputInUse |= MenuInputType.VERTICAL_UP;
             ChangeCurrentSelectionUntilObjectIsFound(false);
             StopCoroutine(BlockVerticalInput());
             _verticalInputBlock = StartCoroutine(BlockVerticalInput());
         }
         else if (cosa.Movement.y < -0.1f)
         {
+
+            currentInputInUse |= MenuInputType.VERTICAL_DOWN;
             ChangeCurrentSelectionUntilObjectIsFound();
             StopCoroutine(BlockVerticalInput());
             _verticalInputBlock = StartCoroutine(BlockVerticalInput());
@@ -392,14 +401,45 @@ private Coroutine _menuMovementCoroutine;
 
         else if (cosa.WeaponDown)
         {
-            EDebug.Log("WeaponDown ", this);
+            currentInputInUse |= MenuInputType.VERTICAL_DOWN;
+
+            ChangeCurrentSelectionUntilObjectIsFound(false);
+            StopCoroutine(BlockVerticalInput());
+            _verticalInputBlock = StartCoroutine(BlockVerticalInput());
+            EDebug.Log("<color=orange>WeaponDown </color>", this);
         }
 
         else if (cosa.WeaponUp)
         {
+            currentInputInUse |= MenuInputType.VERTICAL_UP;
+
+            ChangeCurrentSelectionUntilObjectIsFound();
+            StopCoroutine(BlockVerticalInput());
+            _verticalInputBlock = StartCoroutine(BlockVerticalInput());
             EDebug.Log("WeaponDown ", this);
         }
     }
+
+    private void ProcessHorizontalMovement()
+    {
+        if (MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.ANY_HORIZONTAL, blockedInput)) { return; }
+
+        if (cosa.Movement.x > 0.1f)
+        {
+            currentInputInUse |= MenuInputType.HORIZONTAL_RIGHT;
+            StopCoroutine(BlockHorizontalInput());
+            _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
+        }
+        else if (cosa.Movement.x < -0.1f)
+        {
+            currentInputInUse |= MenuInputType.HORIZONTAL_LEFT;
+            StopCoroutine(BlockHorizontalInput());
+            _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
+        }
+
+    }
+
+    #endregion
 
     private void UpdateStates()
     {
@@ -472,16 +512,16 @@ private Coroutine _menuMovementCoroutine;
 
     private IEnumerator BlockVerticalInput()
     {
-        blockedInput |= MenuInputType.VERTICAL;
+        blockedInput |= MenuInputType.ANY_VERTICAL;
         yield return new WaitForSeconds(verticalInputDelay);
-        blockedInput &= MenuInputType.VERTICAL;
+        blockedInput &= ~MenuInputType.ANY_VERTICAL;
     }
 
     private IEnumerator BlockHorizontalInput()
     {
-        isHorizontalInputBlocked = true;
+        blockedInput |= MenuInputType.ANY_HORIZONTAL;
         yield return new WaitForSeconds(horizontalInputDelay);
-        isHorizontalInputBlocked = false;
+        blockedInput &= ~MenuInputType.ANY_HORIZONTAL;
     }
 
     private IEnumerator BlockAcceptedInput()
