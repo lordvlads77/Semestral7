@@ -151,6 +151,7 @@ namespace FMOD
         }
         private void OnDestroy() {
             if (_quitting) return;
+            UnSubscribe();
             if (startConditions.HasFlag(EventConditions.OnDestroy)) PlayEvent();
             if (stopConditions.HasFlag(EventConditions.OnDestroy)) StopEvent();
         }
