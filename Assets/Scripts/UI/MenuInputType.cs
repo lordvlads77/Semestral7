@@ -5,6 +5,7 @@ using UnityEngine;
 namespace UI
 {
     [System.Flags]
+    [System.Serializable]
     public enum MenuInputType : byte
     {
         NONE = 0,
