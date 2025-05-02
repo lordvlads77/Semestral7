@@ -28,6 +28,9 @@ namespace UI
         [SerializeField] private Input.Actions inputReciver;
         [SerializeField] private float distanceFromElement = -73.0f;
         private bool hasInitMenusIDs = false;
+        [Header("Input Related")]
+        [SerializeField] MenuInputType currentInput;
+        [SerializeField] MenuInputType blockedInput;
 
         void InitMenusIDs()
         {
@@ -282,6 +285,8 @@ namespace UI
         {
             currentMenuID = previousMenuID;
         }
+
+
 
         private void ActivateMenusOfSameGameState()
         {
