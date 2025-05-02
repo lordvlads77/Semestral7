@@ -23,9 +23,8 @@ namespace Character
         private Transform _trueLookAt;
         
         public Transform lockTarget;
-        //private bool isLocked;
         
-        public GameObject lockIndicatorPrefab; // Asigna un prefab desde el Inspector
+        public GameObject lockIndicatorPrefab;
         private GameObject _lockIndicator;
         public static float shakeStrength = 0f;
 
@@ -39,8 +38,7 @@ namespace Character
         private bool _wasZTargetPressedLastFrame = false;
         private Collider[] _currentEnemies = new Collider[0];
     
-        [Serializable]
-        public struct CameraSettings
+        [Serializable] public struct CameraSettings
         {
             [SerializeField] [Range(-1.0f, 1.0f)]
             private float offsetX;
@@ -50,7 +48,7 @@ namespace Character
             private float maxVerticalAngle;
             [SerializeField] [Range(0.0f, 90.0f)]
             private float minVerticalAngle;
-            [SerializeField]
+            [SerializeField] 
             private float cameraDistance;
 
             public float GetCameraDistance()

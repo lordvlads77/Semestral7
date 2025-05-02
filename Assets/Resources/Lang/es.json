@@ -1,0 +1,8 @@
+{
+  "log.debug_lang" : "El idioma está configurado en Español.",
+  "log.new_canvas" : "Un nuevo canvas se está creando...",
+  "log.dialog_null_empty" : "Las opciones de dialogo (DialogOptions) son nulas o están vacías... >:/",
+
+  "npc_dialog.example_npc.first_line": "Bienvenido viajero!",
+  "npc_dialog.blacksmith_npc.first_line": "Que buen día el día de hoy."
+}

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Scriptables;
 using UnityEngine;
@@ -17,16 +18,27 @@ namespace Entity
 
         protected override void OnAwake()
         {
-            _gm = GameManager.Instance;// this.GetComponent<GameManager>();
+            StartCoroutine(InitializeWithRetry());
+        }
+        
+        private IEnumerator InitializeWithRetry()
+        {
+            while (!Singleton<GameManager>.HasInstance)
+            {
+                EDebug.LogWarning("GameManager is not ready yet. Retrying in 0.25s...");
+                yield return new WaitForSeconds(0.25f);
+            }
+            _gm = Singleton<GameManager>.Instance;
+            yield return new WaitForEndOfFrame();
             _npcCanvas = _gm.NpcCanvas;
             if (_npcCanvas == null)
             {
-                EDebug.Log("New canvas is being created...");
+                EDebug.Log("Creating new NPC Canvas...");
                 _npcCanvas = _gm.GetOrCreateNpcCanvas();
             }
             _responsePrefab = _gm.canvasPrefabs.npcOption;
             _npcCanvas.enabled = false;
-            EDebug.Log("Dialog ► Awake");
+            EDebug.Log("Dialog ► Initialized successfully.");
         }
 
         public void StartDialog(LivingEntity npc)
@@ -34,8 +46,10 @@ namespace Entity
             _npc = npc;
             _npc.isInDialog = true;
             _dialog = _npc.dialogOptions;
-            if (_dialog != null && _dialog.dialogOptions.Count > 0) DisplayDialog(_dialog.dialogOptions[0]);
-            else EDebug.LogError("DialogOptions are null or empty... >:/");
+            if (_dialog != null && _dialog.dialogOptions.Count > 0) 
+                DisplayDialog(_dialog.dialogOptions[0]);
+            else 
+                EDebug.LogError(Localization.Translate("log.dialog_null_empty"));
         }
 
         public void StopDialog()
@@ -70,7 +84,7 @@ namespace Entity
                 EDebug.LogError("One or more UI components are not assigned.");
                 return;
             }
-            dialogText.text = dialogOption.npcDialog;
+            dialogText.text = Localization.Translate(dialogOption.npcDialog);
             npcName.text = _npc.HasCustomName()? _npc.entityName : MiscUtils.GetRandomName(
                 _gm.randomNames, _npc.nameCustomization);
             
@@ -83,7 +97,6 @@ namespace Entity
                 int index = i;
                 resp.GetComponent<Button>().onClick.AddListener(() => OnResponseSelected(dialogOption.userResponses[index]));
             }
-            
             _npcCanvas.gameObject.SetActive(true);
         }
         

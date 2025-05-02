@@ -5,6 +5,9 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Yhaliff/Test_Loading_Scene.unity
+    guid: 5217faa82adbe3447b17b1f03ee0bca7
   - enabled: 0
     path: Assets/Scenes/MenuInicio.unity
     guid: 3ffeebe4d896c484780b7dc7a4c97edd
@@ -17,6 +20,18 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GameLevel.unity
     guid: 2e378ea956f086146a6f1ec8efebe62f
+  - enabled: 1
+    path: Assets/Scenes/Yhaliff/Yhaliff test Level.unity
+    guid: 9e89352653d095540b16afc9234a91ad
+  - enabled: 1
+    path: Assets/Scenes/Yhaliff/Test Saving System.unity
+    guid: fbfc592b433c4ca4797ded4f1c376616
+  - enabled: 1
+    path: Assets/Scenes/Yhaliff/Empty Scene.unity
+    guid: fb9e6bd13348dbf479b0c359f85b7bdb
+  - enabled: 1
+    path: Assets/Scenes/Yhaliff/Empty Scene 2.unity
+    guid: df8950ef77b0a6847b970659b14b2673
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 1fee60b202b1fd34a94805ab53544dfe,
       type: 3}

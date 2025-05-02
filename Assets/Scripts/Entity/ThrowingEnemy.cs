@@ -25,7 +25,7 @@ namespace Entity
 
         [Header("Enemy properties")]
 
-        [SerializeField] public Utils.ENEMY_STATE enemyState = Utils.ENEMY_STATE.ALIVE;
+        [SerializeField] public Utils.EnemyState enemyState = Utils.EnemyState.Idle;
         [Range(0f, 20f)]
         [SerializeField] float damage = 1.0f;
 
@@ -77,7 +77,7 @@ namespace Entity
 
             Vector3 player_position = player.transform.position;
             float distance = Vector3.Distance(player_position, transform.position);
-            if (distance < attackRange && enemyState == ENEMY_STATE.ALIVE)
+            if (distance < attackRange && enemyState == EnemyState.Idle)
             {
                 agent.SetDestination(player_position);
                 FacePlayer();
@@ -96,7 +96,7 @@ namespace Entity
                 timeInsdeAttackRange = 0.0f;
             }
 
-            if (enemyState == ENEMY_STATE.DYING)
+            if (enemyState == EnemyState.Dying)
             {
 
                 animator.SetBool(deathAnimationID, true);
@@ -104,7 +104,7 @@ namespace Entity
                 if (is_dead)
                 {
                     EDebug.Log("We reached here", this);
-                    enemyState = ENEMY_STATE.DEAD;
+                    enemyState = EnemyState.Dead;
                     gameObject.SetActive(false);
                 }
             }
@@ -178,7 +178,7 @@ namespace Entity
 
         protected override void Die()
         {
-            enemyState = ENEMY_STATE.DYING;
+            enemyState = EnemyState.Dying;
             //gameObject.SetActive(false);
         }
 

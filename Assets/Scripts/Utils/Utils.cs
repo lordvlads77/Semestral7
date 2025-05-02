@@ -1,11 +1,42 @@
 using System;
 using System.Collections.Generic;
+using FMOD.Studio;
 using Scriptables;
 using UnityEngine;
 using UnityEngine.Events;
+using Random = UnityEngine.Random;
 
 namespace Utils
 {
+    public enum Language // NOTE: This enum is used for localization...
+    {                   // JSON files are named after the enum values and MUST be lowercase
+        En,
+        Es
+    }
+    
+    [System.Flags] public enum EventConditions
+    {
+        None = 0,
+        OnEnable = 1 << 0,
+        OnAwake = 1 << 1,
+        OnStart = 1 << 2,
+        OnBoolFalse = 1 << 3,
+        OnBoolTrue = 1 << 4,
+        OnDestroy = 1 << 5,
+        OnDisable = 1 << 6,
+        OnGamePaused = 1 << 7,
+        OnGameUnpaused = 1 << 8,
+        OnTriggerEnter = 1 << 9,
+        OnTriggerExit = 1 << 10,
+    }
+
+    [System.Flags] public enum TriggerConditions
+    {
+        None = 0,
+        ByLayers = 1 << 0,
+        ByTags = 1 << 1,
+    }
+    
     public enum GameStates : byte
     {
         Joining,
@@ -14,6 +45,7 @@ namespace Utils
         Chatting,
         GameOver,
         Idle,
+        Won,
     }
 
     public enum CameraTypes
@@ -24,11 +56,11 @@ namespace Utils
 
     public enum WeaponType
     {
+        Unarmed,
         LightSword,
         GreatSword,
         NamePending3,
-        NamePending4,
-        Unarmed
+        NamePending4
     }
 
     public enum DamageType
@@ -44,17 +76,152 @@ namespace Utils
     
     public enum EnemyType 
     {
-        None = 0,
-        Chaser = 1,
-        Thrower = 2,
+        Melee = 0,
+        Wizard = 1
     }
 
-    public enum ENEMY_STATE
+    public enum EnemyState
     {
-        ALIVE = 0,
-        DYING = 1,
-        DEAD = 2,
+        Idle, 
+        Chasing,
+        Attacking,
+        Fleeing,
+        Dying,
+        Dead
     }
+    
+    public enum SoundType
+    {
+        Master,
+        Music,
+        SFX
+    }
+    
+    public static class FmodUtils
+    {
+        private static readonly GameManager Gm = MiscUtils.GetOrCreateGameManager();
+        public static float GetSingleVolume(SoundType soundType)
+        {
+            if (!Gm.LoadedData) SaveSystem.SaveSystem.LoadVolumePrefs();
+            switch (soundType)
+            {
+                default:
+                case SoundType.Master:
+                    return PlayerPrefs.GetFloat("master_volume", 1.0f);
+                case SoundType.Music:
+                    return PlayerPrefs.GetFloat("music_volume", 1.0f);
+                case SoundType.SFX:
+                    return PlayerPrefs.GetFloat("sfx_volume", 1.0f);
+            }
+        }
+
+        public static float GetCompositeVolume(SoundType soundType)
+        {
+            float frac = (soundType == SoundType.Master)? 1.0f : GetSingleVolume(SoundType.Master);
+            return GetSingleVolume(soundType) * frac;
+        }
+    }
+    
+    public static class StringUtils
+    {
+        public static string AddSizeTagToString(string input, int size) {
+            string strSize = size.ToString();
+            return $"<size={strSize}> {input} </size>";
+        }
+
+        public static string AddColorToString(string input, Color color) {
+            string colorStr = ColorUtility.ToHtmlStringRGBA(color);
+            return $"<color=#{colorStr}> {input} </color>";
+        }
+    }
+
+    public static class Localization
+    {
+        private static readonly Dictionary<string, string> Translations = new Dictionary<string, string>();
+        private static Language _lang = Language.En;
+        private static GameManager _gm = MiscUtils.GetOrCreateGameManager();
+        
+        public static void LoadLanguage(Language language)
+        { // This method is public, however it's already called by "Translate" so it shouldn't be needed outside... 
+            try
+            {
+                string langFileName = $"Assets/Resources/Lang/{language.ToString().ToLower()}.json";
+                TextAsset langFile = Resources.Load<TextAsset>($"Lang/{language.ToString().ToLower()}");
+                if (langFile == null)
+                {
+                    EDebug.LogError($"Couldn't find the language file: {langFileName}");
+                    return;
+                }
+                JSONObject json = JSONObject.Create(langFile.text);
+                if (json == null || json.type != JSONObject.Type.Object || json.count == 0)
+                {
+                    EDebug.LogError($"This lang file is empty or has invalid translations: {langFileName}");
+                    return;
+                }
+                Translations.Clear();
+                for (int i = 0; i < json.keys.Count; i++)
+                {
+                    string key = json.keys[i];
+                    string value = json.list[i].stringValue;
+                    Translations[key] = value;
+                }
+                _lang = language;
+                EDebug.Log($"Language loaded correctly: {language}");
+            }
+            catch (Exception ex)
+            {
+                EDebug.LogError($"Error loading lang file: {language}. Details: {ex.Message}");
+            }
+        }
+
+        public static string Translate(string key)
+        {
+            if (!Application.isPlaying || !Singleton<GameManager>.applicationIsQuitting)
+            {
+                EDebug.LogError($"Translation attempted while GameManager is unavailable. Key: {key}");
+                return key; // Fallback
+            }
+            if (_gm == null)
+            {
+                _gm = Singleton<GameManager>.TryGetInstance();
+                if (_gm == null) {
+                    EDebug.LogError("GameManager is null! Cannot translate.");
+                    return key; // Fallback
+                }
+            }
+            if (Translations.Count == 0 || _lang != _gm.CurrentLanguage)
+                LoadLanguage(_gm.CurrentLanguage);
+            if (Translations.TryGetValue(key, out string value))
+                return value;
+            EDebug.LogError($"Translation not found for key: {key}");
+            return key; // (Fallback)
+        }
+
+        [Serializable] private class SerializableDictionary
+        {
+            public List<string> keys;
+            public List<string> values;
+
+            public Dictionary<string, string> ToDictionary()
+            {
+                Dictionary<string, string> dictionary = new Dictionary<string, string>();
+                for (int i = 0; i < keys.Count; i++)
+                {
+                    dictionary[keys[i]] = values[i];
+                }
+                return dictionary;
+            }
+        }
+    }
+
+    /*
+    [Serializable]
+    public enum Languege : int
+    {
+        English = 0,
+        Spanish,
+        COUNT,/// NOTE : Cuando agregas un lenguage nuevo tienes que ponerlos antes que el COUNT
+    }*/
 
     public static class MathUtils
     {
@@ -66,6 +233,15 @@ namespace Utils
             camRight.y = 0;
             return new[] { camForward.normalized, camRight.normalized };
         }
+
+        public static Vector3 RandomPos(float radius, Vector3 origin)
+        {
+            Vector3 randomPos = Random.insideUnitSphere * radius;
+            randomPos += origin;
+            return randomPos;
+        }
+        public static bool RandBool() { return Random.value < 0.5f; }
+        public static bool WeightedRandBool(float weight) { return Random.value <= weight; }
     }
 
     public static class CombatUtils
@@ -84,9 +260,37 @@ namespace Utils
                 EDebug.LogError($"WeaponStats not found for WeaponType: {weapon}");
                 return;
             }
+
+            EDebug.Log(attacker.entityName + "Attacked ► " + target.entityName);
             target.TakeDamage(
                 attacker.transform.position, //Change this later to the actual point of impact for particles
                 attacker.transform.forward,
+                stats.damageType,
+                target.GetDmgTypeResistance(),
+                stats.damage,
+                stats.knockBack,
+                stats.staggerBuildUp,
+                stats.armorPenetration,
+                stats.critRate,
+                stats.critDamage
+            );
+        }
+        
+        public static void Attack(Transform attackFrom, WeaponStatistics stats, LivingEntity target)
+        {
+            if (stats == null)
+            {
+                EDebug.LogError($"WeaponStats not found");
+                return;
+            }
+            if (target == null || attackFrom == null)
+            {
+                EDebug.LogError("Target or attacker transform is null");
+                return;
+            }
+            target.TakeDamage(
+                target.transform.position,
+                (target.transform.position - attackFrom.position).normalized,
                 stats.damageType,
                 target.GetDmgTypeResistance(),
                 stats.damage,
@@ -109,7 +313,7 @@ namespace Utils
                 0.0f,
                 0.0f,
                 0.0f,
-                0.0f,
+                0.1f,
                 2.0f);
 
         }
@@ -134,29 +338,29 @@ namespace Utils
 
         public static GameManager GetOrCreateGameManager()
         {
-            GameManager gm = GameManager.Instance;
-            if (gm == null)
-            {
-                GameObject newGm = new GameObject("GameManager")
-                { transform = { position = new Vector3(0, 10 ,0) } };
-                gm = newGm.AddComponent<GameManager>();
-                newGm.AddComponent<Input.Actions>();
-                UnityEngine.Object.DontDestroyOnLoad(newGm);
-                EDebug.Log("GameManager was not found, a new one was created.");
+            if (!Application.isPlaying || Singleton<GameManager>.applicationIsQuitting) {
+                EDebug.LogError("Attempted to create GameManager while the application is not playing or is quitting.");
+                return null;
             }
+            GameManager gm = GameManager.Instance;
+            if (gm != null) return gm; 
+            GameObject newGm = new GameObject("GameManager")
+            { transform = { position = new Vector3(0, 10 ,0) } };
+            gm = newGm.AddComponent<GameManager>();
+            newGm.AddComponent<Input.Actions>();
+            UnityEngine.Object.DontDestroyOnLoad(newGm);
+            EDebug.Log("GameManager was not found, a new one was created.");
             return gm;
         }
     }
 
-    [Serializable]
-    public class DialogOption
+    [Serializable] public class DialogOption
     {
         public string npcDialog;
         public List<ResponseOption> userResponses;
     }
 
-    [Serializable]
-    public class ResponseOption
+    [Serializable] public class ResponseOption
     {
         public string response;
         public float moodChange;
@@ -170,8 +374,7 @@ namespace Utils
         }
     }
 
-    [Serializable]
-    public class WeaponStatistics
+    [Serializable] public class WeaponStatistics
     {
         public DamageType damageType;                //Type of damage
         public float damage;                         //Flat damage number
@@ -182,9 +385,18 @@ namespace Utils
         [Range(0, 1)] public float critRate;          //Chance of landing a critical hit
         [Range(1, 5)] public float critDamage;        //Multiplier for critical hits
     }
+    
+    [Serializable] public class HurtFXVars
+    {
+        public int blinks = 1;
+        public SkinnedMeshRenderer renderer;
+        public Material[] ogMaterials;
+        public Material[] hitMaterials;
+        public float animTime = 0.1f;
+        public Coroutine DamageFXCoroutine;
+    }
 
-    [Serializable]
-    public class NameCustomization
+    [Serializable] public class NameCustomization
     {
         public bool isMale;
         public bool includeName;
@@ -197,8 +409,7 @@ namespace Utils
         public bool useTitleDividers;
     }
 
-    [Serializable]
-    public class CanvasPrefabs
+    [Serializable] public class CanvasPrefabs
     {
         [Header("Canvas Sprites")]
         public RandomSprite[] canvasSprites;
@@ -211,12 +422,17 @@ namespace Utils
         // (I'd like it if you added a header for each category)
     }
 
-    [Serializable]
-    public class CustomDialogSprites
+    [Serializable] public class CustomDialogSprites
     {
         public Sprite dialogBox;
         public Sprite dialogOption;
         public Sprite nameDivider;
+    }
+
+    [Serializable] public class EventSoundType
+    {
+        public EventInstance EventI;
+        public SoundType soundType;
     }
 
 }

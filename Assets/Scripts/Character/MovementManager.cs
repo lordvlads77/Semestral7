@@ -28,7 +28,6 @@ namespace Character
         [Tooltip("X= Forward, Y= Backward, Z= Sideways")]
         public Vector3 crouchSpeeds = new Vector3(1f, 0.75f, 0.75f);
         [SerializeField] private float groundYOffset;
-        [SerializeField] private LayerMask groundLayer;
         [SerializeField, Range(5f, 15f)] private float gravity = 9.81f;
         [SerializeField] private float jumpHeight = 2f;
         [HideInInspector] public Vector3 dir;
@@ -55,7 +54,7 @@ namespace Character
         private bool canDodge = true;
         private Rigidbody rb;
         
-        private void Awake()
+        protected override void OnAwoken()
         {
             anim = GetComponent<Animator>();
             controller = GetComponent<CharacterController>();
@@ -64,13 +63,14 @@ namespace Character
             IInput = (Input.Actions.Instance != null)? Input.Actions.Instance : MiscUtils.GetOrCreateGameManager().gameObject.GetComponent<Input.Actions>();
             if (_cam) _cm = _cam.GetComponent<ThirdPersonCamera>();
             if (!_cm) _cm = GetComponent<ThirdPersonCamera>(); // You had the script here, right
-            SetHealth(GetMaxHealth());
         }
         
         private void OnEnable()
         {
             IInput.OnCrouchToggledEvent += ToggleCrouch;
             IInput.OnAttackTriggeredEvent += Punch;
+            MiscUtils.GetOrCreateGameManager().Subscribe(OnStateChange);
+            OnStateChange(MiscUtils.GetOrCreateGameManager().GameState);
         }
         private void OnDestroy()
         {
@@ -84,10 +84,12 @@ namespace Character
         private void UnSubscribe()
         {
             IInput.OnCrouchToggledEvent -= ToggleCrouch;
+            GameManager.TryGetInstance()?.Unsubscribe(OnStateChange);
         }
         
         private void Update()
         {
+            if(gameState != GameStates.Playing) { return; }
             if (isDead) {
                 stateManager.EnterMovementState(MovementState.Dead, this);
                 return;
@@ -166,9 +168,9 @@ namespace Character
             if (!isDodging)
             {
                 if (IInput.Jump && IsGrounded())
-            {
-                Jump();
-            }
+                {
+                    Jump();
+                }
             }
             if (IInput.Doge && canDodge && !isDodging)
             {
@@ -273,19 +275,13 @@ private void GetDirectionAndMove()
         public void IncreaseMaxHealth(float amount)
         {
             maxHealth += amount;
-            _health = maxHealth;
-        }
-        private Boolean NpcCloseBy()
-        {
-            // Check if there is an NPC close by
-            return false;
         }
         
         private bool IsGrounded()
         {
             Vector3 vec = this.transform.position;
             _spherePos = new Vector3(vec.x, vec.y - groundYOffset, vec.z);
-            return Physics.CheckSphere(_spherePos, controller.radius - 0.05f, groundLayer);
+            return Physics.CheckSphere(_spherePos, controller.radius - 0.05f, groundLayers);
         }
         
         private void ApplyGravity()
@@ -319,6 +315,11 @@ private void GetDirectionAndMove()
         public void StartSwordAndShieldCombat()
         {
             // Should take out the weapons, change stance 
+        }
+        
+        private void OnStateChange(GameStates state)
+        {
+            gameState = state;
         }
         
     }

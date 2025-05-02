@@ -51,6 +51,14 @@ namespace Input
 
         protected override void OnAwake()
         {
+            if (_inputActions == null) InitStuff();
+            EDebug.Log("Input Actions ► Awake");
+        }
+
+        private PlaInputActions InitStuff()
+        {
+            if(_inputActions != null) 
+                return _inputActions;
             _inputActions = new PlaInputActions();
             Crouch = false;
             Pause = false;
@@ -61,11 +69,12 @@ namespace Input
             AttackHeavy = false;
             CurrentWeapon = WeaponType.Unarmed;
             EDebug.Log("Input Actions ► Initialized");
+            return _inputActions;
         }
 
         private void OnEnable()
         {
-            _inputActions.Enable();
+            InitStuff().Enable();
             _inputActions.Player.Pause.started += OnPauseToggled;
 
             _inputActions.Player.MoveVec.started += OnMoveVecStarted;
@@ -111,7 +120,8 @@ namespace Input
             _inputActions.Player.LeftButton.started += OnDogeStarted;
             _inputActions.Player.LeftButton.performed += OnDogeHeld;
             _inputActions.Player.LeftButton.canceled += OnDogeCanceled;
-
+            
+            EDebug.Log("Input Actions ► Enabled");
         }
 
         
@@ -289,6 +299,7 @@ namespace Input
         private void OnDogeStarted(InputAction.CallbackContext context)
         {
             Doge = true;
+            OnDoge?.Invoke();
         }
 
         private void OnDogeHeld(InputAction.CallbackContext context)
