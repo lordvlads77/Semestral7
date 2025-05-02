@@ -44,6 +44,9 @@ public sealed class MenuManager : MonoBehaviour
 
     MenuInputType currentInputInUse = MenuInputType.NONE;
     MenuInputType blockedInput = MenuInputType.NONE;
+    
+    private bool _downClicked = false;
+    private bool _upClicked = false;
 
     //    bool isVerticalInputBlocked = false;
     //  bool isHorizontalInputBlocked = false;
@@ -122,17 +125,25 @@ public sealed class MenuManager : MonoBehaviour
 
     private void OnWeaponDown()
     {
-
-        EDebug.Log(StringUtil.addColorToString($"{nameof(OnWeaponDown)}", Color.cyan));
-        //currentInputInUse |= MenuInputType.VERTICAL_DOWN;
-        //ChangeCurrentSelectionUntilObjectIsFound();
+        _downClicked = !_downClicked;
+        EDebug.Log(StringUtils.AddColorToString($"{nameof(OnWeaponDown)}", Color.cyan));
+        if (MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.ANY_VERTICAL, blockedInput)) { return; }
+        currentInputInUse |= MenuInputType.VERTICAL_DOWN;
+        ChangeCurrentSelectionUntilObjectIsFound(true);
+        
+        // DONDE CORESPONDA
+        // InvokeRepeating (0.5s a 0.75s para iniciar, 0.15s para repetir)
+        // (Rutina, basicamente lo que tenías en update pa' que se mueva solo si lo mantienes presionado)
+        // La rutina debe checar el estado de "pressed" y matarse sola 
     }
 
     private void OnWeaponUp()
     {
-        //currentInputInUse |= MenuInputType.VERTICAL_UP;
-        //ChangeCurrentSelectionUntilObjectIsFound(false);
-        EDebug.Log(StringUtil.addColorToString($"{nameof(OnWeaponDown)}", Color.cyan));
+        _upClicked = !_upClicked;
+        EDebug.Log(StringUtils.AddColorToString($"{nameof(OnWeaponUp)}", Color.cyan));
+        if (MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.ANY_VERTICAL, blockedInput)) { return; }
+        currentInputInUse |= MenuInputType.VERTICAL_UP;
+        ChangeCurrentSelectionUntilObjectIsFound(false);
     }
 
     private void OnJump()
@@ -377,7 +388,7 @@ private Coroutine _menuMovementCoroutine;
      */
 
     #region MOVEMENT_PROCESSING
-
+    
     private void ProcessVerticalMovement()
     {
         if (MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.ANY_VERTICAL, blockedInput)) { return; }
@@ -397,26 +408,6 @@ private Coroutine _menuMovementCoroutine;
             ChangeCurrentSelectionUntilObjectIsFound();
             StopCoroutine(BlockVerticalInput());
             _verticalInputBlock = StartCoroutine(BlockVerticalInput());
-        }
-
-        else if (cosa.WeaponDown)
-        {
-            currentInputInUse |= MenuInputType.VERTICAL_DOWN;
-
-            ChangeCurrentSelectionUntilObjectIsFound(false);
-            StopCoroutine(BlockVerticalInput());
-            _verticalInputBlock = StartCoroutine(BlockVerticalInput());
-            EDebug.Log("<color=orange>WeaponDown </color>", this);
-        }
-
-        else if (cosa.WeaponUp)
-        {
-            currentInputInUse |= MenuInputType.VERTICAL_UP;
-
-            ChangeCurrentSelectionUntilObjectIsFound();
-            StopCoroutine(BlockVerticalInput());
-            _verticalInputBlock = StartCoroutine(BlockVerticalInput());
-            EDebug.Log("WeaponDown ", this);
         }
     }
 
