@@ -4086,6 +4086,7 @@ MonoBehaviour:
   in3DSpace: 0
   followTarget: {fileID: 1114767204}
   movePhysically: 0
+  lerpValue: 0.25
   renderGizmo: 0
 --- !u!1 &1618604956
 GameObject:
