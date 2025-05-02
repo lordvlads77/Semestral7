@@ -316,6 +316,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2675203724140666121, guid: 4dad65fee5b868a4eb9bce8977b9d16c,
+        type: 3}
+      propertyPath: in3DSpace
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3506122960726311965, guid: 4dad65fee5b868a4eb9bce8977b9d16c,
         type: 3}
       propertyPath: m_Name
@@ -837,9 +842,9 @@ MonoBehaviour:
   Music: {fileID: 876808407}
   Master: {fileID: 852430070}
   textSwitcher: {fileID: 1464731619}
-  verticalInputDelay: 0.033333335
-  horizontalInputDelay: 0.033333335
-  acceptedInputDelay: 0.06666667
+  verticalInputDelay: 0.15
+  horizontalInputDelay: 0.15
+  acceptedInputDelay: 0.15
 --- !u!1001 &645742349
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2717,8 +2722,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1114767204}
   - component: {fileID: 1114767203}
-  - component: {fileID: 1114767202}
   - component: {fileID: 1114767205}
+  - component: {fileID: 1114767206}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2726,14 +2731,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &1114767202
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1114767201}
-  m_Enabled: 1
 --- !u!20 &1114767203
 Camera:
   m_ObjectHideFlags: 0
@@ -2844,6 +2841,20 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!114 &1114767206
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1114767201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nonRigidbodyVelocity: 1
+  attenuationObject: {fileID: 0}
 --- !u!1 &1176651167
 GameObject:
   m_ObjectHideFlags: 0
