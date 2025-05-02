@@ -31,6 +31,9 @@ namespace Character
         private double _theta = Math.PI / 2;
         private float _tTheta = 0.5f;
         private double _alpha = -Math.PI / 2;
+        private float currentAlpha;
+        private float currentTheta;
+        private float smoothSpeed = 5f;
         
         [SerializeField]
         private float maxLockDistance = 10f;
@@ -94,7 +97,7 @@ namespace Character
             // Si se acaba de presionar
             if (isZTargetPressed && !_wasZTargetPressedLastFrame)
             {
-                _currentEnemies = Physics.OverlapSphere(transform.position, 10f, LayerMask.GetMask("Enemy"));
+                _currentEnemies = Physics.OverlapSphere(transform.position, 5f, LayerMask.GetMask("Enemy"));
                 FindClosestTarget(_currentEnemies);
             }
 
@@ -168,26 +171,28 @@ namespace Character
 
             // Orbit the camera around the character
             if (h != 0)
-            {   // Horizontal movement 
-                _alpha += h * sensitivity * Time.deltaTime; 
+            {
+                _alpha += h * sensitivity * Time.deltaTime;
             }
             if (v != 0)
-            {   // Vertical movement
+            {
                 Vector2 limitAnglesRads = settings.GetLimitVerticalAnglesRadians();
-                float maxAngle = limitAnglesRads.x;
-                float minAngle = limitAnglesRads.y;
+                float maxAngle = ((float)Math.PI / 2) - limitAnglesRads.x;
+                float minAngle = ((float)Math.PI / 2) + limitAnglesRads.y;
 
-                maxAngle = ((float)Math.PI / 2) - maxAngle;
-                minAngle = ((float)Math.PI / 2) + minAngle;
-            
                 _tTheta += v * sensitivity * Time.deltaTime;
-                _tTheta = Mathf.Clamp(_tTheta, 0, 1);
+                _tTheta = Mathf.Clamp(_tTheta, 0f, 1f);
                 _theta = Mathf.Lerp(maxAngle, minAngle, _tTheta);
             }
-        
-            float x = lookAt.transform.position.x + (float) (settings.GetCameraDistance() * Math.Sin(_theta) * Math.Cos(_alpha));
-            float y = lookAt.transform.position.y + (float) (settings.GetCameraDistance() * Math.Cos(_theta));
-            float z = lookAt.transform.position.z + (float) (settings.GetCameraDistance() * Math.Sin(_theta) * Math.Sin(_alpha));
+
+// SUAVIZADO
+            currentAlpha = Mathf.Lerp(currentAlpha, (float)_alpha, Time.deltaTime * smoothSpeed);
+            currentTheta = Mathf.Lerp(currentTheta, (float)_theta, Time.deltaTime * smoothSpeed);
+
+// Calcula posición basada en rotación suavizada
+            float x = lookAt.position.x + settings.GetCameraDistance() * Mathf.Sin(currentTheta) * Mathf.Cos(currentAlpha);
+            float y = lookAt.position.y + settings.GetCameraDistance() * Mathf.Cos(currentTheta);
+            float z = lookAt.position.z + settings.GetCameraDistance() * Mathf.Sin(currentTheta) * Mathf.Sin(currentAlpha);
         
             Vector3 newCameraPosition = new Vector3(x, y , z);
             Vector3 offsetCameraPosition = newCameraPosition + settings.GetOffset().x * cam.transform.right + settings.GetOffset().y * cam.transform.up;
@@ -199,8 +204,12 @@ namespace Character
                 if (shakeStrength < 0.01f) shakeStrength = 0f;
             }
 
-            cam.transform.position = offsetCameraPosition + shakeOffset;
-            _trueLookAt.transform.position = lookAt.transform.position + +settings.GetOffset().x * cam.transform.right + settings.GetOffset().y * cam.transform.up;
+            Vector3 targetCameraPosition = offsetCameraPosition + shakeOffset;
+            cam.transform.position = Vector3.Lerp(cam.transform.position, targetCameraPosition, Time.deltaTime * 10f);
+
+// Interpolación suave del punto de enfoque
+            Vector3 targetLookAt = lookAt.transform.position + settings.GetOffset().x * cam.transform.right + settings.GetOffset().y * cam.transform.up;
+            _trueLookAt.transform.position = Vector3.Lerp(_trueLookAt.transform.position, targetLookAt, Time.deltaTime * 10f);
             if (_input.ZTarget && lockTarget)
             {
                 Quaternion targetRotation = Quaternion.LookRotation(lockTarget.position - cam.transform.position);

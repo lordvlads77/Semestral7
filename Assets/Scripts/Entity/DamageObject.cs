@@ -21,13 +21,12 @@ public class DamageObject : MonoBehaviour
 
     private void DoSomething()
     {
-        // Esto hará temblar la cámara
+        
         if (CamShaker.instance != null)
         {
             CamShaker.instance.SetShake(camShakeStr, camShakeFrames);
         }
-
-        // Agregá otras acciones acá si querés
+        
         Debug.Log("¡El jugador activó el trigger y la cámara está temblando!");
     }
 }
