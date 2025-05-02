@@ -123,7 +123,7 @@ public sealed class MenuManager : MonoBehaviour
     private void OnWeaponDown()
     {
 
-        EDebug.Log(StringUtil.addColorToString($"{nameof(OnWeaponDown)}", Color.cyan));
+        EDebug.Log(StringUtils.AddColorToString($"{nameof(OnWeaponDown)}", Color.cyan));
         //currentInputInUse |= MenuInputType.VERTICAL_DOWN;
         //ChangeCurrentSelectionUntilObjectIsFound();
     }
@@ -132,7 +132,7 @@ public sealed class MenuManager : MonoBehaviour
     {
         //currentInputInUse |= MenuInputType.VERTICAL_UP;
         //ChangeCurrentSelectionUntilObjectIsFound(false);
-        EDebug.Log(StringUtil.addColorToString($"{nameof(OnWeaponDown)}", Color.cyan));
+        EDebug.Log(StringUtils.AddColorToString($"{nameof(OnWeaponDown)}", Color.cyan));
     }
 
     private void OnJump()
@@ -362,19 +362,6 @@ public sealed class MenuManager : MonoBehaviour
         Application.Quit();
     }
 
-    /*
-     
-    if (_menuMovementCoroutine != null)
-                        StopCoroutine(_menuMovementCoroutine );
-                    _menuMovementCoroutine = StartCoroutine(MenuMoveInput()); 
-private IEnumerator MenuMoveInput()
-        {
-            yield return new WaitForSeconds(menuInputCd);
-            // Logic for moving menu stuff
-        } 
-private Coroutine _menuMovementCoroutine; 
-     
-     */
 
     #region MOVEMENT_PROCESSING
 
@@ -440,6 +427,8 @@ private Coroutine _menuMovementCoroutine;
     }
 
     #endregion
+
+
 
     private void UpdateStates()
     {
