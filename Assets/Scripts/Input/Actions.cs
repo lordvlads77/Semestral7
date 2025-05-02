@@ -47,6 +47,10 @@ namespace Input
 
         public bool Doge { get; private set; }
         public event Action OnDoge;
+        
+        public bool LowerHands { get; private set; }
+
+        public event Action ShareButton;
 
 
         protected override void OnAwake()
@@ -60,6 +64,7 @@ namespace Input
             WeaponDown = false;
             AttackHeavy = false;
             CurrentWeapon = WeaponType.Unarmed;
+            LowerHands = false;
             EDebug.Log("Input Actions ► Initialized");
         }
 
@@ -111,6 +116,8 @@ namespace Input
             _inputActions.Player.LeftButton.started += OnDogeStarted;
             _inputActions.Player.LeftButton.performed += OnDogeHeld;
             _inputActions.Player.LeftButton.canceled += OnDogeCanceled;
+
+            _inputActions.Player.ShareButton.started += OnLowerHandsToggled;
 
         }
 
@@ -300,6 +307,15 @@ namespace Input
         {
             Doge = false;
         }
+
+        #endregion
+
+        #region LowerHands
+
+            private void OnLowerHandsToggled(InputAction.CallbackContext context)
+            {
+                ShareButton?.Invoke();
+            }
 
         #endregion
     }

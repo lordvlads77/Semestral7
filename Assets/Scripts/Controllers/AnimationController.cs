@@ -14,6 +14,8 @@ namespace Controllers
         private readonly int _2HAttackSwing = Animator.StringToHash("2HAttackSwing");
         [SerializeField] private StateManager stateManager = default;
         private readonly int _WeaponType = Animator.StringToHash("WeaponType");
+        private readonly int _HandsInUse = Animator.StringToHash("HandsInUse");
+        private readonly int _UsingHands = Animator.StringToHash("UsingHands");
 
         
         public void TwoHandsWeaponWithdraw(Animator animator)
@@ -57,6 +59,22 @@ namespace Controllers
         {
             animator.SetInteger(_WeaponType, weaponType);
         }
+
+        public void LowerHands(Animator animator)
+        {
+            animator.SetBool(_HandsInUse, false);
+        }
+
+        public void UsingHands(Animator animator)
+        {
+            animator.SetBool(_HandsInUse, true);
+        }
+
+        public void HandsUsing(Animator animator)
+        {
+            animator.SetBool(_HandsInUse, true);
+        }
+        
         
     }
 }

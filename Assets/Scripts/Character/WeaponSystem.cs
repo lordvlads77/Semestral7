@@ -22,6 +22,7 @@ namespace Character
         [FormerlySerializedAs("_isWeaponInUse")] [SerializeField] private bool isWeaponInUse = false;
         [FormerlySerializedAs("_player")] [SerializeField] private LivingEntity player;
         [FormerlySerializedAs("_enemy")] [SerializeField] private GameObject enemy;
+        [SerializeField] private bool areHandsInUse = false;
 
         [FormerlySerializedAs("_animator")]
         [Header("Animator Reference")]
@@ -40,8 +41,7 @@ namespace Character
 
         public void Unarmed()
         {
-            oneHandedWeapon.SetActive(false);
-            twoHandedWeapon.SetActive(true);
+            areHandsInUse = true;
         }
 
         public void WithdrawOneHandedWeapon()
@@ -50,6 +50,7 @@ namespace Character
             {
                 isWeaponInUse = true;
                 AnimationController.Instance.OneHandWeaponWithdraw(animator);
+                AnimationController.Instance.WeaponType(animator, 1);
                 //Add VFX Calling Here if applicable
                 //Add SFX Calling Here
                 oneHandedWeapon.SetActive(true);
@@ -74,6 +75,7 @@ namespace Character
                 isWeaponInUse = false;
                 //Add VFX Calling Here if applicable
                 //Add SFX Calling Here
+                AnimationController.Instance.WeaponType(animator, 0);
                 if (!oneHandedWeapon.activeInHierarchy)
                 {
                     EDebug.Log("You already Sheathed your weapon");
@@ -96,6 +98,7 @@ namespace Character
             {
                 isWeaponInUse = true;
                 AnimationController.Instance.TwoHandsWeaponWithdraw(animator);
+                AnimationController.Instance.WeaponType(animator, 2);
                 //Add VFX Calling Here if applicable
                 //Add SFX Calling Here
                 twoHandedWeapon.SetActive(false);
@@ -119,6 +122,7 @@ namespace Character
             {
                 isWeaponInUse = false;
                 AnimationController.Instance.TwoHandsWeaponSheath(animator);
+                AnimationController.Instance.WeaponType(animator, 0);
                 //Add VFX Calling Here if applicable
                 //Add SFX Calling Here
                 twoHandedHand.SetActive(false);
@@ -130,34 +134,38 @@ namespace Character
             }
         }
 
+        public void LoweringHands()
+        {
+            if (isWeaponInUse == false & areHandsInUse)
+            {
+                AnimationController.Instance.LowerHands(animator);
+            }
+        }
+
+        public void HandsArebeingUsed()
+        {
+            areHandsInUse = true;
+            if (areHandsInUse)
+            {
+                AnimationController.Instance.HandsUsing(animator);
+            }
+        }
+
         public void Attack()
         {
             AnimationController.Instance.WeaponType(animator, 0);
             CombatUtils.Attack(player, enemy.GetComponent<LivingEntity>());
             if (player.GetComponent<LivingEntity>().Weapon == WeaponType.Unarmed )
             {
+                AnimationController.Instance.UsingHands(animator);
                 stateManager.EnterFightingState(FightingState.UnarmedFighting, player.GetComponent<MovementManager>());
-            }
-            //AnimationController.Instance.TwoHandAttackSwing(animator);
-            if (isWeaponInUse)
-            {
-                switch (player.GetComponent<LivingEntity>().Weapon)
-                {
-                    default:
-                    case WeaponType.LightSword:
-                        AnimationController.Instance.WeaponType(animator, 1);
-                        AnimationController.Instance.OneHandAttackSwing(animator);
-                        CombatUtils.Attack(player, enemy.GetComponent<LivingEntity>());
-                        break;
-                    case WeaponType.GreatSword:
-                        AnimationController.Instance.WeaponType(animator, 2);
-                        AnimationController.Instance.TwoHandAttackSwing(animator);
-                        CombatUtils.Attack(player, enemy.GetComponent<LivingEntity>());
-                        break;
-                }
-                //TODO: Change this to ifs for each weapon type.
+                HandsArebeingUsed();
+                areHandsInUse = true;
+                Debug.Log("hAds are in use");
             }
         }
+        
+        
 
     }
 }
