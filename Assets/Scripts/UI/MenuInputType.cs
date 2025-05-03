@@ -35,6 +35,15 @@ namespace UI
             return ((1 << bit) & (int)rightSide) > 0;
         }
 
+        public static void setBit(MenuInputType bitMask, ref MenuInputType toBeSet)
+        {
+            toBeSet = toBeSet | bitMask;
+        }
+
+        public static void unsetBit(MenuInputType bitMask, ref MenuInputType toBeUnset)
+        {
+            toBeUnset &= ~bitMask;
+        }
     }
 
 }
