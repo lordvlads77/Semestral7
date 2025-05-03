@@ -8,7 +8,7 @@ namespace Utils
     /// <summary>
     /// This script adds a game Manager if None are in the scene
     /// </summary>
-    [DefaultExecutionOrder(-1)]
+    [DefaultExecutionOrder(-25)]
     public class AddGameManagerIfNeeded : MonoBehaviour
     {
         [SerializeField] private GameObject managerPrefab;

@@ -1405,7 +1405,7 @@ PrefabInstance:
     - target: {fileID: 8894752239774277087, guid: d405ee213137d4a4e8634a30c7e8b432,
         type: 3}
       propertyPath: m_Name
-      value: Change State in Real Time
+      value: ==== Change State in Real Time
       objectReference: {fileID: 0}
     - target: {fileID: 9132433635893259561, guid: d405ee213137d4a4e8634a30c7e8b432,
         type: 3}
@@ -3589,9 +3589,9 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6c44692477e7bb94ab5f63a3ac85fe8d, type: 3}
---- !u!224 &1932949853 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 2672377784004718372, guid: 6c44692477e7bb94ab5f63a3ac85fe8d,
+--- !u!4 &1932949853 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1940201540614655870, guid: 6c44692477e7bb94ab5f63a3ac85fe8d,
     type: 3}
   m_PrefabInstance: {fileID: 1932949852}
   m_PrefabAsset: {fileID: 0}

@@ -1,5 +1,6 @@
 using FMOD.Studio;
 using FMODUnity;
+using Unity.VisualScripting;
 using UnityEngine;
 using Utils;
 
@@ -42,7 +43,8 @@ namespace FMOD
         private float lerpValue = 0.25f;
         [SerializeField, Tooltip("Render area gizmo. (Only visible in play mode)")] 
         private bool renderGizmo = false;
-        
+
+        private bool _quitting;
         public bool Flag { get; private set; }
 
         private SoundManager GetOrCreateSoundManager() {
@@ -57,6 +59,7 @@ namespace FMOD
             _soundInstance.set3DAttributes(attributes);
         }
         private void OnGameStateChanged(GameStates newState) {
+            if (_quitting) return;
             if (newState == GameStates.Paused) {
                 if (startConditions.HasFlag(EventConditions.OnGamePaused)) PlayEvent();
                 if (stopConditions.HasFlag(EventConditions.OnGamePaused)) StopEvent();
@@ -66,6 +69,7 @@ namespace FMOD
             }
         }
         private void HandleTriggerEvent(Collider col, bool isEntering) {
+            if (_quitting) return;
             if (isEntering) {
                 if (startConditions.HasFlag(EventConditions.OnTriggerEnter)) {
                     if (triggerConditions.HasFlag(TriggerConditions.ByTags)) {
@@ -124,24 +128,34 @@ namespace FMOD
         }
 
         private void Awake() {
+            if (_quitting) return;
             if (startConditions.HasFlag(EventConditions.OnAwake)) PlayEvent();
             if (stopConditions.HasFlag(EventConditions.OnAwake)) StopEvent();
         }
         private void OnEnable() {
-            MiscUtils.GetOrCreateGameManager().Subscribe(OnGameStateChanged);
+            if (_quitting) return;
+            var gameManager = MiscUtils.GetOrCreateGameManager();
+            if (gameManager != null) {
+                gameManager.Subscribe(OnGameStateChanged);
+                gameManager.RegisterUnsubscribeAction(UnSubscribe);
+            }
             if (startConditions.HasFlag(EventConditions.OnEnable)) PlayEvent();
             if (stopConditions.HasFlag(EventConditions.OnEnable)) StopEvent();
         }
         private void Start() {
+            if (_quitting) return;
             if (startConditions.HasFlag(EventConditions.OnStart)) PlayEvent();
             if (stopConditions.HasFlag(EventConditions.OnStart)) StopEvent();
         }
         private void OnDisable() {
-            MiscUtils.GetOrCreateGameManager().Unsubscribe(OnGameStateChanged);
+            if (_quitting) return;
+            UnSubscribe();
             if (startConditions.HasFlag(EventConditions.OnDisable)) PlayEvent();
             if (stopConditions.HasFlag(EventConditions.OnDisable)) StopEvent();
         }
         private void OnDestroy() {
+            if (_quitting) return;
+            UnSubscribe();
             if (startConditions.HasFlag(EventConditions.OnDestroy)) PlayEvent();
             if (stopConditions.HasFlag(EventConditions.OnDestroy)) StopEvent();
         }
@@ -152,6 +166,7 @@ namespace FMOD
             HandleTriggerEvent(other, false);
         }
         private void LateUpdate() {
+            if (_quitting) return;
             if (!in3DSpace || followTarget == null) return;
             Vector3 targetPosition = (lerpValue > 0.001f)? 
                 Vector3.Lerp(transform.position, followTarget.position, lerpValue*Time.deltaTime) 
@@ -159,13 +174,22 @@ namespace FMOD
             Set3DSpace(targetPosition);
             if (movePhysically) transform.position = targetPosition;
         }
+        private void UnSubscribe() {
+            if (Utils.Singleton<GameManager>.applicationIsQuitting) return;
+            var gameManager = MiscUtils.GetOrCreateGameManager();
+            if (gameManager != null) {
+                gameManager.Unsubscribe(OnGameStateChanged);
+            }
+        }
         
         private void SetParamsNPlay() {
+            if (_quitting) return;
             if (!string.IsNullOrWhiteSpace(parameterName))
                 _soundInstance.setParameterByName(parameterName, parameter);
             _soundInstance.start();
         }
         public void SetFlag(bool value) {
+            if (_quitting) return;
             Flag = value;
             if (startConditions.HasFlag(EventConditions.OnBoolTrue) && Flag)
                 PlayEvent();
@@ -178,6 +202,7 @@ namespace FMOD
         }
 
         [ContextMenu("Play Event")] public void PlayEvent() {
+            if (_quitting) return;
             if (eventToPlay.IsNull) { EDebug.LogError(this.name + "'s: eventToPlay is null!"); return; }
             if (_soundInstance.isValid()) {
                 if (!restarts) _soundInstance.setPaused(false);
@@ -210,6 +235,7 @@ namespace FMOD
             }
         }
         [ContextMenu("Stop Event")] public void StopEvent() {
+            if (_quitting) return;
             if (!_soundInstance.isValid()) return;
             if (stops)
                 _soundInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
@@ -221,6 +247,7 @@ namespace FMOD
         }
         
         private void OnDrawGizmos() {
+            if (_quitting) return;
             if (!in3DSpace || !renderGizmo || !Application.isPlaying) return;
             Gizmos.color = Color.magenta;
             if (eventToPlay.IsNull) return;
@@ -229,6 +256,12 @@ namespace FMOD
                 eventDescription.getMinMaxDistance(out float minDistance, out float maxDistance);
                 Gizmos.DrawWireSphere(transform.position, maxDistance);
             } else  EDebug.LogError("Invalid EventDescription for: " + eventToPlay);
+        }
+
+        private void OnApplicationQuit() {
+            _quitting = true;
+            UnSubscribe();
+            if (_soundInstance.isValid()) _soundInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
         }
         
     }

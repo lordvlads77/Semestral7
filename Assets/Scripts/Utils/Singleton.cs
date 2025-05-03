@@ -8,17 +8,17 @@ namespace Utils
     {
         private static T _instance;
         private static readonly object _lock = new object();
-        private static bool _applicationIsQuitting = false;
+        public static bool applicationIsQuitting = false;
         private static bool _isCreating = false;
         
-        public static bool HasInstance => _applicationIsQuitting == false && _instance != null;
+        public static bool HasInstance => applicationIsQuitting == false && _instance != null;
         public static T TryGetInstance() => HasInstance ? Instance : null;
 
         public static T Instance
         {
             get
             {
-                if (_applicationIsQuitting)
+                if (applicationIsQuitting)
                 {
                     EDebug.LogError("[Singleton] Instance '" + typeof(T) +
                         "' already destroyed on application quit. Won't create again - returning null.");
@@ -97,12 +97,12 @@ namespace Utils
 
         private void OnDestroy()
         {
-            _applicationIsQuitting = true;
+            applicationIsQuitting = true;
         }
 
-        private void OnApplicationQuit()
+        protected virtual void OnApplicationQuit()
         {
-            _applicationIsQuitting = true;
+            applicationIsQuitting = true;
         }
         
     }

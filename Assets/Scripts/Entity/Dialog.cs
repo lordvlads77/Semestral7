@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Scriptables;
 using UnityEngine;
@@ -17,16 +18,27 @@ namespace Entity
 
         protected override void OnAwake()
         {
-            _gm = GetComponent<GameManager>();
+            StartCoroutine(InitializeWithRetry());
+        }
+        
+        private IEnumerator InitializeWithRetry()
+        {
+            while (!Singleton<GameManager>.HasInstance)
+            {
+                EDebug.LogWarning("GameManager is not ready yet. Retrying in 0.25s...");
+                yield return new WaitForSeconds(0.25f);
+            }
+            _gm = Singleton<GameManager>.Instance;
+            yield return new WaitForEndOfFrame();
             _npcCanvas = _gm.NpcCanvas;
             if (_npcCanvas == null)
             {
-                EDebug.Log(Localization.Translate("log.new_canvas"));
+                EDebug.Log("Creating new NPC Canvas...");
                 _npcCanvas = _gm.GetOrCreateNpcCanvas();
             }
             _responsePrefab = _gm.canvasPrefabs.npcOption;
             _npcCanvas.enabled = false;
-            EDebug.Log("Dialog ► Awake");
+            EDebug.Log("Dialog ► Initialized successfully.");
         }
 
         public void StartDialog(LivingEntity npc)
@@ -124,7 +136,6 @@ namespace Entity
                 Text nameText = namePanel.transform.Find("Name Txt").GetComponent<Text>();
                 nameText.text = npc.HasCustomName() ? npc.entityName : MiscUtils.GetRandomName(_gm.randomNames, npc.nameCustomization);
             }
-
             _dialogPrompt.SetActive(true);
         }
         

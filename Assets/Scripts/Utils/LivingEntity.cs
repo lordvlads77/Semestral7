@@ -97,6 +97,12 @@ namespace Utils
             else EDebug.LogError("hurtFXVars or the renderer are not initialized/set", this);
         }
 
+        private void OnEnable()
+        {
+            GameManager.Instance.Subscribe(OnStateChange);
+            OnStateChange(GameManager.Instance.GameState);
+        }
+
         private void OnDestroy()
         {
             Unsubscribe();
@@ -118,6 +124,7 @@ namespace Utils
 
         private void Unsubscribe()
         {
+            GameManager.Instance.Unsubscribe(OnStateChange);
             if (!isPlayer) return;
             if (IInput == null) return;
             IInput.OnWeaponLeftToggledEvent -= _wLTHandler;
@@ -266,6 +273,13 @@ namespace Utils
         {
             _health = Mathf.Clamp(health, 0, maxHealth);
             // If 0 death
+        }
+        
+        protected virtual void OnStateChange(GameStates state)
+        {
+            gameState = state;
+            Animator animator = GetComponent<Animator>();
+            animator.enabled = (state == GameStates.Playing);
         }
 
 

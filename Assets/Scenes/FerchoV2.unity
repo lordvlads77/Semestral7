@@ -1039,7 +1039,7 @@ MonoBehaviour:
   weaponTypeOverride: 1
   dmgParticles: []
   criticalDmgParticles: []
-  maxHealth: 20
+  maxHealth: 10
   dmgImmunityTime: 0.05
   armorClass: 1
   armorDurability: 3
@@ -1179,6 +1179,33 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1756845166}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &719673063 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1979672052782732, guid: 04da108a79352fd408b092086312e147,
+    type: 3}
+  m_PrefabInstance: {fileID: 1756845166}
+  m_PrefabAsset: {fileID: 0}
+--- !u!135 &719673064
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 719673063}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.15
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &773926245 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4462452568377808, guid: 04da108a79352fd408b092086312e147,
@@ -1372,12 +1399,6 @@ Transform:
 --- !u!4 &1055372567 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4418540977554224, guid: 04da108a79352fd408b092086312e147,
-    type: 3}
-  m_PrefabInstance: {fileID: 1756845166}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1064862681 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1045018802020858, guid: 04da108a79352fd408b092086312e147,
     type: 3}
   m_PrefabInstance: {fileID: 1756845166}
   m_PrefabAsset: {fileID: 0}
@@ -2238,27 +2259,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1756845166}
   m_PrefabAsset: {fileID: 0}
---- !u!135 &1657461490
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1064862681}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.15
-  m_Center: {x: 0, y: 0.075, z: 0}
 --- !u!4 &1661522812 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4457735550863904, guid: 04da108a79352fd408b092086312e147,
@@ -2425,6 +2425,11 @@ PrefabInstance:
       objectReference: {fileID: 330585545}
     - target: {fileID: 9111392096366206734, guid: 94cd54f3e49f0224684d2023ea43391f,
         type: 3}
+      propertyPath: lerpValue
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 9111392096366206734, guid: 94cd54f3e49f0224684d2023ea43391f,
+        type: 3}
       propertyPath: lockIndicatorPrefab
       value: 
       objectReference: {fileID: 3834326841812901329, guid: b50df8210c1823a42acc01846beb6de1,
@@ -2462,7 +2467,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1045018802020858, guid: 04da108a79352fd408b092086312e147, type: 3}
       propertyPath: m_Layer
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1045018802020858, guid: 04da108a79352fd408b092086312e147, type: 3}
       propertyPath: m_IsActive
@@ -2596,10 +2601,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 545719449}
-    - targetCorrespondingSourceObject: {fileID: 1045018802020858, guid: 04da108a79352fd408b092086312e147,
+    - targetCorrespondingSourceObject: {fileID: 1979672052782732, guid: 04da108a79352fd408b092086312e147,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1657461490}
+      addedObject: {fileID: 719673064}
   m_SourcePrefab: {fileID: 100100000, guid: 04da108a79352fd408b092086312e147, type: 3}
 --- !u!137 &1756845167 stripped
 SkinnedMeshRenderer:

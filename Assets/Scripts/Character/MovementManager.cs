@@ -317,9 +317,10 @@ private void GetDirectionAndMove()
             // Should take out the weapons, change stance 
         }
         
-        private void OnStateChange(GameStates state)
+        protected override void OnStateChange(GameStates state)
         {
             gameState = state;
+            anim.enabled = (state == GameStates.Playing);
         }
         
     }
