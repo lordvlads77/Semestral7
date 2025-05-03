@@ -69,16 +69,7 @@ namespace Character
         {
             IInput.OnCrouchToggledEvent += ToggleCrouch;
             IInput.OnAttackTriggeredEvent += Punch;
-            MiscUtils.GetOrCreateGameManager().Subscribe(OnStateChange);
-            OnStateChange(MiscUtils.GetOrCreateGameManager().GameState);
-        }
-        private void OnDestroy()
-        {
-            UnSubscribe();
-        }
-        private void OnDisable()
-        {
-            UnSubscribe();
+            GameManager.Instance.RegisterUnsubscribeAction(UnSubscribe);
         }
         
         private void UnSubscribe()

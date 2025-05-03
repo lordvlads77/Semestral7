@@ -33,6 +33,7 @@ namespace Utils
         [SerializeField] public int armorClass = 1;
         [SerializeField] public int armorDurability = 3;
         [SerializeField] private DamageType damageTypeResistance;
+        protected Animator Animator;
 
         private float _health;
         private float _mood;
@@ -82,6 +83,11 @@ namespace Utils
             
             EDebug.Log("LivingEntity ► Awake: " + this.entityName.ToString());
             OnAwoken();
+
+            Animator = GetComponent<Animator>();
+            
+            GameManager.Instance.Subscribe(OnStateChange);
+            OnStateChange(GameManager.Instance.GameState);
             
             if (!isPlayer) return;
             IInput = (Input.Actions.Instance != null)? Input.Actions.Instance : MiscUtils.GetOrCreateGameManager().gameObject.GetComponent<Input.Actions>();
@@ -99,17 +105,7 @@ namespace Utils
 
         private void OnEnable()
         {
-            GameManager.Instance.Subscribe(OnStateChange);
-            OnStateChange(GameManager.Instance.GameState);
-        }
-
-        private void OnDestroy()
-        {
-            Unsubscribe();
-        }
-        private void OnDisable()
-        {
-            Unsubscribe();
+            GameManager.Instance.RegisterUnsubscribeAction(Unsubscribe);
         }
 
         private void ChangeWeapon(WeaponType weapon)
@@ -124,9 +120,9 @@ namespace Utils
 
         private void Unsubscribe()
         {
-            GameManager.Instance.Unsubscribe(OnStateChange);
-            if (!isPlayer) return;
-            if (IInput == null) return;
+            if (Singleton<GameManager>.applicationIsQuitting) return;
+            GameManager.Instance?.Unsubscribe(OnStateChange);
+            if (!isPlayer || IInput == null) return;
             IInput.OnWeaponLeftToggledEvent -= _wLTHandler;
             IInput.OnWeaponUpToggledEvent -= _wUTHandler;
             IInput.OnWeaponRightToggledEvent -= _wRTHandler;
@@ -223,7 +219,7 @@ namespace Utils
             canTakeDamage = true;
         }
 
-        protected void PlayParticleEffect(ParticleSystem particlePrefab, Vector3 position, Vector3 direction)
+        protected virtual void PlayParticleEffect(ParticleSystem particlePrefab, Vector3 position, Vector3 direction)
         {
             if (particlePrefab == null)
             {
