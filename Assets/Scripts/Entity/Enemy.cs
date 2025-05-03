@@ -62,6 +62,7 @@ namespace Entity
             runSpeed = Mathf.Max(walkSpeed, runSpeed);
             SearchForHome();
             _animator.SetFloat(_animHealth, HealthPercent);
+            _animator.enabled = (gameState == GameStates.Playing);
             InvokeRepeating(nameof(LazyUpdate), 1f, 1f);
         }
 
@@ -231,17 +232,6 @@ namespace Entity
             gameObject.SetActive(false);
         }
 
-        private void OnEnable()
-        {
-            GameManager.Instance.Subscribe(OnStateChange);
-            OnStateChange(GameManager.Instance.GameState);
-        }
-
-        private void OnDisable()
-        {
-            GameManager.TryGetInstance()?.Unsubscribe(OnStateChange);
-        }
-
         private void OnTriggerEnter(Collider other)
         {
             EDebug.Log(other, this);
@@ -277,10 +267,18 @@ namespace Entity
             _animator.SetBool("enemy_dead", true);
             curState = EnemyState.Dying;
         }
-
-        public void OnStateChange(GameStates state)
+        
+        protected override void OnStateChange(GameStates state)
         {
             gameState = state;
+            if(gameState != GameStates.Playing) {
+                agent.isStopped = true;
+                _animator.enabled = false;
+            }
+            else {
+                agent.isStopped = false;
+                _animator.enabled = true;
+            }
         }
 
     }

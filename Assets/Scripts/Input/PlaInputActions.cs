@@ -800,17 +800,6 @@ public partial class @PlaInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""6e3e0d45-af90-4da7-98bd-8f8b8f09dbf4"",
-                    ""path"": ""<HID::DragonRise Inc.   Generic   USB  Joystick  >/button11"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Crouch"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""1497eb57-0fb5-4667-80ce-56de830177e2"",
                     ""path"": """",
                     ""interactions"": """",
