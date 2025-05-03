@@ -63,7 +63,8 @@ MonoBehaviour:
   admittedTags: []
   restarts: 0
   stops: 0
-  in3DSpace: 0
+  in3DSpace: 1
   followTarget: {fileID: 0}
   movePhysically: 0
+  lerpValue: 0.25
   renderGizmo: 0
