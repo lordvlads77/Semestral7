@@ -44,7 +44,7 @@ public sealed class MenuManager : MonoBehaviour
 
     MenuInputType currentInputInUse = MenuInputType.NONE;
     MenuInputType blockedInput = MenuInputType.NONE;
-    
+
     private bool _downClicked = false;
     private bool _upClicked = false;
 
@@ -67,6 +67,8 @@ public sealed class MenuManager : MonoBehaviour
         textSwitcher.textChanged += this.OnLanguageChange;
         Actions.Instance.OnWeaponDownToggledEvent += OnWeaponDown;
         Actions.Instance.OnWeaponUpToggledEvent += OnWeaponUp;
+        Actions.Instance.OnWeaponRightToggledEvent += OnWeaponRight;
+        Actions.Instance.OnWeaponLeftToggledEvent += OnWeaponLeft;
         //Actions.Instance.OnAttackTriggeredEvent += OnJump;
         if (SFX != null)
         {
@@ -130,7 +132,7 @@ public sealed class MenuManager : MonoBehaviour
         if (MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.ANY_VERTICAL, blockedInput)) { return; }
         currentInputInUse |= MenuInputType.VERTICAL_DOWN;
         ChangeCurrentSelectionUntilObjectIsFound(true);
-        
+
         // DONDE CORESPONDA
         // InvokeRepeating (0.5s a 0.75s para iniciar, 0.15s para repetir)
         // (Rutina, basicamente lo que tenías en update pa' que se mueva solo si lo mantienes presionado)
@@ -144,6 +146,20 @@ public sealed class MenuManager : MonoBehaviour
         if (MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.ANY_VERTICAL, blockedInput)) { return; }
         currentInputInUse |= MenuInputType.VERTICAL_UP;
         ChangeCurrentSelectionUntilObjectIsFound(false);
+    }
+
+    private void OnWeaponRight()
+    {
+        EDebug.Log(StringUtils.AddColorToString($"{nameof(OnWeaponRight)}", Color.cyan));
+        if (MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.ANY_HORIZONTAL, blockedInput)) { return; }
+        currentInputInUse |= MenuInputType.HORIZONTAL_RIGHT;
+    }
+
+    private void OnWeaponLeft()
+    {
+        EDebug.Log(StringUtils.AddColorToString($"{nameof(OnWeaponLeft)}", Color.cyan));
+        if (MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.ANY_HORIZONTAL, blockedInput)) { return; }
+        currentInputInUse |= MenuInputType.HORIZONTAL_LEFT;
     }
 
     private void OnJump()
@@ -388,7 +404,7 @@ private Coroutine _menuMovementCoroutine;
      */
 
     #region MOVEMENT_PROCESSING
-    
+
     private void ProcessVerticalMovement()
     {
         if (MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.ANY_VERTICAL, blockedInput)) { return; }
