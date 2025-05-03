@@ -1,0 +1,70 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &850980847707436701
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2416825132840970293}
+  - component: {fileID: 3914368709694496275}
+  m_Layer: 0
+  m_Name: Menu Inicio music
+  m_TagString: Untagged
+  m_Icon: {fileID: 2800000, guid: 8fd8ccb8d7e81d943b28ea7975c7185d, type: 3}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2416825132840970293
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 850980847707436701}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 2.2338257, y: 3.591858, z: -16.088928}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3914368709694496275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 850980847707436701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e182f0b617482b64288ec48fbfb72429, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eventToPlay:
+    Guid:
+      Data1: 1364725534
+      Data2: 1262464435
+      Data3: 1320345535
+      Data4: 598717747
+    Path: event:/Environment/BGM
+  volumeController: 1
+  parameterName: MusicTrack
+  parameter: 0
+  startConditions: 4
+  stopConditions: 0
+  triggerConditions: 0
+  admittedLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  admittedTags: []
+  restarts: 0
+  stops: 1
+  in3DSpace: 0
+  followTarget: {fileID: 0}
+  movePhysically: 0
+  lerpValue: 0.25
+  renderGizmo: 1
