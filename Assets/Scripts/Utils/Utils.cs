@@ -96,7 +96,36 @@ namespace Utils
         Music,
         SFX
     }
+
+    public enum WindowMode
+    {
+        Fullscreen = 0,
+        Windowed = 1,
+        Borderless = 2,
+        Maximized = 3,
+    }
     
+    public enum WindowResolution
+    {
+        R7680X4320 = 0,
+        R5120X2880 = 1,
+        R3840X2160 = 2,
+        R3440X1440 = 3,
+        R2560X1600 = 4,
+        R2560X1440 = 5,
+        R1920X1200 = 6,
+        R1920X1080 = 7,
+        R1680X1050 = 8,
+        R1600X900 = 9,
+        R1440X900 = 10,
+        R1366X768 = 11,
+        R1280X800 = 12,
+        R1280X720 = 13,
+        R1024X768 = 14,
+        R800X600 = 15,
+        R640X480 = 16,
+    }
+
     public static class FmodUtils
     {
         private static readonly GameManager Gm = MiscUtils.GetOrCreateGameManager();
