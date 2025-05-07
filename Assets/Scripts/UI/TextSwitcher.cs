@@ -13,6 +13,8 @@ namespace UI
         [field: Header("controls for TextSwitcher")]
         [SerializeField] public int currentIndex { get; private set; }
         [SerializeField] private int desiredIndex;
+        [SerializeField] public float indexChangeDaley = 0.5f;
+        [SerializeField] public bool isInputBlocked { get; private set; } = false;
 
         [Header("Lister")]
         [field: SerializeField] public Action<string> textChanged;
@@ -29,7 +31,7 @@ namespace UI
 
         private void FixedUpdate()
         {
-            if (currentIndex != desiredIndex)
+            if (!isInputBlocked && currentIndex != desiredIndex)
             {
                 UpdateText();
             }
@@ -66,7 +68,19 @@ namespace UI
             currentIndex = desiredIndex;
             selfText.text = textsToSwitchInto[currentIndex];
             textChanged?.Invoke(textsToSwitchInto[currentIndex]);
+            StartCoroutine(blockIndexChange());
         }
+
+        #region Coroutines
+
+        IEnumerator blockIndexChange()
+        {
+            isInputBlocked = true;
+            yield return new WaitForSeconds(indexChangeDaley);
+            isInputBlocked = false; 
+        }
+
+        #endregion
 
     }
 
