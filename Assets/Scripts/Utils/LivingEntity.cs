@@ -69,6 +69,10 @@ namespace Utils
             if (dialogSprites.nameDivider == null) hasSprites = false;
             return hasSprites;
         }
+        
+        public event Action OnHit;
+        public event Action OnKilled;
+        public event Action OnHeal;
 
         private void Awake()
         {
@@ -134,6 +138,7 @@ namespace Utils
         {
             if (canTakeDamage)
             {
+                OnHit?.Invoke();
                 float damageReduction = GetDamageReduction(armorPenetration);
                 float finalDamage = damage * (1 - damageReduction);
                 if (Random.value < critRate)
@@ -184,6 +189,7 @@ namespace Utils
         public virtual void Heal(float amount)
         {
             _health = Mathf.Min(maxHealth, _health + amount);
+            OnHeal?.Invoke();
             OnHealed();
         }
 
@@ -256,6 +262,8 @@ namespace Utils
 
         protected virtual void Die()
         {
+            isDead = true;
+            OnKilled?.Invoke();
             // So... what happens when the entity dies? 
             // I could try a skinned mesh particle system that could look cool, but I don't know...
             // What are we making? 

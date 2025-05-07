@@ -218,7 +218,7 @@ private void GetDirectionAndMove()
 
     // Seleccionar la velocidad apropiada
     Vector3 speeds = walkSpeeds;
-    if (IInput.LeftBumper)
+    if (IInput.RightBumper)
         speeds = runSpeeds;
     else if (stateManager.CurrentMovementState == MovementState.Crouch)
         speeds = crouchSpeeds;
