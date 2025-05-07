@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Menu SubMenu Opcions Lenguage
   m_EditorClassIdentifier: 
   languageContainers:
-  - text: Languege
+  - text: Language
     language: 0
-  - text: Lenguage
+  - text: Lenguaje
     language: 1
