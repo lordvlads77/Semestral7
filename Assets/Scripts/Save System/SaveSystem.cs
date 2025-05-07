@@ -27,7 +27,7 @@ namespace SaveSystem
 
         public static void SaveLevelData(int saveIndex = 0)
         {
-            CreateKeyIfOneDoesNotExist();
+            CreateKeyIfOneDoesNotExist(saveIndex);
             CurrentSaveFileIndex = saveIndex;
 
             LivingEntity[] allLivingEntities = GameObject.FindObjectsByType<LivingEntity>(FindObjectsSortMode.None);
@@ -46,7 +46,7 @@ namespace SaveSystem
 
         public static void LoadEverything(int loadIndex = 0)
         {
-            CreateKeyIfOneDoesNotExist();
+            CreateKeyIfOneDoesNotExist(loadIndex);
 
             string raw_data = PlayerPrefs.GetString(LEVEL_DATA_KEY + loadIndex);
             if (string.IsNullOrWhiteSpace(raw_data))
@@ -83,7 +83,7 @@ namespace SaveSystem
 
         public static void LoadLevelEntitiesData(int loadIndex = 0)
         {
-            CreateKeyIfOneDoesNotExist();
+            CreateKeyIfOneDoesNotExist(loadIndex);
 
             string raw_data = PlayerPrefs.GetString(LEVEL_DATA_KEY + loadIndex);
             if (string.IsNullOrWhiteSpace(raw_data))
@@ -103,7 +103,7 @@ namespace SaveSystem
 
         public static void LoadLevel()
         {
-            CreateKeyIfOneDoesNotExist();
+            CreateKeyIfOneDoesNotExist(CurrentSaveFileIndex);
             LoadGameScene();
         }
 
@@ -129,7 +129,7 @@ namespace SaveSystem
 
         public static float GetVolume(SoundType soundType)
         {
-            CreateKeyIfOneDoesNotExist();
+            CreateKeyIfOneDoesNotExist(CurrentSaveFileIndex);
             float result = -1f;
 
             switch (soundType)
@@ -185,7 +185,7 @@ namespace SaveSystem
 
         private static void SaveFloatValue(string key, float _newValue)
         {
-            CreateKeyIfOneDoesNotExist();
+            CreateKeyIfOneDoesNotExist(CurrentSaveFileIndex);
             PlayerPrefs.SetFloat(key, _newValue);
         }
 
@@ -230,7 +230,7 @@ namespace SaveSystem
 
         #endregion
 
-        public static void CreateKeyIfOneDoesNotExist(int levelIndex = 0)
+        public static void CreateKeyIfOneDoesNotExist(int levelIndex)
         {
             if (!PlayerPrefs.HasKey(LEVEL_DATA_KEY + levelIndex))
             {
@@ -266,6 +266,9 @@ namespace SaveSystem
         public static void DeleteData(int index = 0)
         {
             PlayerPrefs.DeleteKey(LEVEL_DATA_KEY + index);
+            PlayerPrefs.Save();
+            var current_lang = LanguageManager.Instance.currentLanguage;
+            LanguageManager.Instance.setLanguage(current_lang);
         }
 
         public static void setSaveFileIndex(int index)
