@@ -136,7 +136,6 @@ namespace Entity
                 Text nameText = namePanel.transform.Find("Name Txt").GetComponent<Text>();
                 nameText.text = npc.HasCustomName() ? npc.entityName : MiscUtils.GetRandomName(_gm.randomNames, npc.nameCustomization);
             }
-
             _dialogPrompt.SetActive(true);
         }
         

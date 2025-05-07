@@ -69,16 +69,7 @@ namespace Character
         {
             IInput.OnCrouchToggledEvent += ToggleCrouch;
             IInput.OnAttackTriggeredEvent += Punch;
-            MiscUtils.GetOrCreateGameManager().Subscribe(OnStateChange);
-            OnStateChange(MiscUtils.GetOrCreateGameManager().GameState);
-        }
-        private void OnDestroy()
-        {
-            UnSubscribe();
-        }
-        private void OnDisable()
-        {
-            UnSubscribe();
+            GameManager.Instance.RegisterUnsubscribeAction(UnSubscribe);
         }
         
         private void UnSubscribe()
@@ -227,7 +218,7 @@ private void GetDirectionAndMove()
 
     // Seleccionar la velocidad apropiada
     Vector3 speeds = walkSpeeds;
-    if (IInput.LeftBumper)
+    if (IInput.RightBumper)
         speeds = runSpeeds;
     else if (stateManager.CurrentMovementState == MovementState.Crouch)
         speeds = crouchSpeeds;
@@ -317,9 +308,10 @@ private void GetDirectionAndMove()
             // Should take out the weapons, change stance 
         }
         
-        private void OnStateChange(GameStates state)
+        protected override void OnStateChange(GameStates state)
         {
             gameState = state;
+            anim.enabled = (state == GameStates.Playing);
         }
         
     }

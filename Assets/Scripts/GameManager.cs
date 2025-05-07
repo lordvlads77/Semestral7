@@ -37,6 +37,8 @@ public sealed class GameManager : Singleton<GameManager>
     public SoundManager SoundManager { get; private set; }
     
     private readonly List<Action> _globalUnsubscribeActions = new List<Action>();
+    private WindowMode _windowMode; 
+    private WindowResolution _windowRes;
     
     public void RegisterUnsubscribeAction(Action unsubscribeAction)
     {
@@ -55,13 +57,81 @@ public sealed class GameManager : Singleton<GameManager>
 
     protected override void OnAwake()
     {
-        EDebug.Log("GameManager Awake");
+        _windowMode = (WindowMode)Math.Min(Enum.GetValues(typeof(WindowMode)).Length, PlayerPrefs.GetInt("WindowMode", 0));
+        _windowRes = (WindowResolution)PlayerPrefs.GetInt("WindowResolution", 0);
+        SetGameWindowAndResolution();
         LoadFModBank();
         SetGameState(GameStates.Joining);
         Localization.LoadLanguage(CurrentLanguage);
         CheckForMissingScripts();
         if (EnemySpawnHolder == null) GetOrCreateEnemySpawnHolder();
         InvokeRepeating(nameof(LazyUpdate), 1f, 1f);
+        EDebug.Log("GameManager Awake");
+    }
+
+    private WindowResolution ValidatedWindowRes(WindowResolution targetRes)
+    {
+        Resolution[] supportedResolutions = Screen.resolutions;
+        int targetWidth = GetWidthFromResolution(targetRes);
+        int targetHeight = GetHeightFromResolution(targetRes);
+        Resolution closestResolution = supportedResolutions[0];
+        int closestDifference = int.MaxValue;
+        foreach (Resolution res in supportedResolutions) {
+            int widthDiff = Math.Abs(res.width - targetWidth);
+            int heightDiff = Math.Abs(res.height - targetHeight);
+            int totalDiff = widthDiff + heightDiff;
+            if (res.width == targetWidth && res.height == targetHeight)
+                return targetRes;
+            if (totalDiff < closestDifference || 
+                (totalDiff == closestDifference && res.width > closestResolution.width)) {
+                closestResolution = res;
+                closestDifference = totalDiff;
+            }
+        }
+        foreach (WindowResolution resEnum in Enum.GetValues(typeof(WindowResolution))) {
+            if (GetWidthFromResolution(resEnum) == closestResolution.width &&
+                GetHeightFromResolution(resEnum) == closestResolution.height)
+                return resEnum;
+        }
+        return WindowResolution.R1920X1080;
+    }
+
+    public void SetGameWindowType(WindowMode windowMode)
+    {
+        switch (windowMode) {
+            default:
+            case WindowMode.Fullscreen:
+                Screen.fullScreenMode = FullScreenMode.ExclusiveFullScreen;
+                break;
+            case WindowMode.Windowed:
+                Screen.fullScreenMode = FullScreenMode.Windowed;
+                break;
+            case WindowMode.Borderless:
+                Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
+                break;
+            case WindowMode.Maximized:
+                Screen.fullScreenMode = FullScreenMode.MaximizedWindow;
+                break;
+        }
+    }
+
+    public void SetGameWindowAndResolution()
+    {
+        var validatedRes = ValidatedWindowRes(_windowRes);
+        Screen.SetResolution(
+            GetWidthFromResolution(validatedRes), 
+            GetHeightFromResolution(validatedRes), 
+            _windowMode == WindowMode.Fullscreen || _windowMode == WindowMode.Borderless
+        );
+        SetGameWindowType(_windowMode);
+        EDebug.Log($"Window mode set to {_windowMode} with resolution {validatedRes}");
+    }
+
+    private int GetWidthFromResolution(WindowResolution resolution) {
+        return int.Parse(resolution.ToString().Substring(1).Split('X')[0]);
+    }
+    private int GetHeightFromResolution(WindowResolution resolution) {
+        return int.Parse(resolution.ToString().Substring(1).Split('X')[1]);
     }
     
     protected override void OnApplicationQuit()

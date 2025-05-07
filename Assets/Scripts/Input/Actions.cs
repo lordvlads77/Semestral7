@@ -105,7 +105,7 @@ namespace Input
             _inputActions.Player.Attack.canceled += OnAttackCanceled;
 
             //_inputActions.Player.LB.performed += context => LeftBumper = context.ReadValueAsButton();
-            //_inputActions.Player.RB.performed += context => RightBumper = context.ReadValueAsButton();
+            _inputActions.Player.RB.performed += context => RightBumper = context.ReadValueAsButton();
 
             _inputActions.Player.ZTarget.started += OnZTargetStarted;
             _inputActions.Player.ZTarget.performed += OnZTargetHeld;

@@ -27,6 +27,58 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 14500
+--- !u!114 &-8132888377725815447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/LivingEntity/Footsteps/Gravel
+  m_EditorClassIdentifier: 
+  Path: event:/LivingEntity/Footsteps/Gravel
+  Guid:
+    Data1: -898083663
+    Data2: 1340794011
+    Data3: -1454780246
+    Data4: 1033666004
+  Banks:
+  - {fileID: 6399889152869365080}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters:
+  - {fileID: 6248448405977416681}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 147
+--- !u!114 &-7798115931628624999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Wood/SoundVar
+  m_EditorClassIdentifier: 
+  Name: SoundVar
+  StudioPath: 
+  Min: 0
+  Max: 10
+  Default: 0
+  ID:
+    data1: 2194226888
+    data2: 1423384616
+  Type: 1
+  IsGlobal: 0
+  Labels: []
+  Exists: 1
 --- !u!114 &-7414960983562479780
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -53,6 +105,30 @@ MonoBehaviour:
   - FiresideTales
   - KingsFeast
   - MarketDay
+  Exists: 1
+--- !u!114 &-5078648565797865173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Hit/SoundVar
+  m_EditorClassIdentifier: 
+  Name: SoundVar
+  StudioPath: 
+  Min: 0
+  Max: 10
+  Default: 0
+  ID:
+    data1: 2194226888
+    data2: 1423384616
+  Type: 1
+  IsGlobal: 0
+  Labels: []
   Exists: 1
 --- !u!114 &-3858828436086090353
 MonoBehaviour:
@@ -96,16 +172,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Path: event:/LivingEntity/Footsteps/Wood
   Guid:
-    Data1: 1292892762
-    Data2: 1151592133
-    Data3: 80196773
-    Data4: -1306875889
+    Data1: 498258226
+    Data2: 1164703060
+    Data3: -1245387373
+    Data4: -1848057403
   Banks:
   - {fileID: 6399889152869365080}
   IsStream: 0
   Is3D: 1
   IsOneShot: 1
-  Parameters: []
+  Parameters:
+  - {fileID: -7798115931628624999}
   MinDistance: 1
   MaxDistance: 20
   Length: 147
@@ -158,13 +235,101 @@ MonoBehaviour:
   - {fileID: 4451888386886277690}
   - {fileID: -1509083129533940571}
   - {fileID: 9019863335796548931}
+  - {fileID: 5068765793821420527}
+  - {fileID: 425670756326082153}
+  - {fileID: 4024648106626542931}
+  - {fileID: 4077917377488093256}
+  - {fileID: 5925270287931342830}
+  - {fileID: -8132888377725815447}
+  - {fileID: 4893514465669064181}
+  - {fileID: 4196191066180062201}
   EditorParameters: []
   MasterBanks:
   - {fileID: 6399889152869365080}
   StringsBanks:
   - {fileID: 1684379180787156491}
-  cacheTime: 638812048762181054
+  cacheTime: 638817401405990365
   cacheVersion: 131624
+--- !u!114 &214830910202811403
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Metal/SoundVar
+  m_EditorClassIdentifier: 
+  Name: SoundVar
+  StudioPath: 
+  Min: 0
+  Max: 10
+  Default: 0
+  ID:
+    data1: 2194226888
+    data2: 1423384616
+  Type: 1
+  IsGlobal: 0
+  Labels: []
+  Exists: 1
+--- !u!114 &425670756326082153
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/LivingEntity/Voice/Hit
+  m_EditorClassIdentifier: 
+  Path: event:/LivingEntity/Voice/Hit
+  Guid:
+    Data1: 1818457141
+    Data2: 1315783839
+    Data3: -1373536632
+    Data4: -1603426211
+  Banks:
+  - {fileID: 6399889152869365080}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters:
+  - {fileID: -5078648565797865173}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1820
+--- !u!114 &1557928908550107011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Attack/AttackType
+  m_EditorClassIdentifier: 
+  Name: AttackType
+  StudioPath: 
+  Min: 0
+  Max: 3
+  Default: 0
+  ID:
+    data1: 2359567054
+    data2: 520151425
+  Type: 2
+  IsGlobal: 0
+  Labels:
+  - Melee_Unarmed
+  - Melee_Light
+  - Melee_Strong
+  - Melee_Heavy
+  Exists: 1
 --- !u!114 &1684379180787156491
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -180,11 +345,119 @@ MonoBehaviour:
   Path: Assets/Resources/Audio/Banks/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638812048762181054
+  lastModified: 638817401405990365
   FileSizes:
   - Name: Desktop
-    Value: 1084
+    Value: 1548
   Exists: 1
+--- !u!114 &2580852391118274106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Concrete/SoundVar
+  m_EditorClassIdentifier: 
+  Name: SoundVar
+  StudioPath: 
+  Min: 0
+  Max: 10
+  Default: 0
+  ID:
+    data1: 2194226888
+    data2: 1423384616
+  Type: 1
+  IsGlobal: 0
+  Labels: []
+  Exists: 1
+--- !u!114 &4024648106626542931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/LivingEntity/Footsteps/Metal
+  m_EditorClassIdentifier: 
+  Path: event:/LivingEntity/Footsteps/Metal
+  Guid:
+    Data1: 493268055
+    Data2: 1154253476
+    Data3: -1358661705
+    Data4: -1639269006
+  Banks:
+  - {fileID: 6399889152869365080}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters:
+  - {fileID: 214830910202811403}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 147
+--- !u!114 &4077917377488093256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/LivingEntity/Footsteps/Dirt
+  m_EditorClassIdentifier: 
+  Path: event:/LivingEntity/Footsteps/Dirt
+  Guid:
+    Data1: -1732075649
+    Data2: 1222766344
+    Data3: -2078239052
+    Data4: -656313559
+  Banks:
+  - {fileID: 6399889152869365080}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters:
+  - {fileID: 5508637849398692202}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 147
+--- !u!114 &4196191066180062201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/LivingEntity/Footsteps/Concrete
+  m_EditorClassIdentifier: 
+  Path: event:/LivingEntity/Footsteps/Concrete
+  Guid:
+    Data1: -229528332
+    Data2: 1234317840
+    Data3: 943884973
+    Data4: -1630931233
+  Banks:
+  - {fileID: 6399889152869365080}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters:
+  - {fileID: 2580852391118274106}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 147
 --- !u!114 &4451888386886277690
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -212,6 +485,136 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 147
+--- !u!114 &4893514465669064181
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/LivingEntity/Voice/Pain
+  m_EditorClassIdentifier: 
+  Path: event:/LivingEntity/Voice/Pain
+  Guid:
+    Data1: 382972393
+    Data2: 1213239734
+    Data3: 548327609
+    Data4: 159316318
+  Banks:
+  - {fileID: 6399889152869365080}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 2272
+--- !u!114 &5068765793821420527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/LivingEntity/SFX/SwordHit
+  m_EditorClassIdentifier: 
+  Path: event:/LivingEntity/SFX/SwordHit
+  Guid:
+    Data1: 975341326
+    Data2: 1307227414
+    Data3: 418390185
+    Data4: 1688099654
+  Banks:
+  - {fileID: 6399889152869365080}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 4.2000003
+  Length: 786
+--- !u!114 &5508637849398692202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Dirt/SoundVar
+  m_EditorClassIdentifier: 
+  Name: SoundVar
+  StudioPath: 
+  Min: 0
+  Max: 10
+  Default: 0
+  ID:
+    data1: 2194226888
+    data2: 1423384616
+  Type: 1
+  IsGlobal: 0
+  Labels: []
+  Exists: 1
+--- !u!114 &5925270287931342830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/LivingEntity/Voice/Attack
+  m_EditorClassIdentifier: 
+  Path: event:/LivingEntity/Voice/Attack
+  Guid:
+    Data1: 236720513
+    Data2: 1340182738
+    Data3: 287783322
+    Data4: 1996722130
+  Banks:
+  - {fileID: 6399889152869365080}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters:
+  - {fileID: 1557928908550107011}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1296
+--- !u!114 &6248448405977416681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Gravel/SoundVar
+  m_EditorClassIdentifier: 
+  Name: SoundVar
+  StudioPath: 
+  Min: 0
+  Max: 10
+  Default: 0
+  ID:
+    data1: 2194226888
+    data2: 1423384616
+  Type: 1
+  IsGlobal: 0
+  Labels: []
+  Exists: 1
 --- !u!114 &6399889152869365080
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -227,10 +630,10 @@ MonoBehaviour:
   Path: Assets/Resources/Audio/Banks/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638812048762171080
+  lastModified: 638817401405965376
   FileSizes:
   - Name: Desktop
-    Value: 5448448
+    Value: 6482432
   Exists: 1
 --- !u!114 &9019863335796548931
 MonoBehaviour:
