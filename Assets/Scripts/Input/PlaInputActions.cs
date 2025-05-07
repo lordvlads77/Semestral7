@@ -179,6 +179,15 @@ public partial class @PlaInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ShareButton"",
+                    ""type"": ""Button"",
+                    ""id"": ""d225fd77-97df-4ce5-93bd-5045b7eec822"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -841,6 +850,28 @@ public partial class @PlaInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2e53a2df-6222-4eb5-b8f4-dc03806d72d5"",
+                    ""path"": ""<Gamepad>/select"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""ShareButton"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b03e337b-c8af-40d3-b625-9f6af37019df"",
+                    ""path"": ""<DualShockGamepad>/select"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""ShareButton"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -905,6 +936,7 @@ public partial class @PlaInputActions: IInputActionCollection2, IDisposable
         m_Player_RB = m_Player.FindAction("RB", throwIfNotFound: true);
         m_Player_RT = m_Player.FindAction("RT", throwIfNotFound: true);
         m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
+        m_Player_ShareButton = m_Player.FindAction("ShareButton", throwIfNotFound: true);
     }
 
     ~@PlaInputActions()
@@ -988,6 +1020,7 @@ public partial class @PlaInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_RB;
     private readonly InputAction m_Player_RT;
     private readonly InputAction m_Player_Pause;
+    private readonly InputAction m_Player_ShareButton;
     public struct PlayerActions
     {
         private @PlaInputActions m_Wrapper;
@@ -1009,6 +1042,7 @@ public partial class @PlaInputActions: IInputActionCollection2, IDisposable
         public InputAction @RB => m_Wrapper.m_Player_RB;
         public InputAction @RT => m_Wrapper.m_Player_RT;
         public InputAction @Pause => m_Wrapper.m_Player_Pause;
+        public InputAction @ShareButton => m_Wrapper.m_Player_ShareButton;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1069,6 +1103,9 @@ public partial class @PlaInputActions: IInputActionCollection2, IDisposable
             @Pause.started += instance.OnPause;
             @Pause.performed += instance.OnPause;
             @Pause.canceled += instance.OnPause;
+            @ShareButton.started += instance.OnShareButton;
+            @ShareButton.performed += instance.OnShareButton;
+            @ShareButton.canceled += instance.OnShareButton;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -1124,6 +1161,9 @@ public partial class @PlaInputActions: IInputActionCollection2, IDisposable
             @Pause.started -= instance.OnPause;
             @Pause.performed -= instance.OnPause;
             @Pause.canceled -= instance.OnPause;
+            @ShareButton.started -= instance.OnShareButton;
+            @ShareButton.performed -= instance.OnShareButton;
+            @ShareButton.canceled -= instance.OnShareButton;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1187,5 +1227,6 @@ public partial class @PlaInputActions: IInputActionCollection2, IDisposable
         void OnRB(InputAction.CallbackContext context);
         void OnRT(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
+        void OnShareButton(InputAction.CallbackContext context);
     }
 }

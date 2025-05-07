@@ -19,24 +19,38 @@ namespace Character
         private GameObject twoHandedWeapon = default;
         [Header("Two Handed Weapon in Hands")]
         [SerializeField] private GameObject twoHandedHand = default;
-        [SerializeField] private bool _isWeaponInUse = false;
+        [FormerlySerializedAs("_isWeaponInUse")] [SerializeField] private bool isWeaponInUse = false;
+        [FormerlySerializedAs("_player")] [SerializeField] private LivingEntity player;
+        [FormerlySerializedAs("_enemy")] [SerializeField] private GameObject enemy;
+        [SerializeField] private bool areHandsInUse = false;
 
-        [FormerlySerializedAs("animator")]
+        [FormerlySerializedAs("_animator")]
         [Header("Animator Reference")]
-        [SerializeField] private Animator _animator = default;
-    
+        [SerializeField] private Animator animator = default;
+        
+        [Header("State Manager Ref")]
+        [SerializeField] private StateManager stateManager = default;
+
+        protected override void OnAwake()
+        {
+            if (player == null)
+            {
+                player = GameObject.FindWithTag("Player").GetComponent<LivingEntity>();
+            }
+        }
+
         public void Unarmed()
         {
-            oneHandedWeapon.SetActive(false);
-            twoHandedWeapon.SetActive(true);
+            areHandsInUse = true;
         }
 
         public void WithdrawOneHandedWeapon()
         {
-            if (_isWeaponInUse == false)
+            if (isWeaponInUse == false)
             {
-                _isWeaponInUse = true;
-                AnimationController.Instance.OneHandWeaponWithdraw(_animator);
+                isWeaponInUse = true;
+                AnimationController.Instance.OneHandWeaponWithdraw(animator);
+                AnimationController.Instance.WeaponType(animator, 1);
                 //Add VFX Calling Here if applicable
                 //Add SFX Calling Here
                 oneHandedWeapon.SetActive(true);
@@ -55,19 +69,20 @@ namespace Character
         
         public void SheathOneHandedWeapon()
         {
-            _isWeaponInUse = true;
-            if (_isWeaponInUse)
+            isWeaponInUse = true;
+            if (isWeaponInUse)
             {
-                _isWeaponInUse = false;
+                isWeaponInUse = false;
                 //Add VFX Calling Here if applicable
                 //Add SFX Calling Here
+                AnimationController.Instance.WeaponType(animator, 0);
                 if (!oneHandedWeapon.activeInHierarchy)
                 {
                     EDebug.Log("You already Sheathed your weapon");
                 }
                 else
                 {
-                    AnimationController.Instance.OneHandWeaponSheath(_animator);
+                    AnimationController.Instance.OneHandWeaponSheath(animator);
                     oneHandedWeapon.SetActive(false);
                 }
             }
@@ -79,10 +94,11 @@ namespace Character
 
         public void WithdrawTwoHandedWeapon()
         {
-            if (_isWeaponInUse == false)
+            if (isWeaponInUse == false)
             {
-                _isWeaponInUse = true;
-                AnimationController.Instance.TwoHandsWeaponWithdraw(_animator);
+                isWeaponInUse = true;
+                AnimationController.Instance.TwoHandsWeaponWithdraw(animator);
+                AnimationController.Instance.WeaponType(animator, 2);
                 //Add VFX Calling Here if applicable
                 //Add SFX Calling Here
                 twoHandedWeapon.SetActive(false);
@@ -102,10 +118,11 @@ namespace Character
         
         public void SheathTwoHandedWeapon()
         {
-            if (_isWeaponInUse)
+            if (isWeaponInUse)
             {
-                _isWeaponInUse = false;
-                AnimationController.Instance.TwoHandsWeaponSheath(_animator);
+                isWeaponInUse = false;
+                AnimationController.Instance.TwoHandsWeaponSheath(animator);
+                AnimationController.Instance.WeaponType(animator, 0);
                 //Add VFX Calling Here if applicable
                 //Add SFX Calling Here
                 twoHandedHand.SetActive(false);
@@ -117,10 +134,38 @@ namespace Character
             }
         }
 
-        public void TwoWeaponSwing()
+        public void LoweringHands()
         {
-            AnimationController.Instance.TwoHandAttackSwing(_animator);
+            if (isWeaponInUse == false & areHandsInUse)
+            {
+                AnimationController.Instance.LowerHands(animator);
+            }
         }
+
+        public void HandsArebeingUsed()
+        {
+            areHandsInUse = true;
+            if (areHandsInUse)
+            {
+                AnimationController.Instance.HandsUsing(animator);
+            }
+        }
+
+        public void Attack()
+        {
+            AnimationController.Instance.WeaponType(animator, 0);
+            CombatUtils.Attack(player, enemy.GetComponent<LivingEntity>());
+            if (player.GetComponent<LivingEntity>().Weapon == WeaponType.Unarmed )
+            {
+                AnimationController.Instance.UsingHands(animator);
+                stateManager.EnterFightingState(FightingState.UnarmedFighting, player.GetComponent<MovementManager>());
+                HandsArebeingUsed();
+                areHandsInUse = true;
+                Debug.Log("hAds are in use");
+            }
+        }
+        
+        
 
     }
 }
