@@ -17,6 +17,11 @@ namespace SaveSystem
 
         public const string MASTER_VOLUME_KEY = "master_volume";
 
+        public const string LANGUAGE_SELECTED_KEY = "language_selected";
+
+        public const string WINDOW_RESOLUTION_KEY = "WindowResolution";
+        public const string WINDOW_MODE_KEY = "WindowMode";
+
         const string SEPARATOR = "|*|";
 
         public static Action OnSaveData;
@@ -189,6 +194,18 @@ namespace SaveSystem
             PlayerPrefs.SetFloat(key, _newValue);
         }
 
+        public static void SaveLanguageSelection(Language selectedLanguage)
+        {
+            CreateKeyIfOneDoesNotExist(CurrentSaveFileIndex);
+            PlayerPrefs.SetInt(LANGUAGE_SELECTED_KEY, (int)selectedLanguage);
+            PlayerPrefs.Save();
+        }
+
+        public static void SaveWindowResolution(WindowResolution windowResolution)
+        {
+            PlayerPrefs.SetInt(WINDOW_RESOLUTION_KEY, (int)windowResolution);
+        }
+
         #endregion
 
 
@@ -228,7 +245,23 @@ namespace SaveSystem
             }
         }
 
+
         #endregion
+
+        public static Language GetLanguage()
+        {
+            CreateKeyIfOneDoesNotExist(CurrentSaveFileIndex);
+            Language result = (Language)PlayerPrefs.GetInt(LANGUAGE_SELECTED_KEY, (int)Language.En);
+
+            return result;
+        }
+
+        public static WindowResolution GetWindowResolution()
+        {
+            int result = PlayerPrefs.GetInt(WINDOW_RESOLUTION_KEY, (int)WindowResolution.R640X480);
+
+            return (WindowResolution)result;
+        }
 
         public static void CreateKeyIfOneDoesNotExist(int levelIndex)
         {
@@ -256,6 +289,12 @@ namespace SaveSystem
             {
                 PlayerPrefs.SetFloat(MASTER_VOLUME_KEY, DEFAULT_VOLUME);
             }
+
+            if (!PlayerPrefs.HasKey(LANGUAGE_SELECTED_KEY))
+            {
+                PlayerPrefs.SetInt(LANGUAGE_SELECTED_KEY, (int)Language.En);
+            }
+
         }
 
         public static bool DoesSaveFileExist(int index = 0)
