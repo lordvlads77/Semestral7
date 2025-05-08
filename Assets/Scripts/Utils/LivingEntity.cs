@@ -33,6 +33,7 @@ namespace Utils
         [SerializeField] public int armorClass = 1;
         [SerializeField] public int armorDurability = 3;
         [SerializeField] private DamageType damageTypeResistance;
+        protected Animator Animator;
 
         private float _health;
         private float _mood;
@@ -68,6 +69,10 @@ namespace Utils
             if (dialogSprites.nameDivider == null) hasSprites = false;
             return hasSprites;
         }
+        
+        public event Action OnHit;
+        public event Action OnKilled;
+        public event Action OnHeal;
 
         private void Awake()
         {
@@ -82,6 +87,11 @@ namespace Utils
             
             EDebug.Log("LivingEntity ► Awake: " + this.entityName.ToString());
             OnAwoken();
+
+            Animator = GetComponent<Animator>();
+            
+            GameManager.Instance.Subscribe(OnStateChange);
+            OnStateChange(GameManager.Instance.GameState);
             
             if (!isPlayer) return;
             IInput = (Input.Actions.Instance != null)? Input.Actions.Instance : MiscUtils.GetOrCreateGameManager().gameObject.GetComponent<Input.Actions>();
@@ -97,13 +107,9 @@ namespace Utils
             else EDebug.LogError("hurtFXVars or the renderer are not initialized/set", this);
         }
 
-        private void OnDestroy()
+        private void OnEnable()
         {
-            Unsubscribe();
-        }
-        private void OnDisable()
-        {
-            Unsubscribe();
+            GameManager.Instance.RegisterUnsubscribeAction(Unsubscribe);
         }
 
         private void ChangeWeapon(WeaponType weapon)
@@ -118,8 +124,9 @@ namespace Utils
 
         private void Unsubscribe()
         {
-            if (!isPlayer) return;
-            if (IInput == null) return;
+            if (Singleton<GameManager>.applicationIsQuitting) return;
+            GameManager.Instance?.Unsubscribe(OnStateChange);
+            if (!isPlayer || IInput == null) return;
             IInput.OnWeaponLeftToggledEvent -= _wLTHandler;
             IInput.OnWeaponUpToggledEvent -= _wUTHandler;
             IInput.OnWeaponRightToggledEvent -= _wRTHandler;
@@ -131,6 +138,7 @@ namespace Utils
         {
             if (canTakeDamage)
             {
+                OnHit?.Invoke();
                 float damageReduction = GetDamageReduction(armorPenetration);
                 float finalDamage = damage * (1 - damageReduction);
                 if (Random.value < critRate)
@@ -181,6 +189,7 @@ namespace Utils
         public virtual void Heal(float amount)
         {
             _health = Mathf.Min(maxHealth, _health + amount);
+            OnHeal?.Invoke();
             OnHealed();
         }
 
@@ -216,7 +225,7 @@ namespace Utils
             canTakeDamage = true;
         }
 
-        protected void PlayParticleEffect(ParticleSystem particlePrefab, Vector3 position, Vector3 direction)
+        protected virtual void PlayParticleEffect(ParticleSystem particlePrefab, Vector3 position, Vector3 direction)
         {
             if (particlePrefab == null)
             {
@@ -253,6 +262,8 @@ namespace Utils
 
         protected virtual void Die()
         {
+            isDead = true;
+            OnKilled?.Invoke();
             // So... what happens when the entity dies? 
             // I could try a skinned mesh particle system that could look cool, but I don't know...
             // What are we making? 
@@ -266,6 +277,13 @@ namespace Utils
         {
             _health = Mathf.Clamp(health, 0, maxHealth);
             // If 0 death
+        }
+        
+        protected virtual void OnStateChange(GameStates state)
+        {
+            gameState = state;
+            Animator animator = GetComponent<Animator>();
+            animator.enabled = (state == GameStates.Playing);
         }
 
 

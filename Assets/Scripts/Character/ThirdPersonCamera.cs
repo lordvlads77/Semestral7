@@ -21,6 +21,7 @@ namespace Character
 
         public Transform lookAt;
         private Transform _trueLookAt;
+        [SerializeField] private float lerpValue = 10.0f;
         
         public Transform lockTarget;
         
@@ -92,6 +93,7 @@ namespace Character
         
         void Update()
         {
+            if (GameManager.Instance.GameState != GameStates.Playing) return;
             bool isZTargetPressed = _input.ZTarget;
 
             // Si se acaba de presionar
@@ -146,6 +148,7 @@ namespace Character
         }
         private void LateUpdate() // FixedUpdate → LateUpdate (This prevents jittering / choppy movement)
         {
+            if (GameManager.Instance.GameState != GameStates.Playing) return;
             OrbitSphericalCoords();
             
             if (lockTarget && _lockIndicator)
@@ -213,12 +216,12 @@ namespace Character
             if (_input.ZTarget && lockTarget)
             {
                 Quaternion targetRotation = Quaternion.LookRotation(lockTarget.position - cam.transform.position);
-                cam.transform.rotation = Quaternion.Slerp(cam.transform.rotation, targetRotation, Time.deltaTime * 5f);
+                cam.transform.rotation = Quaternion.Slerp(cam.transform.rotation, targetRotation, Time.deltaTime * lerpValue);
             } 
             else
             {
                 Quaternion targetRotation = Quaternion.LookRotation(_trueLookAt.position - cam.transform.position);
-                cam.transform.rotation = Quaternion.Slerp(cam.transform.rotation, targetRotation, Time.deltaTime * 5f);
+                cam.transform.rotation = Quaternion.Slerp(cam.transform.rotation, targetRotation, Time.deltaTime * lerpValue);
             }
         }
 

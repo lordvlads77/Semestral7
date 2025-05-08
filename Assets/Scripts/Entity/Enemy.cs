@@ -22,7 +22,6 @@ namespace Entity
         private readonly int _animFlee = Animator.StringToHash("Flee");
         
         [Header("Enemy stuff")]
-        private Animator _animator;
         private Transform _home;
         [SerializeField, Range(1,50)] private float homeRadius = 5f;
         [SerializeField] private bool homeBound = true; // Will the enemy return to home if it's outside the home radius?
@@ -48,7 +47,6 @@ namespace Entity
         
         [Header("Enemy Type")]
         [SerializeField] private EnemyType enemyType = EnemyType.Melee;
-        
 
         private void Start()
         {
@@ -57,11 +55,12 @@ namespace Entity
             GameObject tempPlayer = GameObject.FindGameObjectWithTag("Player");
             EDebug.Assert(tempPlayer != null, "Couldn't find player character", this);
             player = tempPlayer.GetComponent<LivingEntity>();
-            _animator = GetComponent<Animator>();
+            
             agent.speed = walkSpeed;
             runSpeed = Mathf.Max(walkSpeed, runSpeed);
             SearchForHome();
-            _animator.SetFloat(_animHealth, HealthPercent);
+            Animator.SetFloat(_animHealth, HealthPercent);
+            Animator.enabled = (gameState == GameStates.Playing);
             InvokeRepeating(nameof(LazyUpdate), 1f, 1f);
         }
 
@@ -91,7 +90,7 @@ namespace Entity
             }
             _home = spawnPoint;
         }
-        
+
         private void LazyUpdate() // This updates only once per second
         {
             if (gameState is GameStates.Paused or GameStates.Joining) return;
@@ -144,11 +143,11 @@ namespace Entity
 
         [ContextMenu("On Damage Taken")] protected override void OnDamageTaken()
         {
-            _animator.SetFloat(_animHealth, HealthPercent);
+            Animator.SetFloat(_animHealth, HealthPercent);
             float[] possibleValues = { 0f, 0.5f, 1f };
             float rand = possibleValues[Random.Range(0, possibleValues.Length)];
-            _animator.SetFloat(_animType, rand);
-            _animator.SetTrigger(_animHit);
+            Animator.SetFloat(_animType, rand);
+            Animator.SetTrigger(_animHit);
             HurtFX?.Hit(hurtFXVars);
             if (curState is EnemyState.Idle or EnemyState.Chasing && _coward && HealthPercent <= 0.25f && !InHomeRange())
                 curState = EnemyState.Fleeing;
@@ -197,8 +196,8 @@ namespace Entity
                 y = Mathf.Clamp(localDirection.z, -1f, 1f);
                 x = Mathf.Clamp(localDirection.x, -1f, 1f);
             }
-            _animator.SetFloat(_animDirV, y);
-            _animator.SetFloat(_animDirH, x);
+            Animator.SetFloat(_animDirV, y);
+            Animator.SetFloat(_animDirH, x);
         }
 
         private IEnumerator AttackRoutine()
@@ -212,11 +211,11 @@ namespace Entity
         private IEnumerator PerformAttack()
         {
             weapon.inUse = true;
-            _animator.SetInteger(_animType, (MathUtils.RandBool())? 0 : 1);
-            _animator.SetTrigger(_animAttack);
+            Animator.SetInteger(_animType, (MathUtils.RandBool())? 0 : 1);
+            Animator.SetTrigger(_animAttack);
             yield return new WaitForSeconds(0.5f);
-            while (_animator.GetCurrentAnimatorStateInfo(0).IsName("AttackA") || 
-                   _animator.GetCurrentAnimatorStateInfo(0).IsName("AttackB"))
+            while (Animator.GetCurrentAnimatorStateInfo(0).IsName("AttackA") || 
+                   Animator.GetCurrentAnimatorStateInfo(0).IsName("AttackB"))
             { yield return null; }
             weapon.inUse = false;
             yield return new WaitForSeconds(_attackCooldown);
@@ -229,17 +228,6 @@ namespace Entity
             yield return new WaitForSeconds(1f);
             curState = EnemyState.Dead;
             gameObject.SetActive(false);
-        }
-
-        private void OnEnable()
-        {
-            GameManager.Instance.Subscribe(OnStateChange);
-            OnStateChange(GameManager.Instance.GameState);
-        }
-
-        private void OnDisable()
-        {
-            GameManager.TryGetInstance()?.Unsubscribe(OnStateChange);
         }
 
         private void OnTriggerEnter(Collider other)
@@ -274,13 +262,21 @@ namespace Entity
         {
             base.Die();
             //gameObject.SetActive(false);
-            _animator.SetBool("enemy_dead", true);
+            Animator.SetBool("enemy_dead", true);
             curState = EnemyState.Dying;
         }
-
-        public void OnStateChange(GameStates state)
+        
+        protected override void OnStateChange(GameStates state)
         {
             gameState = state;
+            if(gameState != GameStates.Playing) {
+                agent.isStopped = true;
+                Animator.enabled = false;
+            }
+            else {
+                agent.isStopped = false;
+                Animator.enabled = true;
+            }
         }
 
     }
