@@ -44,6 +44,13 @@ namespace UI
         {
             toBeUnset &= ~bitMask;
         }
+
+        public static IEnumerator setWaitThenUnsetBit(MenuInputType bitMask, float time, Utils.Ref<MenuInputType> toBeSetThenUnset)
+        {
+            toBeSetThenUnset.backing |= bitMask;
+            yield return new WaitForSeconds(time);
+            toBeSetThenUnset.backing &= ~bitMask;
+        }
     }
 
 }
