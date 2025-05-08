@@ -29,6 +29,10 @@ public sealed class MenuManager : MonoBehaviour
 
     [Header("TextSwitcher")]
     [SerializeField] private UI.TextSwitcher textSwitcher;
+    [SerializeField] private UI.TextSwitcher resolutionSwitcher;
+
+    [Header("Confirmation Menu")]
+    [SerializeField] private UI.ConformationMenu conformationMenu;
 
     private Coroutine _verticalInputBlock;
     private Coroutine _horizontalInputBlock;
@@ -77,6 +81,7 @@ public sealed class MenuManager : MonoBehaviour
         currentSelection = 0;
         ChangeSelectorPosition();
         EDebug.Assert(textSwitcher != null, $"El script necesita un {nameof(TextSwitcher)}", this);
+        EDebug.Assert(conformationMenu != null, $"El script necesita un {nameof(UI.ConformationMenu)}", this);
     }
 
     private void Update()
@@ -512,10 +517,24 @@ public sealed class MenuManager : MonoBehaviour
         }
 
 
+        if (currentSelection == 4 && rightKeyPressed)
+        {
+            resolutionSwitcher.IncreaseIndex();
+            _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
+        }
+
+        if (currentSelection == 4 && leftKeyPressed)
+        {
+            resolutionSwitcher.DecreaseIndex();
+            _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
+        }
+
+
+
         if (cosa.Jump && !isAcceptedInputBlocked)
         {
             _acceptedInputBlock = StartCoroutine(BlockAcceptedInput());
-            if (currentSelection == 4)
+            if (currentSelection == 5)
             {
                 desiredState = CURRENT_MENU_STATE.MAIN_MENU;
             }
@@ -541,18 +560,35 @@ public sealed class MenuManager : MonoBehaviour
 
             else if (currentSelection == 4)
             {
-                EDebug.Log(Utils.StringUtils.AddColorToString("DELETE EVERYTHING", Color.red), this);
-                for (int i = 0; i < 4; ++i)
-                {
-                    SaveSystem.SaveSystem.DeleteData(i);
-                }
+                conformationMenu.gameObject.SetActive(true);
+                conformationMenu.acceptedInputEvent += DeleteAllDataOnTrue;
             }
 
         }
 
 
     }
+
+
     #endregion
+
+    private void DeleteAllDataOnTrue(bool shouldDeleteEverthing)
+    {
+        EDebug.Log(shouldDeleteEverthing ? "deleted" : "not deleted");
+        if (!shouldDeleteEverthing) { return; }
+
+        for (int i = 0; i < currentArrayInUse.Length; i++)
+        {
+            SaveSystem.SaveSystem.DeleteData(i);
+        }
+    }
+
+    private void SaveSettingsOnTrue(bool shouldSaveSetting)
+    {
+        SaveSystem.SaveSystem.SaveLanguageSelection(LanguageManager.Instance.currentLanguage);
+        WindowResolution newRes = (WindowResolution)resolutionSwitcher.currentIndex;
+
+    }
 
     private void OnLanguageChange(string language)
     {
