@@ -115,21 +115,27 @@ namespace Character
 
             if (inputDir.sqrMagnitude > 0.1f)
             {
-                // Obtener forward y right planos de la cámara
                 Vector3 camForward = _cam.transform.forward;
                 Vector3 camRight = _cam.transform.right;
                 camForward.y = 0;
                 camRight.y = 0;
                 camForward.Normalize();
                 camRight.Normalize();
-                anim.SetTrigger(DogeAnim);
-                // Convertir el input a dirección en el mundo según cámara
+
                 dodgeDirection = (camForward * inputDir.z + camRight * inputDir.x).normalized;
+
+                // Determinar dirección para animación (adelante o atrás)
+                float dot = Vector3.Dot(dodgeDirection, transform.forward);
+                int animDir = dot > 0 ? 1 : -1;
+                anim.SetInteger("DodgeDirection", animDir);
             }
             else
             {
                 dodgeDirection = transform.forward;
+                anim.SetInteger("DodgeDirection", 1); // Default a adelante si no hay input
             }
+
+            anim.SetTrigger(DogeAnim);
 
             _velocity = dodgeDirection * dodgeSpeed;
             float elapsedTime = 0f;
@@ -140,15 +146,13 @@ namespace Character
                 yield return null;
             }
 
-            
             isDodging = false;
             canTakeDamage = true;
-            
-            float decelerationTime = 0.2f; 
+
+            float decelerationTime = 0.2f;
             float elapsedDecel = 0f;
             while (elapsedDecel < decelerationTime)
             {
-                
                 _velocity = Vector3.Lerp(_velocity, Vector3.zero, elapsedDecel / decelerationTime);
                 controller.Move(_velocity * Time.deltaTime);
                 elapsedDecel += Time.deltaTime;
