@@ -34,6 +34,17 @@ namespace UI
             assignedEvent?.Invoke();
         }
 
+        public void setText(string newText)
+        {
+            textMeshProUGUI.text = newText;
+        }
+
+        public void setAnchor(Transform otherTransform, Vector2 offSet)
+        {
+            RectTransform.SetParent(otherTransform);
+            RectTransform.anchoredPosition = offSet;
+        }
+
 
     }
 
