@@ -464,4 +464,23 @@ namespace Utils
         public SoundType soundType;
     }
 
+    /// <summary>
+    /// Uso esta clase para pasar un referencia a una coroutina
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class Ref<T>
+    {
+        public T backing;
+        public T Value {get{return backing; }}
+        public Ref(T reference)
+        {
+            backing = reference;
+        }
+
+        public Ref(ref T reference)
+        {
+            backing = reference;
+        }
+    }
+
 }
