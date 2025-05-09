@@ -48995,17 +48995,17 @@ PrefabInstance:
     - target: {fileID: 8705437802384041947, guid: 9413175ef1404b6448bef87b1ede8e92,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 32.256927
+      value: 29.591
       objectReference: {fileID: 0}
     - target: {fileID: 8705437802384041947, guid: 9413175ef1404b6448bef87b1ede8e92,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.2891965
+      value: 1.728
       objectReference: {fileID: 0}
     - target: {fileID: 8705437802384041947, guid: 9413175ef1404b6448bef87b1ede8e92,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -31.830368
+      value: -36.17
       objectReference: {fileID: 0}
     - target: {fileID: 8705437802384041947, guid: 9413175ef1404b6448bef87b1ede8e92,
         type: 3}
@@ -97254,7 +97254,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 056eb9292468b3d44887ed99bb0245e8, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ed03f4ffe83dcd941b2734849d424d54, type: 3}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -100312,6 +100312,7 @@ MonoBehaviour:
   controller: {fileID: 6504752884908034062}
   stateManager: {fileID: 9202856032771810627}
   anim: {fileID: 2439035665859341509}
+  weapon: []
   dodgeSpeed: 10
   dodgeDuration: 0.5
   dodgeCooldown: 1
@@ -100647,7 +100648,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &2305158055395110173
 GameObject:
   m_ObjectHideFlags: 0
@@ -100768,12 +100769,7 @@ Animator:
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
-  m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
-    are already bound by a Humanoid avatar. These transforms can only be changed
-    by Humanoid clips.\n\tTransform 'Root'\n\tTransform 'IndexFinger_02'\n\tTransform
-    'Elbow_R'\n\tTransform 'Finger_02'\n\tTransform 'Ball_L'\n\tTransform 'Thumb_02'\n\tTransform
-    'Ball_R'\n\tTransform 'Clavicle_L'\n\tTransform 'Finger_01'\n\tTransform 'Neck'\n\tand
-    more ...\n\tFrom animation clip 'mixamo.com'"
+  m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
@@ -104332,7 +104328,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.8352941}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -105419,10 +105415,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38a1289efbd626942a1e974d233992c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponObject:
-  - {fileID: 7678053276611328937}
-  - {fileID: 8669460329892484304}
-  player: {fileID: 2044310253568215568}
 --- !u!114 &6228557263295023399
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -106190,8 +106182,12 @@ MonoBehaviour:
   oneHandedWeapon: {fileID: 8669460329892484304}
   twoHandedWeapon: {fileID: 1562194746952504152}
   twoHandedHand: {fileID: 7678053276611328937}
-  _isWeaponInUse: 0
-  _animator: {fileID: 2439035665859341509}
+  isWeaponInUse: 0
+  player: {fileID: 0}
+  enemy: {fileID: 0}
+  areHandsInUse: 0
+  animator: {fileID: 2439035665859341509}
+  stateManager: {fileID: 0}
 --- !u!1 &6675006006952689453
 GameObject:
   m_ObjectHideFlags: 0
@@ -109562,7 +109558,6 @@ MonoBehaviour:
   viada: {fileID: 5028796686468968}
   fondoBarra: {fileID: 5351221107238745359}
   jugador: {fileID: 2044310253568215568}
-  jugadorDamageSys: {fileID: 9202856032771810629}
 --- !u!114 &9202856032771810629
 MonoBehaviour:
   m_ObjectHideFlags: 0
