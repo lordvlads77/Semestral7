@@ -1,8 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using FMOD;
-using JetBrains.Annotations;
 using UnityEngine;
 using Utils;
 using Debug = UnityEngine.Debug;
@@ -11,6 +7,7 @@ public class TriggerOnConditions : MonoBehaviour
 {
     [Header("Conditions")]
     [SerializeField] private CustomCondition[] conditions;
+    [SerializeField] private bool triggersMoreThanOnce;
     [Header("For Animations")]
     [SerializeField] private Animator animator;
     [SerializeField] private string animationTriggerName;
@@ -26,6 +23,8 @@ public class TriggerOnConditions : MonoBehaviour
     [SerializeField] private bool playSound;
     [SerializeField] private PlayPersistent soundToPlay;
 
+    private bool _triggered;
+    
     private void Awake()
     {
         foreach (var cond in conditions) {
@@ -47,6 +46,8 @@ public class TriggerOnConditions : MonoBehaviour
                 metCount++;
         }
         if (metCount == conditions.Length) {
+            if (_triggered && !triggersMoreThanOnce) return;
+            _triggered = true;
             Debug.Log("All conditions met!! :O");
             if (playAnimation && animator != null && !string.IsNullOrWhiteSpace(animationTriggerName))
                 MiscUtils.ActionToDo(animator, animationTriggerName, null, 0, null, null);

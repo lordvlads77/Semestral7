@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Entity;
+using HUD;
 using Scriptables;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -182,6 +183,7 @@ namespace Utils
         protected virtual void OnDamageTaken()
         {
             HurtFX?.Hit(hurtFXVars);
+            if (isPlayer) CamShaker.Instance.ShakeIt(0.25f, 10);
         }
         protected virtual void OnHurtButNoDamage(){}
         protected virtual void OnHealed(){}

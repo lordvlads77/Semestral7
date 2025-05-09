@@ -278,6 +278,7 @@ namespace Utils
     {
         public static void Attack(LivingEntity attacker, LivingEntity target)
         {
+            if (target.isDead) return;
             if (attacker == null || target == null)
             {
                 EDebug.LogError("Attacker or target is null! D: ");
@@ -308,6 +309,7 @@ namespace Utils
 
         public static void Attack(Transform attackFrom, WeaponStatistics stats, LivingEntity target)
         {
+            if (target.isDead) return;
             if (stats == null)
             {
                 EDebug.LogError($"WeaponStats not found");
