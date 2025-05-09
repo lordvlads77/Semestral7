@@ -281,8 +281,12 @@ MonoBehaviour:
   oneHandedWeapon: {fileID: 1725069699}
   twoHandedWeapon: {fileID: 1725069698}
   twoHandedHand: {fileID: 0}
-  _isWeaponInUse: 0
-  _animator: {fileID: 0}
+  isWeaponInUse: 0
+  player: {fileID: 0}
+  enemy: {fileID: 0}
+  areHandsInUse: 0
+  animator: {fileID: 0}
+  stateManager: {fileID: 0}
 --- !u!4 &165038227
 Transform:
   m_ObjectHideFlags: 0
@@ -398,7 +402,7 @@ Transform:
   m_GameObject: {fileID: 262010174}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0.01}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1750,6 +1754,8 @@ MonoBehaviour:
   saveDataWarningTime: 5
   npcRange: 1.5
   player: {fileID: 63987646}
+  _windowMode: 0
+  _windowRes: 0
 --- !u!114 &1922866079
 MonoBehaviour:
   m_ObjectHideFlags: 0
