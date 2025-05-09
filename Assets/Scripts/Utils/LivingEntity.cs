@@ -145,8 +145,14 @@ namespace Utils
                     finalDamage *= critDmg; // Rand -> 0 - 1 The higher the critRate, the higher the chance of crit
                 _health -= finalDamage;
                 EDebug.Log(this.entityName + "Took " + finalDamage + " damage. Health: " + _health);
-                if (_health <= 0 && !isDead)
-                {
+                Rigidbody rb = GetComponent<Rigidbody>();
+                if (rb != null) {
+                    Vector3 knockBackForce = hitDirection * knockBack;
+                    knockBackForce.y += 0.5f;
+                    rb.AddForce(knockBackForce, ForceMode.Impulse);
+                }
+                else transform.position += hitDirection * knockBack;
+                if (_health <= 0 && !isDead) {
                     isDead = true;
                     Die();
                     if (criticalDmgParticles.Length > 0)
@@ -155,8 +161,7 @@ namespace Utils
                     else
                         Debug.LogWarning("criticalDmgParticles array is empty.");
                 }
-                else
-                {
+                else {
                     if (_damageImmunityCoroutine != null)
                         StopCoroutine(_damageImmunityCoroutine);
                     _damageImmunityCoroutine = StartCoroutine(DamageImmunity());
@@ -165,13 +170,9 @@ namespace Utils
                     else
                         Debug.LogWarning("dmgParticles array is empty.");
                 }
-
-                // Create knockBack logic here some time later
-                if (stagger > 0)
-                {
+                if (stagger > 0) {
                     // Same with the stagger stuff
                 }
-
                 if (armorClass > 1) ReduceArmorDurability();
                 OnDamageTaken();
             }
