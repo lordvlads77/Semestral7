@@ -345,22 +345,22 @@ AnimatorStateMachine:
     m_Position: {x: 360, y: -170, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -5667619390307706851}
-    m_Position: {x: -160, y: -330, z: 0}
+    m_Position: {x: -290, y: -400, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -6668791778130745208}
-    m_Position: {x: 220, y: -260, z: 0}
+    m_Position: {x: -80, y: -400, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -2213360754692790244}
     m_Position: {x: -650, y: -40, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -3556468018114053088}
-    m_Position: {x: 40, y: -360, z: 0}
+    m_Position: {x: -40, y: -300, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -7997451914003172166}
-    m_Position: {x: -460, y: -270, z: 0}
+    m_Position: {x: -520, y: -400, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -904152440034773592}
-    m_Position: {x: -750, y: -260, z: 0}
+    m_Position: {x: -610, y: -230, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions:
   - {fileID: 1891258380907573827}
@@ -390,8 +390,7 @@ AnimatorState:
   m_Name: doge
   m_Speed: 1
   m_CycleOffset: 0
-  m_Transitions:
-  - {fileID: -2419951531040176277}
+  m_Transitions: []
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
@@ -1098,8 +1097,7 @@ AnimatorState:
   m_Name: CombatWalk1HSword
   m_Speed: 1
   m_CycleOffset: 0
-  m_Transitions:
-  - {fileID: -1462931272893500624}
+  m_Transitions: []
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
@@ -1177,34 +1175,6 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
---- !u!1101 &-1462931272893500624
-AnimatorStateTransition:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_Conditions:
-  - m_ConditionMode: 2
-    m_ConditionEvent: Dead
-    m_EventTreshold: 0
-  - m_ConditionMode: 1
-    m_ConditionEvent: Dead
-    m_EventTreshold: 0
-  m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: 9169417127516290347}
-  m_Solo: 0
-  m_Mute: 0
-  m_IsExit: 0
-  serializedVersion: 3
-  m_TransitionDuration: 0.25
-  m_TransitionOffset: 0
-  m_ExitTime: 0.875
-  m_HasExitTime: 1
-  m_HasFixedDuration: 1
-  m_InterruptionSource: 0
-  m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 1
 --- !u!206 &-1277076128949031513
 BlendTree:
   m_ObjectHideFlags: 1
