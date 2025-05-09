@@ -290,13 +290,13 @@ public sealed class GameManager : Singleton<GameManager>
         EDebug.Log("Done! You're playing now");
     }
     
-    public void changeResolution(WindowResolution newRes)
+    public void ChangeResolution(WindowResolution newRes)
     {
         _windowRes = newRes;
         SetGameWindowAndResolution();
     }
 
-    public void changeWindowMode(WindowMode newMode)
+    public void ChangeWindowMode(WindowMode newMode)
     {
         _windowMode = newMode;
         SetGameWindowAndResolution();
