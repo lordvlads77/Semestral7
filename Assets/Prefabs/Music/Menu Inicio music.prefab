@@ -53,7 +53,7 @@ MonoBehaviour:
     Path: event:/Environment/BGM
   volumeController: 1
   parameterName: MusicTrack
-  parameter: 0
+  parameter: 2
   startConditions: 4
   stopConditions: 0
   triggerConditions: 0
