@@ -77,7 +77,7 @@ namespace UI
                 selectedElement = 0;
                 if (!currentMenu.elements[selectedElement].rectTransform.gameObject.activeInHierarchy)
                 {
-                    selectDownUntilFoundActiveElement();
+                    StartCoroutine(SelectDownUntilFoundActiveElement());
                 }
 
 
@@ -90,12 +90,12 @@ namespace UI
 
             if (MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.VERTICAL_UP, currentInput))
             {
-                selectUpUntilFoundActiveElement();
+                StartCoroutine(SelectUpUntilFoundActiveElement());
             }
 
             else if (MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.VERTICAL_DOWN, currentInput))
             {
-                selectDownUntilFoundActiveElement();
+                StartCoroutine(SelectDownUntilFoundActiveElement());
             }
 
             if (MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.ACCEPTED, currentInput))
@@ -220,18 +220,17 @@ namespace UI
 
         #region INPUT_EVENTS
 
-        private void selectUpUntilFoundActiveElement()
+        private IEnumerator SelectUpUntilFoundActiveElement()
         {
             int safety_var = 10_000;
             selectUp();
             while (safety_var > 1 &&
-                !currentMenu.elements[selectedElement].rectTransform.gameObject.activeInHierarchy
-                )
+                   !currentMenu.elements[selectedElement].rectTransform.gameObject.activeInHierarchy)
             {
+                yield return new WaitForSeconds(0.5f);
                 selectUp();
                 safety_var -= 1;
             }
-
         }
 
         private void selectUp()
@@ -255,22 +254,17 @@ namespace UI
             }
         }
 
-        private void selectDownUntilFoundActiveElement()
+        private IEnumerator SelectDownUntilFoundActiveElement()
         {
             int safety_var = 10_000;
             selectDown();
             while (safety_var > 1 &&
-                !currentMenu.elements[selectedElement].rectTransform.gameObject.activeInHierarchy
-                )
+                   !currentMenu.elements[selectedElement].rectTransform.gameObject.activeInHierarchy)
             {
+                yield return new WaitForSeconds(0.5f);
                 selectDown();
                 safety_var -= 1;
-                if (safety_var < 1)
-                {
-                    break;
-                }
             }
-
         }
 
         #endregion
