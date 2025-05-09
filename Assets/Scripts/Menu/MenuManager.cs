@@ -12,12 +12,14 @@ public sealed class MenuManager : MonoBehaviour
     [SerializeField] RectTransform selector;
     [SerializeField] Transform[] menuItems;
     [SerializeField] Transform[] optionsItems;
+    [SerializeField] Transform[] saveFileItems;
     Transform[] currentArrayInUse;
     [SerializeField] int currentSelection = 0;
     [SerializeField] CURRENT_MENU_STATE currentState = CURRENT_MENU_STATE.INTRO;
     CURRENT_MENU_STATE desiredState = CURRENT_MENU_STATE.INTRO;
     [SerializeField] GameObject menuInicio;
     [SerializeField] GameObject menuOptions;
+    [SerializeField] GameObject SaveFileOptions;
     Input.Actions cosa;
 
     [Header("BlockySlider")]
@@ -26,7 +28,11 @@ public sealed class MenuManager : MonoBehaviour
     [SerializeField] private BlockySlider Master;
 
     [Header("TextSwitcher")]
-    [SerializeField] private UI.TextSwitcher textSwitcher;
+    [SerializeField] private UI.TextSwitcher languageSwitcher;
+    [SerializeField] private UI.TextSwitcher resolutionSwitcher;
+
+    [Header("Confirmation Menu")]
+    [SerializeField] private UI.ConformationMenu conformationMenu;
 
     private Coroutine _verticalInputBlock;
     private Coroutine _horizontalInputBlock;
@@ -44,11 +50,11 @@ public sealed class MenuManager : MonoBehaviour
 
     MenuInputType currentInputInUse = MenuInputType.NONE;
     MenuInputType blockedInput = MenuInputType.NONE;
-    
+
     private bool _downClicked = false;
     private bool _upClicked = false;
 
-    //    bool isVerticalInputBlocked = false;
+    //  bool isVerticalInputBlocked = false;
     //  bool isHorizontalInputBlocked = false;
     bool isAcceptedInputBlocked = false;
     bool hasVolumeValuesBeenLoaded = false;
@@ -57,16 +63,152 @@ public sealed class MenuManager : MonoBehaviour
     {
         INTRO,
         MAIN_MENU,
-        OPTIONS
+        OPTIONS,
+        SAVE_FILE_SELECT,
+    }
+
+    private void Awake()
+    {
+        cosa = GameManager.Instance.GetComponent<Actions>(); // Actions.Instance;
+    }
+
+    void Start()
+    {
+        currentArrayInUse = saveFileItems;
+        currentState = CURRENT_MENU_STATE.MAIN_MENU;
+        desiredState = CURRENT_MENU_STATE.SAVE_FILE_SELECT;
+        //selector.gameObject.SetActive(false);
+        currentSelection = 0;
+        ChangeSelectorPosition();
+        EDebug.Assert(languageSwitcher != null, $"El script necesita un {nameof(TextSwitcher)}", this);
+        EDebug.Assert(conformationMenu != null, $"El script necesita un {nameof(UI.ConformationMenu)}", this);
+    }
+
+    private void Update()
+    {
+        currentInputInUse = MenuInputType.NONE;
+        UpdateStates();
+
+        switch (currentState)
+        {
+            case CURRENT_MENU_STATE.MAIN_MENU:
+                ProcessMainMenu();
+                break;
+
+            case CURRENT_MENU_STATE.OPTIONS:
+                ProcessOptions();
+                break;
+            case CURRENT_MENU_STATE.SAVE_FILE_SELECT:
+                ProcessSaveFileSelect();
+                break;
+        }
+
+    }
+
+    private void UpdateStates()
+    {
+        if (currentState == desiredState)
+        { return; }
+
+        currentState = desiredState;
+
+        switch (currentState)
+        {
+            case CURRENT_MENU_STATE.INTRO:
+                menuOptions.SetActive(false);
+                menuInicio.SetActive(true);
+                SaveFileOptions.SetActive(false);
+                break;
+
+            case CURRENT_MENU_STATE.OPTIONS:
+                currentSelection = 0;
+                currentArrayInUse = optionsItems;
+                menuOptions.SetActive(true);
+                menuInicio.SetActive(false);
+                SaveFileOptions.SetActive(false);
+                Language lang = LanguageManager.Instance.currentLanguage;
+
+                switch (lang)
+                {
+                    case Language.En:
+                        languageSwitcher.setIndex(0);
+                        break;
+
+                    case Language.Es:
+                        languageSwitcher.setIndex(1);
+                        break;
+                }
+
+                WindowResolution winRes = SaveSystem.SaveSystem.GetWindowResolution();
+                string resolutionString = "640x480";
+
+                if (Utils.WindowEnumUtils.winToStr.TryGetValue(winRes, out resolutionString))
+                {
+                    resolutionSwitcher.setIndex(0);
+                    for (int i = 0; resolutionSwitcher.indexCount > i; ++i)
+                    {
+                        if(resolutionString.ToLower() == resolutionSwitcher.getCurrentString.ToLower())
+                        {
+                            break;
+                        }
+
+                        resolutionSwitcher.IncreaseIndex();
+                        resolutionSwitcher.ManualUpdate();
+                    }
+
+                }
+
+                // si no existe un elemento zero buscar hasta encontar uno 
+                ChangeCurrentSelectionUntilObjectIsFound();
+                ChangeCurrentSelectionUntilObjectIsFound(false);
+
+                ChangeSelectorPosition();
+
+                break;
+
+            case CURRENT_MENU_STATE.MAIN_MENU:
+
+                currentSelection = 0;
+                currentArrayInUse = menuItems;
+                menuOptions.SetActive(false);
+                menuInicio.SetActive(true);
+                SaveFileOptions.SetActive(false);
+                // si no existe un elemento zero buscar hasta encontar uno 
+                ChangeCurrentSelectionUntilObjectIsFound();
+                ChangeCurrentSelectionUntilObjectIsFound(false);
+
+                ChangeSelectorPosition();
+                hasVolumeValuesBeenLoaded = false;
+                break;
+
+            case CURRENT_MENU_STATE.SAVE_FILE_SELECT:
+                currentSelection = 0;
+                currentArrayInUse = saveFileItems;
+
+                menuOptions.SetActive(false);
+                menuInicio.SetActive(false);
+                SaveFileOptions.SetActive(true);
+
+                ChangeSelectorPosition();
+                hasVolumeValuesBeenLoaded = false;
+                break;
+
+            default:
+                EDebug.LogError("Falta evaluar condicion", this);
+                break;
+        }
+
     }
 
     #region LanguageManagerBoilerPlate
 
     private void OnEnable()
     {
-        textSwitcher.textChanged += this.OnLanguageChange;
+        languageSwitcher.textChanged += this.OnLanguageChange;
         Actions.Instance.OnWeaponDownToggledEvent += OnWeaponDown;
         Actions.Instance.OnWeaponUpToggledEvent += OnWeaponUp;
+        Actions.Instance.OnWeaponRightToggledEvent += OnWeaponRight;
+        Actions.Instance.OnWeaponLeftToggledEvent += OnWeaponLeft;
         //Actions.Instance.OnAttackTriggeredEvent += OnJump;
         if (SFX != null)
         {
@@ -100,10 +242,13 @@ public sealed class MenuManager : MonoBehaviour
 
         SFX.OnBlockChangeAction -= SFXVolumeChange;
 
-        textSwitcher.textChanged -= this.OnLanguageChange;
+        languageSwitcher.textChanged -= this.OnLanguageChange;
     }
 
     #endregion
+
+
+    #region VolumeChangeFunctions
 
     private void MasterVolumeChange(float val)
     {
@@ -120,6 +265,7 @@ public sealed class MenuManager : MonoBehaviour
         SaveSystem.SaveSystem.SaveVolume(SoundType.Music, val);
     }
 
+    #endregion
 
     #region INPUT_EVENTS
 
@@ -130,7 +276,7 @@ public sealed class MenuManager : MonoBehaviour
         if (MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.ANY_VERTICAL, blockedInput)) { return; }
         currentInputInUse |= MenuInputType.VERTICAL_DOWN;
         ChangeCurrentSelectionUntilObjectIsFound(true);
-        
+
         // DONDE CORESPONDA
         // InvokeRepeating (0.5s a 0.75s para iniciar, 0.15s para repetir)
         // (Rutina, basicamente lo que tenías en update pa' que se mueva solo si lo mantienes presionado)
@@ -144,6 +290,20 @@ public sealed class MenuManager : MonoBehaviour
         if (MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.ANY_VERTICAL, blockedInput)) { return; }
         currentInputInUse |= MenuInputType.VERTICAL_UP;
         ChangeCurrentSelectionUntilObjectIsFound(false);
+    }
+
+    private void OnWeaponRight()
+    {
+        EDebug.Log(StringUtils.AddColorToString($"{nameof(OnWeaponRight)}", Color.cyan));
+        if (MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.ANY_HORIZONTAL, blockedInput)) { return; }
+        currentInputInUse |= MenuInputType.HORIZONTAL_RIGHT;
+    }
+
+    private void OnWeaponLeft()
+    {
+        EDebug.Log(StringUtils.AddColorToString($"{nameof(OnWeaponLeft)}", Color.cyan));
+        if (MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.ANY_HORIZONTAL, blockedInput)) { return; }
+        currentInputInUse |= MenuInputType.HORIZONTAL_LEFT;
     }
 
     private void OnJump()
@@ -168,28 +328,14 @@ public sealed class MenuManager : MonoBehaviour
 
     #endregion
 
-    private void Awake()
-    {
-        cosa = GameManager.Instance.GetComponent<Actions>(); // Actions.Instance;
-    }
-
-    void Start()
-    {
-        currentArrayInUse = menuItems;
-        currentState = CURRENT_MENU_STATE.MAIN_MENU;
-        desiredState = CURRENT_MENU_STATE.MAIN_MENU;
-        //selector.gameObject.SetActive(false);
-        currentSelection = 0;
-        ChangeSelectorPosition();
-        EDebug.Assert(textSwitcher != null, $"El script necesita un {nameof(TextSwitcher)}", this);
-    }
-
-
     #region MOVE_SELECTOR
 
     void ChangeSelectorPosition()
     {
-        if (currentState == CURRENT_MENU_STATE.INTRO || currentState == CURRENT_MENU_STATE.MAIN_MENU)
+
+        selector.SetParent(currentArrayInUse[currentSelection]);
+        selector.anchoredPosition = new Vector2(-90, 0);
+        /*if (currentState == CURRENT_MENU_STATE.INTRO || currentState == CURRENT_MENU_STATE.MAIN_MENU)
         {
             selector.SetParent(currentArrayInUse[currentSelection]);
             selector.anchoredPosition = new Vector2(-73, 0);
@@ -198,7 +344,7 @@ public sealed class MenuManager : MonoBehaviour
         {
             selector.SetParent(optionsItems[currentSelection]);
             selector.anchoredPosition = new Vector2(-73, 0);
-        }
+        }*/
     }
 
     void ChangeCurrentSelection(bool _add = true)
@@ -240,115 +386,6 @@ public sealed class MenuManager : MonoBehaviour
 
     #endregion
 
-
-    private void Update()
-    {
-        currentInputInUse = MenuInputType.NONE;
-        UpdateStates();
-
-        switch (currentState)
-        {
-            case CURRENT_MENU_STATE.MAIN_MENU:
-                ProcessVerticalMovement();
-
-                if (cosa.Jump && !isAcceptedInputBlocked)
-                {
-                    _acceptedInputBlock = StartCoroutine(BlockAcceptedInput());
-
-                    if (currentSelection == 0)
-                    {
-                        Inicio();
-                    }
-
-                    if (currentSelection == 1)
-                    {
-                        Cargar();
-                    }
-
-                    if (currentSelection == 2)
-                    {
-                        Options();
-                    }
-
-                    if (currentSelection == 3)
-                    {
-                        Salir();
-                    }
-                }
-                break;
-
-            case CURRENT_MENU_STATE.OPTIONS:
-
-                ProcessVerticalMovement();
-                ProcessHorizontalMovement();
-
-                bool rightKeyPressed = MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.HORIZONTAL_RIGHT, currentInputInUse);
-                bool leftKeyPressed = MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.HORIZONTAL_LEFT, currentInputInUse);
-
-                loadVolumeValues();
-
-                if (currentSelection == 0 && rightKeyPressed)
-                {
-                    SFX.increaseBlocks();
-                    _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
-                }
-
-                if (currentSelection == 0 && leftKeyPressed)
-                {
-                    SFX.decreaseBlocks();
-                    _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
-                }
-
-                if (currentSelection == 1 && rightKeyPressed)
-                {
-                    Music.increaseBlocks();
-                    _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
-                }
-
-                if (currentSelection == 1 && leftKeyPressed)
-                {
-                    Music.decreaseBlocks();
-                    _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
-                }
-
-                if (currentSelection == 2 && rightKeyPressed)
-                {
-                    Master.increaseBlocks();
-                    _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
-                }
-
-                if (currentSelection == 2 && leftKeyPressed)
-                {
-                    Master.decreaseBlocks();
-                    _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
-                }
-
-                if (currentSelection == 3 && rightKeyPressed)
-                {
-                    textSwitcher.IncreaseIndex();
-                    _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
-                }
-
-                if (currentSelection == 3 && leftKeyPressed)
-                {
-                    textSwitcher.DecreaseIndex();
-                    _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
-                }
-
-
-                if (cosa.Jump && !isAcceptedInputBlocked)
-                {
-                    _acceptedInputBlock = StartCoroutine(BlockAcceptedInput());
-                    if (currentSelection == 4)
-                    {
-                        desiredState = CURRENT_MENU_STATE.MAIN_MENU;
-                    }
-                }
-                break;
-        }
-
-    }
-
     public void Inicio()
     {
         EDebug.Log("<color=orange>Inicio</color>");
@@ -373,22 +410,8 @@ public sealed class MenuManager : MonoBehaviour
         Application.Quit();
     }
 
-    /*
-     
-    if (_menuMovementCoroutine != null)
-                        StopCoroutine(_menuMovementCoroutine );
-                    _menuMovementCoroutine = StartCoroutine(MenuMoveInput()); 
-private IEnumerator MenuMoveInput()
-        {
-            yield return new WaitForSeconds(menuInputCd);
-            // Logic for moving menu stuff
-        } 
-private Coroutine _menuMovementCoroutine; 
-     
-     */
-
     #region MOVEMENT_PROCESSING
-    
+
     private void ProcessVerticalMovement()
     {
         if (MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.ANY_VERTICAL, blockedInput)) { return; }
@@ -432,56 +455,189 @@ private Coroutine _menuMovementCoroutine;
 
     #endregion
 
-    private void UpdateStates()
+
+    #region MenuLogicMethods
+
+    private void ProcessMainMenu()
     {
-        if (currentState == desiredState)
-        { return; }
+        ProcessVerticalMovement();
 
-        currentState = desiredState;
-
-        switch (currentState)
+        if (cosa.Jump && !isAcceptedInputBlocked)
         {
-            case CURRENT_MENU_STATE.INTRO:
+            _acceptedInputBlock = StartCoroutine(BlockAcceptedInput());
 
-                menuOptions.SetActive(false);
-                menuInicio.SetActive(true);
-                break;
+            if (currentSelection == 0)
+            {
+                Inicio();
+            }
 
-            case CURRENT_MENU_STATE.OPTIONS:
-                currentSelection = 0;
-                currentArrayInUse = optionsItems;
-                menuOptions.SetActive(true);
-                menuInicio.SetActive(false);
+            if (currentSelection == 1)
+            {
+                Cargar();
+            }
 
-                // si no existe un elemento zero buscar hasta encontar uno 
-                ChangeCurrentSelectionUntilObjectIsFound();
-                ChangeCurrentSelectionUntilObjectIsFound(false);
+            if (currentSelection == 2)
+            {
+                Options();
+            }
 
-                ChangeSelectorPosition();
-
-                break;
-
-            case CURRENT_MENU_STATE.MAIN_MENU:
-
-                currentSelection = 0;
-                currentArrayInUse = menuItems;
-                menuOptions.SetActive(false);
-                menuInicio.SetActive(true);
-                // si no existe un elemento zero buscar hasta encontar uno 
-                ChangeCurrentSelectionUntilObjectIsFound();
-                ChangeCurrentSelectionUntilObjectIsFound(false);
-
-                ChangeSelectorPosition();
-                hasVolumeValuesBeenLoaded = false;
-                break;
-
-            default:
-                EDebug.LogError("Falta evaluar condicion", this);
-                break;
+            if (currentSelection == 3)
+            {
+                Salir();
+            }
         }
 
     }
 
+    private void ProcessOptions()
+    {
+        ProcessVerticalMovement();
+        ProcessHorizontalMovement();
+
+        bool rightKeyPressed = MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.HORIZONTAL_RIGHT, currentInputInUse);
+        bool leftKeyPressed = MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.HORIZONTAL_LEFT, currentInputInUse);
+
+        loadVolumeValues();
+
+        if (currentSelection == 0 && rightKeyPressed)
+        {
+            SFX.increaseBlocks();
+            _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
+        }
+
+        if (currentSelection == 0 && leftKeyPressed)
+        {
+            SFX.decreaseBlocks();
+            _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
+        }
+
+        if (currentSelection == 1 && rightKeyPressed)
+        {
+            Music.increaseBlocks();
+            _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
+        }
+
+        if (currentSelection == 1 && leftKeyPressed)
+        {
+            Music.decreaseBlocks();
+            _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
+        }
+
+        if (currentSelection == 2 && rightKeyPressed)
+        {
+            Master.increaseBlocks();
+            _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
+        }
+
+        if (currentSelection == 2 && leftKeyPressed)
+        {
+            Master.decreaseBlocks();
+            _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
+        }
+
+        if (currentSelection == 3 && rightKeyPressed)
+        {
+            languageSwitcher.IncreaseIndex();
+            _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
+        }
+
+        if (currentSelection == 3 && leftKeyPressed)
+        {
+            languageSwitcher.DecreaseIndex();
+            _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
+        }
+
+
+        if (currentSelection == 4 && rightKeyPressed)
+        {
+            resolutionSwitcher.IncreaseIndex();
+            _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
+        }
+
+        if (currentSelection == 4 && leftKeyPressed)
+        {
+            resolutionSwitcher.DecreaseIndex();
+            _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
+        }
+
+
+
+        if (cosa.Jump && !isAcceptedInputBlocked)
+        {
+
+            _acceptedInputBlock = StartCoroutine(BlockAcceptedInput());
+            if (currentSelection == 5)
+            {
+                conformationMenu.gameObject.SetActive(true);
+                conformationMenu.acceptedInputEvent += SaveSettingsOnTrue;
+                //desiredState = CURRENT_MENU_STATE.MAIN_MENU;
+            }
+        }
+
+    }
+
+    private void ProcessSaveFileSelect()
+    {
+
+        ProcessVerticalMovement();
+        if (cosa.Jump && !isAcceptedInputBlocked)
+        {
+            _acceptedInputBlock = StartCoroutine(BlockAcceptedInput());
+
+            if (currentSelection > -1 && currentSelection < 4)
+            {
+                int save_file_index = currentArrayInUse[currentSelection].GetComponent<SaveFileSelectable>().saveFileIndex;
+                EDebug.Log($"save file index = {save_file_index}");
+                SaveSystem.SaveSystem.CreateKeyIfOneDoesNotExist(save_file_index);
+                desiredState = CURRENT_MENU_STATE.MAIN_MENU;
+            }
+
+            else if (currentSelection == 4)
+            {
+                conformationMenu.gameObject.SetActive(true);
+                conformationMenu.acceptedInputEvent += DeleteAllDataOnTrue;
+            }
+
+        }
+
+
+    }
+
+
+    #endregion
+
+
+    #region ConfirmationMenuEvents
+
+    private void DeleteAllDataOnTrue(bool shouldDeleteEverthing)
+    {
+        EDebug.Log(shouldDeleteEverthing ? "deleted" : "not deleted");
+        if (!shouldDeleteEverthing) { return; }
+
+        for (int i = 0; i < currentArrayInUse.Length; i++)
+        {
+            SaveSystem.SaveSystem.DeleteData(i);
+        }
+    }
+
+    private void SaveSettingsOnTrue(bool shouldSaveSetting)
+    {
+        desiredState = CURRENT_MENU_STATE.MAIN_MENU;
+        if (!shouldSaveSetting) { return; }
+
+        SaveSystem.SaveSystem.SaveLanguageSelection(LanguageManager.Instance.currentLanguage);
+        WindowResolution winResult = WindowResolution.R640X480;
+        WindowResolution temp = WindowResolution.R640X480;
+        if (WindowEnumUtils.strToWin.TryGetValue(resolutionSwitcher.getCurrentString, out temp))
+        {
+            winResult = temp;
+        }
+
+        SaveSystem.SaveSystem.SaveWindowResolution(winResult);
+        GameManager.Instance.ChangeResolution(winResult);
+    }
+
+    #endregion
 
     private void OnLanguageChange(string language)
     {

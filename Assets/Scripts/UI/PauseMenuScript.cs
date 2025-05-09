@@ -12,6 +12,8 @@ public sealed class PauseMenuScript : MonoBehaviour
     
     public void Save()
     {
+        int index = SaveSystem.SaveSystem.CurrentSaveFileIndex;
+        SaveSystem.SaveSystem.SaveLevelData(index);
         EDebug.Log("Save");
     }
 

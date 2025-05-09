@@ -5,6 +5,7 @@ using UnityEngine;
 namespace UI
 {
     [System.Flags]
+    [System.Serializable]
     public enum MenuInputType : byte
     {
         NONE = 0,
@@ -34,6 +35,22 @@ namespace UI
             return ((1 << bit) & (int)rightSide) > 0;
         }
 
+        public static void setBit(MenuInputType bitMask, ref MenuInputType toBeSet)
+        {
+            toBeSet = toBeSet | bitMask;
+        }
+
+        public static void unsetBit(MenuInputType bitMask, ref MenuInputType toBeUnset)
+        {
+            toBeUnset &= ~bitMask;
+        }
+
+        public static IEnumerator setWaitThenUnsetBit(MenuInputType bitMask, float time, Utils.Ref<MenuInputType> toBeSetThenUnset)
+        {
+            toBeSetThenUnset.backing |= bitMask;
+            yield return new WaitForSeconds(time);
+            toBeSetThenUnset.backing &= ~bitMask;
+        }
     }
 
 }
