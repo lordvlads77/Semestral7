@@ -5,5 +5,7 @@
 
   "npc_dialog.example_npc.first_line": "Bienvenido viajero!",
   "npc_dialog.blacksmith_npc.first_line": "Que buen día el día de hoy.",
-  "IntroductionMsg": "Hola caballero, estas aqui para entrenar tus habilidades, primero veamos como te mueves con esa armadura, usa la palanca izquierda o wasd para moverte"
+  "IntroductionMsg": "Hola caballero, estas aqui para entrenar tus habilidades, primero veamos como te mueves con esa armadura, usa la palanca izquierda o wasd para moverte",
+  "CameraTuto": "Para ver a tu alrededor usa la palanca derecha o mueve to mouse",
+  "Combate": "Para pasar a la siguente area debes de usar tus arma para golpear a estos muñecos, usa "
 }

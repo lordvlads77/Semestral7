@@ -266,15 +266,14 @@ private void GetDirectionAndMove()
             {
                 // Start the dialogue thing
             }
-
-            _attackRoutine ??= StartCoroutine(PerformAttack());
+            if (_attackRoutine == null) _attackRoutine = StartCoroutine(PerformAttack());
         }
         private IEnumerator PerformAttack()
         {
             Animator.SetTrigger(AnimAttack);
             int num = 0;
             Collider weaponCollider = weapon[num].GetComponent<Collider>();
-            yield return new WaitForSeconds(0.15f);
+            //yield return new WaitForSeconds(0.25f);
             weapon[num].inUse = true;
             if (weaponCollider != null) weaponCollider.enabled = true;
             while (Animator.GetCurrentAnimatorStateInfo(0).IsName("UnarmedCombat_Patadon") || 
