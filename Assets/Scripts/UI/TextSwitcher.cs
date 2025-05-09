@@ -12,7 +12,7 @@ namespace UI
         [SerializeField] private string[] textsToSwitchInto;
         [field: Header("controls for TextSwitcher")]
         [SerializeField] public int currentIndex { get; private set; }
-        [SerializeField] private int desiredIndex;
+        [SerializeField] private int desiredIndex = 0;
         [SerializeField] public float indexChangeDaley = 0.5f;
         [SerializeField] public bool isInputBlocked { get; private set; } = false;
 
@@ -30,6 +30,14 @@ namespace UI
         }
 
         private void FixedUpdate()
+        {
+            ManualUpdate();
+        }
+
+        /// <summary>
+        /// Esta funcion existe por si se necesita actualizar el textSwitcher de forma manual
+        /// </summary>
+        public void ManualUpdate()
         {
             if (!isInputBlocked && currentIndex != desiredIndex)
             {
@@ -82,6 +90,9 @@ namespace UI
 
         #endregion
 
+
+        public string getCurrentString => textsToSwitchInto[currentIndex];
+        public int indexCount => textsToSwitchInto.Length;
     }
 
 }
