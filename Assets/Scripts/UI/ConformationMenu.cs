@@ -58,10 +58,16 @@ namespace UI
         {
             StopAllCoroutines();
             blockedInput = MenuInputType.NONE;
-            foreach (var d in acceptedInputEvent.GetInvocationList())
+
+            if (acceptedInputEvent != null)
             {
-                acceptedInputEvent -= (Action<bool>)d;
+                foreach (var d in acceptedInputEvent.GetInvocationList())
+                {
+                    acceptedInputEvent -= (Action<bool>)d;
+                }
+
             }
+
         }
 
         #region InputProcessing
