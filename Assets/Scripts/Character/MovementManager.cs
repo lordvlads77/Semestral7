@@ -267,22 +267,23 @@ private void GetDirectionAndMove()
                 // Start the dialogue thing
             }
 
-            if (_attackRoutine == null)
-            {
-                _attackRoutine = StartCoroutine(PerformAttack());
-            }
+            _attackRoutine ??= StartCoroutine(PerformAttack());
         }
         private IEnumerator PerformAttack()
         {
             Animator.SetTrigger(AnimAttack);
             int num = 0;
+            Collider weaponCollider = weapon[num].GetComponent<Collider>();
+            if (weaponCollider != null) weaponCollider.enabled = false;
+            yield return new WaitForSeconds(0.25f);
             weapon[num].inUse = true;
-            
+            if (weaponCollider != null) weaponCollider.enabled = true;
             while (Animator.GetCurrentAnimatorStateInfo(0).IsName("UnarmedCombat_Patadon") || 
                    Animator.GetCurrentAnimatorStateInfo(0).IsName("1HStandingMeleeAttackDownguard") ||
                    Animator.GetCurrentAnimatorStateInfo(0).IsName("2HWeaponSwing"))
-            { yield return new WaitForSeconds(0.1f); yield return null; }
+            { yield return null; }
             weapon[num].inUse = false;
+            if (weaponCollider != null) weaponCollider.enabled = false;
             yield return new WaitForSeconds(0.2f);
             _attackRoutine = null;
         }
@@ -297,7 +298,7 @@ private void GetDirectionAndMove()
             _spherePos = new Vector3(vec.x, vec.y - groundYOffset, vec.z);
             return Physics.CheckSphere(_spherePos, controller.radius - 0.05f, groundLayers);
         }
-        
+
         private void ApplyGravity()
         {
             if (!IsGrounded())
