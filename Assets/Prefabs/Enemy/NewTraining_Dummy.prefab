@@ -32,7 +32,7 @@ Transform:
   - {fileID: 2457432756518878675}
   - {fileID: 1306822463673085991}
   m_Father: {fileID: 5557021044567414506}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 85.79871, y: -54.510822, z: -54.439465}
 --- !u!1 &930467821195963842
 GameObject:
   m_ObjectHideFlags: 0
@@ -45,6 +45,7 @@ GameObject:
   - component: {fileID: 5109974311409114285}
   - component: {fileID: 3397126602118466167}
   - component: {fileID: 8916251811687579770}
+  - component: {fileID: 3459469265022399251}
   m_Layer: 3
   m_Name: NewTraining_Dummy
   m_TagString: Untagged
@@ -103,7 +104,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55cfa6c7a3d23c94b85febdd6dd56c14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  entityName: 
+  entityName: Ruben
   dialogOptions: {fileID: 0}
   nameCustomization:
     isMale: 0
@@ -119,21 +120,37 @@ MonoBehaviour:
     dialogBox: {fileID: 0}
     dialogOption: {fileID: 0}
     nameDivider: {fileID: 0}
+  hurtFXVars:
+    blinks: 3
+    renderer: {fileID: 1184779750919623995}
+    ogMaterials:
+    - {fileID: 2100000, guid: 53405847abfaac84cb45cd7eb52dce90, type: 2}
+    hitMaterials:
+    - {fileID: 2100000, guid: 4df3b97eb711d774a8cb4ee157e2fc15, type: 2}
+    - {fileID: 2100000, guid: 955b8e54c5a73b143a9d968abf8083aa, type: 2}
+    - {fileID: 2100000, guid: 7c7de859cb2aaf0448c6a343b10d7d18, type: 2}
+    - {fileID: 2100000, guid: 4c2f889d803b24b47ab763fbfa54b972, type: 2}
+    animTime: 0.2
   isPlayer: 0
+  groundLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  weaponTypeOverride: 0
   dmgParticles:
   - {fileID: 3104916853003571433, guid: e8b652848777dab47afdd50a040605b5, type: 3}
   criticalDmgParticles:
   - {fileID: 3104916853003571433, guid: 0541075591277094f92b6b73fd9c1f3c, type: 3}
   maxHealth: 30
   dmgImmunityTime: 0.05
-  armorClass: 1
+  armorClass: 0
   armorDurability: 3
-  damageTypeResistance: 0
-  _health: 0
+  damageTypeResistance: 4
   isInDialog: 0
   isDead: 0
   canTakeDamage: 1
   gameState: 0
+  canDie: 1
+  particle: {fileID: 0}
 --- !u!65 &8916251811687579770
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -155,6 +172,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 2.022684, z: 1}
   m_Center: {x: 0, y: 0.5113422, z: 0}
+--- !u!114 &3459469265022399251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 930467821195963842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fac84b1ea986f94d95a55298337acf5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  entity: {fileID: 3397126602118466167}
+  triggersIfEntityIsHit: 1
+  triggersIfEntityIsHealed: 0
+  triggersIfEntityIsKilled: 0
 --- !u!1 &1669314991486954887
 GameObject:
   m_ObjectHideFlags: 0
@@ -311,7 +344,7 @@ Transform:
   m_Children:
   - {fileID: 5557021044567414506}
   m_Father: {fileID: 2101217347728442402}
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -89.98021, y: 7.241901e-31, z: 0}
 --- !u!1 &4133918030867553831
 GameObject:
   m_ObjectHideFlags: 0
@@ -342,7 +375,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5257320473143590805}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -12.208766, y: 13.410025, z: -4.7522573}
 --- !u!1 &4563273422466637720
 GameObject:
   m_ObjectHideFlags: 0
@@ -373,7 +406,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2457432756518878675}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0.2681135, y: 1.0304213, z: 75.18259}
 --- !u!1 &5068928998118085302
 GameObject:
   m_ObjectHideFlags: 0
@@ -406,7 +439,7 @@ Transform:
   - {fileID: 5912381179394345260}
   - {fileID: 3087513346050484569}
   m_Father: {fileID: 5257320473143590805}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -0.21944854, y: 32.43713, z: -98.41606}
 --- !u!1 &6295165208621650258
 GameObject:
   m_ObjectHideFlags: 0
@@ -437,7 +470,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5557021044567414506}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 89.98021, y: 0, z: 0}
 --- !u!1 &7695091318419136453
 GameObject:
   m_ObjectHideFlags: 0
@@ -468,7 +501,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2457432756518878675}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -85.27635, y: -109.21163, z: -152.33957}
 --- !u!1001 &1325284196208682504
 PrefabInstance:
   m_ObjectHideFlags: 0

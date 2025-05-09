@@ -123,6 +123,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healAmount: 20
+  onHitPar: {fileID: 2881044863893191953, guid: dacffa7d376ec144686c0c56c5611f96,
+    type: 3}
 --- !u!95 &9056456339851049199
 Animator:
   serializedVersion: 5
