@@ -9,7 +9,7 @@ public class SceneChangerOnTouch : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // Cambia "Player" por la tag del objeto que debe activar el cambio de escena
+        
         if (other.CompareTag("Player"))
         {
             SceneManager.LoadScene(sceneToLoad);
