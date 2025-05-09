@@ -4,5 +4,6 @@
   "log.dialog_null_empty" : "Las opciones de dialogo (DialogOptions) son nulas o están vacías... >:/",
 
   "npc_dialog.example_npc.first_line": "Bienvenido viajero!",
-  "npc_dialog.blacksmith_npc.first_line": "Que buen día el día de hoy."
+  "npc_dialog.blacksmith_npc.first_line": "Que buen día el día de hoy.",
+  "IntroductionMsg": "Hola caballero, estas aqui para entrenar tus habilidades, primero veamos como te mueves con esa armadura, usa la palanca izquierda o wasd para moverte"
 }

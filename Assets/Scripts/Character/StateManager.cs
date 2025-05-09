@@ -196,7 +196,7 @@ namespace Character
                     _animator.SetBool("UnarmedCombat", false);
                     _animator.SetBool("SwordAndShield", false);
                     _animator.SetBool("1HSwordMov", false);
-                    _animator.SetBool("2HSwordMov", false);;
+                    _animator.SetBool("2HSwordMov", false);
                     break;
                 case FightingState.UnarmedFighting:
                     _animator.SetBool("UnarmedCombat", true);
