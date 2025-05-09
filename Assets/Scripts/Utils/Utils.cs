@@ -214,7 +214,7 @@ namespace Utils
 
         public static string Translate(string key)
         {
-            if (!Application.isPlaying || !Singleton<GameManager>.applicationIsQuitting)
+            if (!Application.isPlaying || Singleton<GameManager>.applicationIsQuitting)
             {
                 EDebug.LogError($"Translation attempted while GameManager is unavailable. Key: {key}");
                 return key; // Fallback
