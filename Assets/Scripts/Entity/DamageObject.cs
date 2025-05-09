@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Character;
+using HUD;
 using Utils;
 
 public class DamageObject : MonoBehaviour
@@ -13,20 +14,13 @@ public class DamageObject : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
-        {
             DoSomething();
-            ThirdPersonCamera.shakeStrength = 0.5f;
-        }
     }
 
     private void DoSomething()
     {
-        
-        if (CamShaker.instance != null)
-        {
-            CamShaker.instance.SetShake(camShakeStr, camShakeFrames);
-        }
-        
-        Debug.Log("¡El jugador activó el trigger y la cámara está temblando!");
+        if (CamShaker.Instance != null)
+            CamShaker.Instance.ShakeIt(camShakeStr, camShakeFrames);
+        EDebug.Log("¡El jugador activó el trigger y la cámara está temblando!");
     }
 }

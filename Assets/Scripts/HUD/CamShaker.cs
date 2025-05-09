@@ -1,47 +1,47 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Utils;
 
-public class CamShaker : MonoBehaviour
+namespace HUD
 {
-    public static CamShaker instance;
-    private void Awake()
+    public class CamShaker : MonoBehaviour
     {
-        if (instance != null && instance != this)
+        public static CamShaker Instance;
+        private float _shakeStr;
+        private int _shakeFrames = -1;
+        private Vector3 _initPos;
+        private Coroutine _shakeCoroutine;
+        
+        private void Awake()
         {
-            Destroy(gameObject);
-            return;
+            if (Instance != null && Instance != this) {
+                Destroy(gameObject);
+                return;
+            }
+            Instance = this;
+            _shakeCoroutine = null;
         }
 
-        instance = this;
-    }
-
-    float shakeStr;
-    int shakeTimeFrames = -1;
-    Vector3 initialPos;
-
-    public void SetShake(float _str, int _timeInFrames) 
-    { 
-        initialPos = transform.localPosition;
-        shakeStr = _str;
-        shakeTimeFrames = _timeInFrames;
-    }
-    public void CancelShake()
-    {
-        shakeTimeFrames = -1;
-        transform.position = initialPos;
-    }
-
-    void FixedUpdate()
-    {
-        if (shakeTimeFrames > 0)
+        public void ShakeIt(float str, int timeInFrames)
         {
-            shakeTimeFrames--;
-            transform.localPosition += Random.insideUnitSphere * shakeStr;
+            EDebug.Log(StringUtils.AddColorToString("We shakin' boys!", Color.blue));
+            _initPos = transform.localPosition;
+            _shakeStr = str;
+            _shakeFrames = timeInFrames;
+            if (_shakeCoroutine != null) StopCoroutine(_shakeCoroutine);
+            _shakeCoroutine = StartCoroutine(ShakeCoroutine());
         }
-        else if (shakeTimeFrames == 0)
+
+        private IEnumerator ShakeCoroutine()
         {
-            CancelShake();
+            int framesRemaining = _shakeFrames;
+            while (framesRemaining > 0) {
+                transform.localPosition = _initPos + Random.insideUnitSphere * _shakeStr;
+                framesRemaining--;
+                yield return null;
+            }
+            transform.localPosition = _initPos;
+            EDebug.Log(StringUtils.AddColorToString("We ain't shaking... boys.... :(", Color.blue));
         }
     }
 }

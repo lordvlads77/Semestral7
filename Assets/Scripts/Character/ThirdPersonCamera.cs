@@ -27,7 +27,7 @@ namespace Character
         
         public GameObject lockIndicatorPrefab;
         private GameObject _lockIndicator;
-        public static float shakeStrength = 0f;
+        public static float ShakeStrength = 0f;
 
         private double _theta = Math.PI / 2;
         private float _tTheta = 0.5f;
@@ -151,15 +151,11 @@ namespace Character
             if (GameManager.Instance.GameState != GameStates.Playing) return;
             OrbitSphericalCoords();
             
-            if (lockTarget && _lockIndicator)
-            {
-                _lockIndicator.transform.position = lockTarget.position + Vector3.up; // Ajusta la altura según el modelo
+            if (lockTarget && _lockIndicator) {
+                _lockIndicator.transform.position = lockTarget.position + Vector3.up;
                 _lockIndicator.SetActive(true);
             }
-            else if (_lockIndicator)
-            {
-                _lockIndicator.SetActive(false);
-            }
+            else if (_lockIndicator) _lockIndicator.SetActive(false);
         }
 
         private void OrbitSphericalCoords()
@@ -168,15 +164,12 @@ namespace Character
             float h = _input.Camera.x;
             float v = _input.Camera.y;
 
-            // Settings
+            // Check Settings
             h = (invertXAxis)? h : (-h);
             v = (invertYAxis)? (-v) : v;
 
             // Orbit the camera around the character
-            if (h != 0)
-            {
-                _alpha += h * sensitivity * Time.deltaTime;
-            }
+            if (h != 0) _alpha += h * sensitivity * Time.deltaTime;
             if (v != 0)
             {
                 Vector2 limitAnglesRads = settings.GetLimitVerticalAnglesRadians();
@@ -187,39 +180,27 @@ namespace Character
                 _tTheta = Mathf.Clamp(_tTheta, 0f, 1f);
                 _theta = Mathf.Lerp(maxAngle, minAngle, _tTheta);
             }
-
-// SUAVIZADO
+            // Smooth the angles
             currentAlpha = Mathf.Lerp(currentAlpha, (float)_alpha, Time.deltaTime * smoothSpeed);
             currentTheta = Mathf.Lerp(currentTheta, (float)_theta, Time.deltaTime * smoothSpeed);
 
-// Calcula posición basada en rotación suavizada
+            // Calc camera position
             float x = lookAt.position.x + settings.GetCameraDistance() * Mathf.Sin(currentTheta) * Mathf.Cos(currentAlpha);
             float y = lookAt.position.y + settings.GetCameraDistance() * Mathf.Cos(currentTheta);
             float z = lookAt.position.z + settings.GetCameraDistance() * Mathf.Sin(currentTheta) * Mathf.Sin(currentAlpha);
         
-            Vector3 newCameraPosition = new Vector3(x, y , z);
+            Vector3 newCameraPosition = new Vector3(x, y, z);
             Vector3 offsetCameraPosition = newCameraPosition + settings.GetOffset().x * cam.transform.right + settings.GetOffset().y * cam.transform.up;
-            Vector3 shakeOffset = Vector3.zero;
-            if (shakeStrength > 0f)
-            {
-                shakeOffset = UnityEngine.Random.insideUnitSphere * shakeStrength;
-                shakeStrength *= 0.9f; // Se va disipando con el tiempo
-                if (shakeStrength < 0.01f) shakeStrength = 0f;
-            }
+            cam.transform.position = Vector3.Lerp(cam.transform.position, offsetCameraPosition, Time.deltaTime * lerpValue);
 
-            Vector3 targetCameraPosition = offsetCameraPosition + shakeOffset;
-            cam.transform.position = Vector3.Lerp(cam.transform.position, targetCameraPosition, Time.deltaTime * 10f);
-
-// Interpolación suave del punto de enfoque
+            // Look at
             Vector3 targetLookAt = lookAt.transform.position + settings.GetOffset().x * cam.transform.right + settings.GetOffset().y * cam.transform.up;
-            _trueLookAt.transform.position = Vector3.Lerp(_trueLookAt.transform.position, targetLookAt, Time.deltaTime * 10f);
-            if (_input.ZTarget && lockTarget)
-            {
+            _trueLookAt.transform.position = Vector3.Lerp(_trueLookAt.transform.position, targetLookAt, Time.deltaTime * lerpValue);
+            if (_input.ZTarget && lockTarget) {
                 Quaternion targetRotation = Quaternion.LookRotation(lockTarget.position - cam.transform.position);
                 cam.transform.rotation = Quaternion.Slerp(cam.transform.rotation, targetRotation, Time.deltaTime * lerpValue);
             } 
-            else
-            {
+            else {
                 Quaternion targetRotation = Quaternion.LookRotation(_trueLookAt.position - cam.transform.position);
                 cam.transform.rotation = Quaternion.Slerp(cam.transform.rotation, targetRotation, Time.deltaTime * lerpValue);
             }
@@ -272,10 +253,10 @@ namespace Character
         }
         private void OnDrawGizmos()
         {
+            #if UNITY_EDITOR
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(transform.position, maxLockDistance);
 
-#if UNITY_EDITOR
             Collider[] enemies = Physics.OverlapSphere(transform.position, maxLockDistance, LayerMask.GetMask("Enemy"));
 
             float closestDistance = Mathf.Infinity;
@@ -302,7 +283,7 @@ namespace Character
                 Gizmos.DrawLine(transform.position, closestTarget.position);
                 Gizmos.DrawSphere(closestTarget.position + Vector3.up * 2f, 0.3f); // Marcador visual
             }
-#endif
+            #endif
         }
     }
 }
