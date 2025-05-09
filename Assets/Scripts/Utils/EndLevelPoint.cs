@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Utils
 {
-    [RequireComponent(typeof(BoxcastCommand))]
+    [RequireComponent(typeof(BoxCollider))]
     [RequireComponent(typeof(Rigidbody))]
     public sealed class EndLevelPoint : MonoBehaviour
     {
