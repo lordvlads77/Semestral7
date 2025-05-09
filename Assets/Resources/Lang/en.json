@@ -9,5 +9,7 @@
   "CameraTuto": "To move the camera you must use the rick stick or move your mouse",
   "Combate": "In order to pass this door you must use your weapons in this dummies, use the arrows to unsheat your weapon, and use the right button or the left click to attack",
   "CombatIns": "To lock a target use the left trigger or the right click, to run use the superior right trigger or the shift and to doge use the left button or the x key",
-  "continueSignal": "Go to the village"
+  "continueSignal": "Go to the village",
+  "acabar": "Defeat this enemies to continue",
+  "pociom": "If you need to heal yourself use this potion"
 }
