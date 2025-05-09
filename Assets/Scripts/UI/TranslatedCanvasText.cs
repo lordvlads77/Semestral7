@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,18 +10,25 @@ namespace UI
     {
         [SerializeField] private string textKey;
         private Graphic _text;
+        private Coroutine _translateCoroutine;
         
         private void Awake()
         {
+            _translateCoroutine ??= StartCoroutine(Translate());
+        }
+
+        private IEnumerator Translate()
+        {
+            yield return new WaitForSeconds(0.75f);
             _text = GetComponent<TMP_Text>();
             if (_text == null) _text = GetComponent<Text>();
             if (_text == null) {
                 EDebug.LogError("TranslatedText: 'TMP_Text' or 'Text' component not found.");
-                return;
+                yield return null;
             }
             if (string.IsNullOrEmpty(textKey)) {
                 EDebug.LogError("TranslatedText: 'textKey' is not set.");
-                return;
+                yield return null;
             }
             switch (_text) {
                 case TMP_Text tmpText:
