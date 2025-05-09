@@ -10,5 +10,9 @@
   "Combate": "Para pasar a la siguente area debes de usar tus arma para golpear a estos muñecos, usa las flechas para desenvainar y usa el boton derecho o el click izquierdo para atacar",
   "CombatIns": "Para fijar a un objetivo usa el gatillo izquiero o el click derecho, para correr usa el gatillo superior derecho o el shift y para esquivar usa el boton izquierdo o la tecla x",
   "continueSignal": "Ir al pueblo",
+
+  "acabar": "Derrota a estos enemigos para continuar",
+  "pociom": "Si necesitas curarte recoge esta poción",
+
   "adventure" : "¡Ve más allá de este letrero en busca de aventuras!!!!"
 }

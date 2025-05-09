@@ -30,6 +30,7 @@ namespace Entity
         private Coroutine _dieRoutine;
         private Coroutine _attackRoutine;
         [SerializeField] private Weapon weapon;
+        [SerializeField] private ParticleSystem[] ohImDie;
 
         [Header("AI Components")] 
         [SerializeField, Range(2f, 50f)] private float detectionRange;
@@ -47,6 +48,8 @@ namespace Entity
         
         [Header("Enemy Type")]
         [SerializeField] private EnemyType enemyType = EnemyType.Melee;
+
+        private Coroutine _imDieCoroutine;
 
         private void Start()
         {
@@ -261,9 +264,22 @@ namespace Entity
         protected override void Die()
         {
             base.Die();
-            //gameObject.SetActive(false);
-            Animator.SetBool("enemy_dead", true);
+            Animator.SetBool("Dead", true);
+            Animator.SetInteger("AnimType", (int) Random.Range(0, 1));
             curState = EnemyState.Dying;
+            if (_imDieCoroutine == null) _imDieCoroutine = StartCoroutine(OhImDieThankYouForever());
+        }
+
+        private IEnumerator OhImDieThankYouForever()
+        {
+            yield return new WaitForSeconds(3f);
+            if (ohImDie.Length > 0) {
+                foreach (ParticleSystem ps in ohImDie) {
+                    ParticleSystem newPs = Instantiate(ps, this.transform.position, this.transform.rotation);
+                    newPs.Play();
+                }
+            }
+            Destroy(this.gameObject);
         }
         
         protected override void OnStateChange(GameStates state)

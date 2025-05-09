@@ -265,31 +265,37 @@ private void GetDirectionAndMove()
             if (stateManager.CurrentFightingState == FightingState.NonCombat && GameManager.Instance.NpcCloseBy(transform.position))
             {
                 // Start the dialogue thing
+                return;
             }
             if (_attackRoutine == null) _attackRoutine = StartCoroutine(PerformAttack());
         }
         private IEnumerator PerformAttack()
         {
             Animator.SetTrigger(AnimAttack);
-            int num = 0;
+            int num = (int) Weapon;
             Collider weaponCollider = weapon[num].GetComponent<Collider>();
-            //yield return new WaitForSeconds(0.25f);
             weapon[num].inUse = true;
             if (weaponCollider != null) weaponCollider.enabled = true;
+            bool damageApplied = false;
             while (Animator.GetCurrentAnimatorStateInfo(0).IsName("UnarmedCombat_Patadon") || 
                    Animator.GetCurrentAnimatorStateInfo(0).IsName("1HStandingMeleeAttackDownguard") ||
                    Animator.GetCurrentAnimatorStateInfo(0).IsName("2HWeaponSwing"))
-            { yield return null; }
+            { if (!damageApplied && Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.5f) {
+                    damageApplied = true;
+                    weapon[num].inUse = false;
+                }
+                yield return null;
+            }
             weapon[num].inUse = false;
             if (weaponCollider != null) weaponCollider.enabled = false;
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSeconds(0.25f);
             _attackRoutine = null;
         }
         public void IncreaseMaxHealth(float amount)
         {
             maxHealth += amount;
         }
-        
+
         private bool IsGrounded()
         {
             Vector3 vec = this.transform.position;

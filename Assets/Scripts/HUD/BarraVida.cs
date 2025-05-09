@@ -1,52 +1,35 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Utils;
 
-public class BarraVida : MonoBehaviour
+namespace HUD
 {
-    public Image viada; // Imagen de la barra de vida
-    public Image fondoBarra; // Fondo de la barra de vida
-    [SerializeField] private LivingEntity jugador;
-
-    //[SerializeField] private DamageSys jugadorDamageSys = default;
-
-    private float vidaInicial;
-    private Vector2 barraOriginalSize;
-    private Vector2 fondoOriginalSize;
-
-    private void Start()
+    public class BarraVida : MonoBehaviour
     {
-        //Debug.Assert(jugadorDamageSys != default, "Necesitamos el sistema de daño del enemigo", this);
-        if (jugador != null)
+        public Image healthImage;
+        public Image healthBackgroundImg;
+        [SerializeField] private LivingEntity player;
+    
+        private float _initHealth;
+        private Vector2 _healthImgOgSize;
+        private Vector2 _healthBgImgOgSize;
+
+        private void Start()
         {
-            //vidaInicial = jugadorDamageSys._life; //jugador.GetMaxHealth();
-            barraOriginalSize = viada.rectTransform.sizeDelta; // Tamaño original de la barra
-            fondoOriginalSize = fondoBarra.rectTransform.sizeDelta; // Tamaño original del fondo
+            if (player == null) return;
+            _initHealth = player.GetHealth();
+            _healthImgOgSize = healthImage.rectTransform.sizeDelta;
+            _healthBgImgOgSize = healthBackgroundImg.rectTransform.sizeDelta;
         }
-    }
 
-    void Update()
-    {
-        if (jugador != null)
+        private void LateUpdate()
         {
-            //float vidaActual = jugadorDamageSys._life;//jugador.GetHealth();
-            float maxVida = jugador.GetMaxHealth();
-
-            // Calcular la escala de crecimiento
-            float escala = maxVida / vidaInicial;
-
-            // Expandir el fondo hacia la derecha
-            fondoBarra.rectTransform.sizeDelta = new Vector2(fondoOriginalSize.x * escala, fondoOriginalSize.y);
-
-            // Mantener la barra dentro del fondo (sin moverla)
-            viada.rectTransform.sizeDelta = new Vector2(barraOriginalSize.x * escala, barraOriginalSize.y);
-            viada.rectTransform.anchoredPosition = new Vector2(0, viada.rectTransform.anchoredPosition.y);
-
-            // Ajustar el fillAmount para la vida actual
-            //viada.fillAmount = vidaActual / maxVida;
+            if (player == null) return;
+            float maxHealth = player.GetMaxHealth();
+            float scale = maxHealth / _initHealth;
+            healthBackgroundImg.rectTransform.sizeDelta = new Vector2(_healthBgImgOgSize.x * scale, _healthBgImgOgSize.y);
+            healthImage.rectTransform.sizeDelta = new Vector2(_healthImgOgSize.x * scale, _healthImgOgSize.y);
+            healthImage.rectTransform.anchoredPosition = new Vector2(0, healthImage.rectTransform.anchoredPosition.y);
         }
     }
 }
