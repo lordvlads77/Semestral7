@@ -188,11 +188,11 @@ public sealed class GameManager : Singleton<GameManager>
     
     public bool NpcCloseBy(Vector3 pos)
     {
+        _nearbyNpc.Clear();
         Collider[] hitColliders = Physics.OverlapSphere(pos, npcRange);
         foreach (Collider hitCollider in hitColliders)
         {
-            if (hitCollider.CompareTag("NPC"))
-            {
+            if (hitCollider.CompareTag("NPC")) {
                 LivingEntity npc = hitCollider.GetComponent<LivingEntity>();
                 if (npc != null && !npc.isDead) _nearbyNpc.Add(npc);
             }

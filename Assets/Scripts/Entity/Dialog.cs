@@ -110,31 +110,51 @@ namespace Entity
 
         public void DisplayNpcPrompt(List<LivingEntity> npcNear)
         {
+            EDebug.Log("DisplayNpcPrompt");
+            if (npcNear.Count == 0) {
+                EDebug.LogWarning(StringUtils.AddColorToString("No NPCs near by were sent to the function", Color.yellow));
+                RemoveNpcPrompt();
+                _lastNearbyNpc = new List<LivingEntity>();
+                return;
+            }
+            if (_lastNearbyNpc.Count == npcNear.Count && !_lastNearbyNpc.Except(npcNear).Any()) return;
+            _lastNearbyNpc = new List<LivingEntity>(npcNear);
             _dialogPrompt = _gm.GetOrCreateNpcPromptCanvas();
             if (_dialogPrompt == null) return;
             Transform holder = _dialogPrompt.transform.Find("Holder");
             if (holder == null) return;
+            EDebug.Log(StringUtils.AddColorToString("Removed old name panels", Color.red));
             foreach (Transform child in holder) // Clear existing name panels if any
             { Destroy(child.gameObject); }
             LivingEntity closestNpc = null; // Find closest NPC from the given list
-            float closestDistance = 100000000000;
-            foreach (LivingEntity npc in npcNear)
-            {
+            float closestDistance = float.MaxValue;
+            foreach (LivingEntity npc in npcNear) {
                 float distance = Vector3.Distance(_gm.player.transform.position, npc.transform.position);
-                if (distance <= closestDistance)
-                {
+                EDebug.Log($"NPC: {npc.entityName}, Distance: {distance}", this);
+                if (distance < closestDistance) {
                     closestDistance = distance;
                     closestNpc = npc;
                 }
             }
             if (closestNpc == null) return;
-            _dialogPrompt.transform.position = closestNpc.transform.Find("Root").transform.position;
-            
-            foreach (LivingEntity npc in npcNear)
-            {
+            EDebug.Log($"Closest NPC: {closestNpc.entityName}, Distance: {closestDistance}", this);
+            Transform rootTransform = null;
+            foreach (Transform child in closestNpc.transform) {
+                if (child.name == "Root") {
+                    rootTransform = child;
+                    break;
+                }
+            }
+            if (rootTransform == null)
+                EDebug.LogWarning($"Root transform not found for {closestNpc.entityName}. Ensure it exists as a direct child.");
+            if (rootTransform != null) _dialogPrompt.transform.position = rootTransform.position;
+            else EDebug.LogWarning("Root transform not found for closest NPC.");
+            foreach (LivingEntity npc in npcNear) {
                 GameObject namePanel = Instantiate(_gm.canvasPrefabs.promptName, holder);
-                Text nameText = namePanel.transform.Find("Name Txt").GetComponent<Text>();
-                nameText.text = npc.HasCustomName() ? npc.entityName : MiscUtils.GetRandomName(_gm.randomNames, npc.nameCustomization);
+                Text nameText = namePanel.transform.Find("Name Txt")?.GetComponent<Text>();
+                if (nameText != null)
+                    nameText.text = npc.HasCustomName() ? npc.entityName : MiscUtils.GetRandomName(_gm.randomNames, npc.nameCustomization);
+                else EDebug.LogWarning("Name Txt not found in promptName prefab.");
             }
             _dialogPrompt.SetActive(true);
         }
