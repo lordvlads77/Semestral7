@@ -4,5 +4,6 @@
   "log.dialog_null_empty" : "DialogOptions are null or empty... >:/",
 
   "npc_dialog.example_npc.first_line": "Greetings traveler!",
-  "npc_dialog.blacksmith_npc.first_line": "Fine day we're having."
+  "npc_dialog.blacksmith_npc.first_line": "Fine day we're having.",
+  "IntroductionMsg": "hello knight, you are here to train your skills, first lets see you move with that armor, use the left stick or wasd to move"
 }
