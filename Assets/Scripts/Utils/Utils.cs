@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using FMOD;
 using FMOD.Studio;
 using JetBrains.Annotations;
 using Scriptables;
@@ -391,6 +392,30 @@ namespace Utils
             UnityEngine.Object.DontDestroyOnLoad(newGm);
             EDebug.Log("GameManager was not found, a new one was created.");
             return gm;
+        }
+        
+        public static void ActionToDo([CanBeNull] Animator anim, [CanBeNull] string animTriggerName, 
+            [CanBeNull] GameObject objToDoStuff, int actionType, [CanBeNull] ParticleSystem particle,
+            [CanBeNull] PlayPersistent sound)
+        {
+            if (anim != null && !string.IsNullOrWhiteSpace(animTriggerName))
+                anim.SetTrigger(animTriggerName);
+            if (objToDoStuff != null) {
+                switch (actionType) {
+                    default:
+                    case 0: objToDoStuff.SetActive(false);
+                        break;
+                    case 1: UnityEngine.Object.Destroy(objToDoStuff);
+                        break;
+                    case 2: objToDoStuff.SetActive(true);
+                        break;
+                }
+            }
+            if (particle != null) {
+                UnityEngine.Object.Instantiate(particle);
+                particle.Play();
+            }
+            if (sound != null) sound.enabled = true;
         }
     }
 

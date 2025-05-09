@@ -1,3 +1,4 @@
+using System;
 using Scriptables;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -22,7 +23,7 @@ namespace Character
             }
         }
     
-        private void OnTriggerEnter(Collider other)
+        /*private void OnTriggerEnter(Collider other)
         {
             if (weaponObject[0].CompareTag("Enemy"))
             {
@@ -44,8 +45,6 @@ namespace Character
                     return;
                 }
                 Utils.CombatUtils.Attack(player, enemy);
-            }
-        }
-    
+            }*/
     }
 }
