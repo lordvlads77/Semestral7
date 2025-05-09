@@ -1272,6 +1272,39 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a5bb8fdb18a5fce4a934aac86e8ec191, type: 3}
+--- !u!1 &597603237 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 551830057353320705, guid: 7d79adc3ca7977a43af9a5ae819e63d6,
+    type: 3}
+  m_PrefabInstance: {fileID: 1096139347}
+  m_PrefabAsset: {fileID: 0}
+--- !u!54 &597603244
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 597603237}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &605583958 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2173702185589018756, guid: f01d1218e36e66942ad9418a96bf441e,
@@ -3622,11 +3655,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Character_Knight_02_Yellow
       objectReference: {fileID: 0}
-    - target: {fileID: 551830057353320705, guid: 7d79adc3ca7977a43af9a5ae819e63d6,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 7111604596642059076, guid: 7d79adc3ca7977a43af9a5ae819e63d6,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3680,7 +3708,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 551830057353320705, guid: 7d79adc3ca7977a43af9a5ae819e63d6,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 597603244}
   m_SourcePrefab: {fileID: 100100000, guid: 7d79adc3ca7977a43af9a5ae819e63d6, type: 3}
 --- !u!1 &1105293577 stripped
 GameObject:
@@ -8316,6 +8348,9 @@ MonoBehaviour:
   controller: {fileID: 6504752884908034062}
   stateManager: {fileID: 9202856032771810627}
   anim: {fileID: 2439035665859341509}
+  weapon:
+  - {fileID: 9013310864407287012}
+  - {fileID: 8857984333532728153}
   dodgeSpeed: 2
   dodgeDuration: 0.5
   dodgeCooldown: 0.5
@@ -8490,12 +8525,7 @@ Animator:
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
-  m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
-    are already bound by a Humanoid avatar. These transforms can only be changed
-    by Humanoid clips.\n\tTransform 'Root'\n\tTransform 'IndexFinger_02'\n\tTransform
-    'Elbow_R'\n\tTransform 'Finger_02'\n\tTransform 'Ball_L'\n\tTransform 'Thumb_02'\n\tTransform
-    'Ball_R'\n\tTransform 'Clavicle_L'\n\tTransform 'Finger_01'\n\tTransform 'Neck'\n\tand
-    more ...\n\tFrom animation clip 'mixamo.com'"
+  m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
@@ -10635,7 +10665,6 @@ GameObject:
   - component: {fileID: 2487169530206942754}
   - component: {fileID: 4340718835606206952}
   - component: {fileID: 9202856032771810628}
-  - component: {fileID: 9202856032771810629}
   m_Layer: 6
   m_Name: Char_Knight_Black_FxScale
   m_TagString: Player
@@ -11709,8 +11738,12 @@ MonoBehaviour:
   oneHandedWeapon: {fileID: 8669460329892484304}
   twoHandedWeapon: {fileID: 1562194746952504152}
   twoHandedHand: {fileID: 7678053276611328937}
-  _isWeaponInUse: 0
-  _animator: {fileID: 2439035665859341509}
+  isWeaponInUse: 0
+  player: {fileID: 0}
+  enemy: {fileID: 0}
+  areHandsInUse: 0
+  animator: {fileID: 2439035665859341509}
+  stateManager: {fileID: 0}
 --- !u!224 &6700523345669586313
 RectTransform:
   m_ObjectHideFlags: 0
@@ -12275,11 +12308,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Training_Dummy
       objectReference: {fileID: 0}
-    - target: {fileID: 930467821195963842, guid: 2795ab1acada06547b391bdec401014d,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 2101217347728442402, guid: 2795ab1acada06547b391bdec401014d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -12423,6 +12451,7 @@ GameObject:
   - component: {fileID: 8857984333532728152}
   - component: {fileID: 3506341842019660944}
   - component: {fileID: 4968818892183357687}
+  - component: {fileID: 8857984333532728153}
   m_Layer: 0
   m_Name: TwoHandedSwordInHand
   m_TagString: Untagged
@@ -13086,6 +13115,7 @@ GameObject:
   - component: {fileID: 8683782129818763148}
   - component: {fileID: 9013310864407287011}
   - component: {fileID: 5692724841424217193}
+  - component: {fileID: 9013310864407287012}
   m_Layer: 0
   m_Name: SM_Wep_Broadsword_01
   m_TagString: DamageDealer
@@ -13178,6 +13208,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7678053276611328937}
   m_Mesh: {fileID: 4300000, guid: 8d4729c3f1bcfd940b005cd597a5164b, type: 3}
+--- !u!114 &8857984333532728153
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7678053276611328937}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0c738919bdb61842a3170ccfe529ef8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inUse: 0
 --- !u!1 &8892190844350125333
 GameObject:
   m_ObjectHideFlags: 0
@@ -13281,6 +13324,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &9013310864407287012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8669460329892484304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0c738919bdb61842a3170ccfe529ef8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inUse: 0
 --- !u!114 &9022650677662095625
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13374,25 +13430,6 @@ MonoBehaviour:
   viada: {fileID: 5028796686468968}
   fondoBarra: {fileID: 5351221107238745359}
   jugador: {fileID: 2044310253568215568}
-  jugadorDamageSys: {fileID: 9202856032771810629}
---- !u!114 &9202856032771810629
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5380833302022311900}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a91b808eff87e674db302062de35ff13, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _damageDealer: {fileID: 0}
-  _isDead: 0
-  _playerObj: {fileID: 5380833302022311900}
-  _camera: {fileID: 0}
-  _isPlayer: 1
-  _life: 100
 --- !u!4 &9213945334526644407
 Transform:
   m_ObjectHideFlags: 0

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Scriptables;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,6 +16,8 @@ namespace Entity
         private GameObject _responsePrefab;
         private GameManager _gm;
         private GameObject _dialogPrompt;
+        
+        private List<LivingEntity> _lastNearbyNpc = new List<LivingEntity>();
 
         protected override void OnAwake()
         {
@@ -110,13 +113,13 @@ namespace Entity
 
         public void DisplayNpcPrompt(List<LivingEntity> npcNear)
         {
-            EDebug.Log("DisplayNpcPrompt");
             if (npcNear.Count == 0) {
                 EDebug.LogWarning(StringUtils.AddColorToString("No NPCs near by were sent to the function", Color.yellow));
                 RemoveNpcPrompt();
                 _lastNearbyNpc = new List<LivingEntity>();
                 return;
             }
+            EDebug.Log("DisplayNpcPrompt");
             if (_lastNearbyNpc.Count == npcNear.Count && !_lastNearbyNpc.Except(npcNear).Any()) return;
             _lastNearbyNpc = new List<LivingEntity>(npcNear);
             _dialogPrompt = _gm.GetOrCreateNpcPromptCanvas();
@@ -158,7 +161,7 @@ namespace Entity
             }
             _dialogPrompt.SetActive(true);
         }
-        
+
         public void RemoveNpcPrompt()
         {
             if (_dialogPrompt == null) return;

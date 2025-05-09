@@ -42,6 +42,8 @@ namespace Character
         
         private Camera _cam;
         private ThirdPersonCamera _cm;
+        private Coroutine _attackRoutine = null;
+        [SerializeField] private Weapon [] weapon;
         
         [Header("Dodge Settings")]
         [SerializeField] private float dodgeSpeed = 10f; // Fuerza de impulso
@@ -265,7 +267,24 @@ private void GetDirectionAndMove()
                 // Start the dialogue thing
             }
 
-            anim.SetTrigger(AnimAttack);
+            if (_attackRoutine == null)
+            {
+                _attackRoutine = StartCoroutine(PerformAttack());
+            }
+        }
+        private IEnumerator PerformAttack()
+        {
+            Animator.SetTrigger(AnimAttack);
+            int num = 0;
+            weapon[num].inUse = true;
+            
+            while (Animator.GetCurrentAnimatorStateInfo(0).IsName("UnarmedCombat_Patadon") || 
+                   Animator.GetCurrentAnimatorStateInfo(0).IsName("1HStandingMeleeAttackDownguard") ||
+                   Animator.GetCurrentAnimatorStateInfo(0).IsName("2HWeaponSwing"))
+            { yield return new WaitForSeconds(0.1f); yield return null; }
+            weapon[num].inUse = false;
+            yield return new WaitForSeconds(0.2f);
+            _attackRoutine = null;
         }
         public void IncreaseMaxHealth(float amount)
         {

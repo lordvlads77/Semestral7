@@ -147,13 +147,14 @@ GameObject:
   - component: {fileID: 1508328051814396213}
   - component: {fileID: 1225457222793485134}
   - component: {fileID: 1533257695140203652}
+  - component: {fileID: 1845839496937936246}
   m_Layer: 3
   m_Name: Character_Knight_02_Yellow
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &7111604596642059076
 Transform:
   m_ObjectHideFlags: 0
@@ -364,6 +365,29 @@ MonoBehaviour:
   timeWithinAttackRange: 0
   attackRange: 1.5
   enemyType: 0
+--- !u!136 &1845839496937936246
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 551830057353320705}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.25
+  m_Height: 1.8
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.9, z: 0}
 --- !u!1 &1125947677179332680
 GameObject:
   m_ObjectHideFlags: 0
