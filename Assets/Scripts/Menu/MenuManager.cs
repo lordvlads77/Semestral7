@@ -392,6 +392,13 @@ public sealed class MenuManager : MonoBehaviour
         LoadingManager.Instance.LoadSceneByName("Scenes/GameLevel");
     }
 
+    public void Tutorial()
+    {
+        EDebug.Log("<color=orange>Tutorial</color>");
+
+        LoadingManager.Instance.LoadSceneByName("Scenes/TutorialLevel");
+    }
+
     public void Cargar()
     {
         EDebug.Log("<color=orange>Cargar</color>");
@@ -466,24 +473,28 @@ public sealed class MenuManager : MonoBehaviour
         {
             _acceptedInputBlock = StartCoroutine(BlockAcceptedInput());
 
-            if (currentSelection == 0)
-            {
-                Inicio();
-            }
 
-            if (currentSelection == 1)
+            switch (currentSelection)
             {
-                Cargar();
-            }
+                case 0:
+                    Inicio();
+                    break;
 
-            if (currentSelection == 2)
-            {
-                Options();
-            }
+                case 1:
+                    Tutorial();
+                    break;
 
-            if (currentSelection == 3)
-            {
-                Salir();
+                case 2:
+                    Cargar();
+                    break;
+
+                case 3:
+                    Options();
+                    break;
+
+                case 4:
+                    Salir();
+                    break;
             }
         }
 
@@ -588,7 +599,8 @@ public sealed class MenuManager : MonoBehaviour
             {
                 SaveFileSelectable saveFile = currentArrayInUse[currentSelection].GetComponent<SaveFileSelectable>();
                 int save_file_index = saveFile.saveFileIndex;
-
+                EDebug.Log($"save file index = {save_file_index}");
+                /* TODO : IF YOU CAN NOT ADD A TUTORIAL BUTTON UN COMMENT THIS OTHER EARSE PLS
                 if (!saveFile.isBeingUsed)
                 {
                     const string TutorialLevelPath = "Scenes/TutorialLevel";
@@ -597,10 +609,10 @@ public sealed class MenuManager : MonoBehaviour
                 }
                 else
                 {
-                    EDebug.Log($"save file index = {save_file_index}");
-                    SaveSystem.SaveSystem.CreateKeyIfOneDoesNotExist(save_file_index);
-                    desiredState = CURRENT_MENU_STATE.MAIN_MENU;
-                }
+                }*/
+
+                SaveSystem.SaveSystem.CreateKeyIfOneDoesNotExist(save_file_index);
+                desiredState = CURRENT_MENU_STATE.MAIN_MENU;
             }
 
             else if (currentSelection == 4)
