@@ -42,6 +42,14 @@ namespace UI
 
         private void FixedUpdate()
         {
+            ManualUpdate();
+        }
+
+        /// <summary>
+        /// Esta funcion existe por si se necesita actualizar el textSwitcher de forma manual
+        /// </summary>
+        public void ManualUpdate()
+        {
             if (currentLanguage != desiredLanguage)
             {
                 UpdateLanguage();
@@ -52,7 +60,6 @@ namespace UI
             {
                 UpdateText();
             }
-
         }
 
         private void UpdateText()
@@ -127,6 +134,10 @@ namespace UI
 
         #endregion
 
+
+        public string getCurrentString => textToSwitchInto.text[currentIndex];
+
+        public int indexCount => textToSwitchInto.text.Length;
 
     }
 
