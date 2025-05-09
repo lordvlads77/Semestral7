@@ -34,7 +34,7 @@ namespace Character
         private double _alpha = -Math.PI / 2;
         private float currentAlpha;
         private float currentTheta;
-        private float smoothSpeed = 5f;
+        private float smoothSpeed = 25f;
         
         [SerializeField]
         private float maxLockDistance = 10f;
