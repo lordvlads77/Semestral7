@@ -5,9 +5,8 @@ namespace Objects
 {
     public class SceneChangerOnTouch : MonoBehaviour
     {
-        [SerializeField] private string sceneToLoad;
-
-        private void OnTriggerEnter(Collider other)
+        
+        if (other.CompareTag("Player"))
         {
             // Cambia "Player" por la tag del objeto que debe activar el cambio de escena
             if (other.CompareTag("Player"))
