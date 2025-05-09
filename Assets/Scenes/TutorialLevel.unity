@@ -7379,7 +7379,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4aafdfa52529bf49aaa77f9b4942bb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneToLoad: GameLevel
+  sceneToLoad: Nuevo Menu
 --- !u!65 &1669744717
 BoxCollider:
   m_ObjectHideFlags: 0
