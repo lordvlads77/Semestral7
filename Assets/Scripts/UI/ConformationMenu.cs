@@ -6,11 +6,14 @@ namespace UI
 {
     using UnityEngine.UI;
     using TMPro;
-    using System.Runtime.CompilerServices;
-    using System.Threading;
-    using UnityEngine.Events;
     using System;
 
+    /// <summary>
+    /// Para usar el script (assumiendo que ya tengas el prefab)
+    /// <para> 1. Asegurar que esta apagado en la ecena donde esta <c> gameObject.SetActive(false); </c>  </para>
+    /// <para> 2. Cuando necesitas usarlo Activalo <c> gameObject.SetActive(false); </c> </para> 
+    /// <para> 3. Asignar el evento <c> conformationMenu.acceptedInputEvent += otraFuncion </c> y tienes que hacer esto cada vez que lo usas </para>
+    /// </summary>
     public sealed class ConformationMenu : MonoBehaviour
     {
         [SerializeField] Image background;
