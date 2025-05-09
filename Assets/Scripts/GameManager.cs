@@ -37,8 +37,8 @@ public sealed class GameManager : Singleton<GameManager>
     public SoundManager SoundManager { get; private set; }
     
     private readonly List<Action> _globalUnsubscribeActions = new List<Action>();
-    private WindowMode _windowMode; 
-    private WindowResolution _windowRes;
+    public WindowMode _windowMode; 
+    public WindowResolution _windowRes;
     
     public void RegisterUnsubscribeAction(Action unsubscribeAction)
     {
@@ -290,4 +290,22 @@ public sealed class GameManager : Singleton<GameManager>
         EDebug.Log("Done! You're playing now");
     }
     
+    public void ChangeResolution(WindowResolution newRes)
+    {
+        _windowRes = newRes;
+        SetGameWindowAndResolution();
+    }
+
+    public void ChangeWindowMode(WindowMode newMode)
+    {
+        _windowMode = newMode;
+        SetGameWindowAndResolution();
+    }
+
+    public void ChangeResolutionAndWindowMode(WindowResolution newRes, WindowMode newMode)
+    {
+        _windowRes = newRes;
+        _windowMode = newMode;
+        SetGameWindowAndResolution();
+    }
 }

@@ -12,6 +12,7 @@ TagManager:
   - NPC
   - EnemySpawnPoint
   - SoundTrigger
+  - Loading_Script
   layers:
   - Default
   - TransparentFX

@@ -17,35 +17,50 @@ namespace SaveSystem
 
         public const string MASTER_VOLUME_KEY = "master_volume";
 
+        public const string LANGUAGE_SELECTED_KEY = "language_selected";
+
+        public const string WINDOW_RESOLUTION_KEY = "WindowResolution";
+        public const string WINDOW_MODE_KEY = "WindowMode";
+
         const string SEPARATOR = "|*|";
 
         public static Action OnSaveData;
         public static Action OnLoadData;
 
-        public static void SaveLevelData()
+        public static int CurrentSaveFileIndex { get; private set; } = 0;
+        public const float DEFAULT_VOLUME = 0.5f;
+
+        public static void SaveLevelData(int saveIndex = 0)
         {
-            CreateKeyIfOneDoesNotExist();
+            CreateKeyIfOneDoesNotExist(saveIndex);
+            CurrentSaveFileIndex = saveIndex;
+
             LivingEntity[] allLivingEntities = GameObject.FindObjectsByType<LivingEntity>(FindObjectsSortMode.None);
             StringBuilder sb = new StringBuilder();
 
             sb.Append(SavePlayerData(allLivingEntities));
             sb.Append(SaveEnemyData(allLivingEntities));
 
-            PlayerPrefs.SetInt(LEVEL_INDEX_KEY, SceneManager.GetActiveScene().buildIndex);
-            PlayerPrefs.SetString(LEVEL_DATA_KEY, sb.ToString());
+            string current_level_data = LEVEL_DATA_KEY + saveIndex;
+
+            PlayerPrefs.SetInt(current_level_data, SceneManager.GetActiveScene().buildIndex);
+            PlayerPrefs.SetString(current_level_data, sb.ToString());
             PlayerPrefs.Save();
             OnSaveData?.Invoke();
         }
 
-        public static void LoadEverything()
+        public static void LoadEverything(int loadIndex = 0)
         {
-            CreateKeyIfOneDoesNotExist();
-            string raw_data = PlayerPrefs.GetString(LEVEL_DATA_KEY);
+            CreateKeyIfOneDoesNotExist(loadIndex);
+
+            string raw_data = PlayerPrefs.GetString(LEVEL_DATA_KEY + loadIndex);
             if (string.IsNullOrWhiteSpace(raw_data))
             {
-                EDebug.LogError("No data exist to load");
+                EDebug.LogWarning($"No data exist to load |{raw_data}|");
                 return;
             }
+
+            CurrentSaveFileIndex = loadIndex;
 
             int index = 0;
             string[] data_divided = raw_data.Split(SEPARATOR);
@@ -62,20 +77,20 @@ namespace SaveSystem
             EDebug.Log($"<color=orange>Current Index = {index}</color>");
             OnLoadData?.Invoke();
         }
-        
+
         public static void LoadVolumePrefs()
         {
-            if (!PlayerPrefs.HasKey(MASTER_VOLUME_KEY)) PlayerPrefs.SetFloat(MASTER_VOLUME_KEY, 1.0f);
-            if (!PlayerPrefs.HasKey(MUSIC_KEY)) PlayerPrefs.SetFloat(MUSIC_KEY, 1.0f);
-            if (!PlayerPrefs.HasKey(SFX_KEY)) PlayerPrefs.SetFloat(SFX_KEY, 1.0f);
+            if (!PlayerPrefs.HasKey(MASTER_VOLUME_KEY)) PlayerPrefs.SetFloat(MASTER_VOLUME_KEY, DEFAULT_VOLUME);
+            if (!PlayerPrefs.HasKey(MUSIC_KEY)) PlayerPrefs.SetFloat(MUSIC_KEY, DEFAULT_VOLUME);
+            if (!PlayerPrefs.HasKey(SFX_KEY)) PlayerPrefs.SetFloat(SFX_KEY, DEFAULT_VOLUME);
             PlayerPrefs.Save();
         }
 
-        public static void LoadLevelEntitiesData()
+        public static void LoadLevelEntitiesData(int loadIndex = 0)
         {
-            CreateKeyIfOneDoesNotExist();
+            CreateKeyIfOneDoesNotExist(loadIndex);
 
-            string raw_data = PlayerPrefs.GetString(LEVEL_DATA_KEY);
+            string raw_data = PlayerPrefs.GetString(LEVEL_DATA_KEY + loadIndex);
             if (string.IsNullOrWhiteSpace(raw_data))
             {
                 EDebug.LogError("No data exist to load");
@@ -93,7 +108,7 @@ namespace SaveSystem
 
         public static void LoadLevel()
         {
-            CreateKeyIfOneDoesNotExist();
+            CreateKeyIfOneDoesNotExist(CurrentSaveFileIndex);
             LoadGameScene();
         }
 
@@ -119,22 +134,22 @@ namespace SaveSystem
 
         public static float GetVolume(SoundType soundType)
         {
-            CreateKeyIfOneDoesNotExist();
+            CreateKeyIfOneDoesNotExist(CurrentSaveFileIndex);
             float result = -1f;
 
             switch (soundType)
             {
                 case SoundType.Master:
-                    result = PlayerPrefs.GetFloat(MASTER_VOLUME_KEY, 1);
+                    result = PlayerPrefs.GetFloat(MASTER_VOLUME_KEY, DEFAULT_VOLUME);
                     break;
 
                 case SoundType.Music:
 
-                    result = PlayerPrefs.GetFloat(MUSIC_KEY, 1);
+                    result = PlayerPrefs.GetFloat(MUSIC_KEY, DEFAULT_VOLUME);
                     break;
 
                 case SoundType.SFX:
-                    result = PlayerPrefs.GetFloat(SFX_KEY, 1);
+                    result = PlayerPrefs.GetFloat(SFX_KEY, DEFAULT_VOLUME);
                     break;
             }
             return result;
@@ -175,8 +190,20 @@ namespace SaveSystem
 
         private static void SaveFloatValue(string key, float _newValue)
         {
-            CreateKeyIfOneDoesNotExist();
+            CreateKeyIfOneDoesNotExist(CurrentSaveFileIndex);
             PlayerPrefs.SetFloat(key, _newValue);
+        }
+
+        public static void SaveLanguageSelection(Language selectedLanguage)
+        {
+            CreateKeyIfOneDoesNotExist(CurrentSaveFileIndex);
+            PlayerPrefs.SetInt(LANGUAGE_SELECTED_KEY, (int)selectedLanguage);
+            PlayerPrefs.Save();
+        }
+
+        public static void SaveWindowResolution(WindowResolution windowResolution)
+        {
+            PlayerPrefs.SetInt(WINDOW_RESOLUTION_KEY, (int)windowResolution);
         }
 
         #endregion
@@ -210,50 +237,83 @@ namespace SaveSystem
         }
 
 
-        private static void LoadGameScene()
+        private static void LoadGameScene(int loadIndex = 0)
         {
-            if (SceneManager.GetActiveScene().buildIndex != PlayerPrefs.GetInt(LEVEL_INDEX_KEY))
+            if (SceneManager.GetActiveScene().buildIndex != PlayerPrefs.GetInt(LEVEL_INDEX_KEY + loadIndex))
             {
-                SceneManager.LoadScene(PlayerPrefs.GetInt(LEVEL_INDEX_KEY));
+                SceneManager.LoadScene(PlayerPrefs.GetInt(LEVEL_INDEX_KEY + loadIndex));
             }
         }
 
+
         #endregion
 
-        public static void CreateKeyIfOneDoesNotExist()
+        public static Language GetLanguage()
         {
-            if (!PlayerPrefs.HasKey(LEVEL_DATA_KEY))
+            CreateKeyIfOneDoesNotExist(CurrentSaveFileIndex);
+            Language result = (Language)PlayerPrefs.GetInt(LANGUAGE_SELECTED_KEY, (int)Language.En);
+
+            return result;
+        }
+
+        public static WindowResolution GetWindowResolution()
+        {
+            int result = PlayerPrefs.GetInt(WINDOW_RESOLUTION_KEY, (int)WindowResolution.R640X480);
+
+            return (WindowResolution)result;
+        }
+
+        public static void CreateKeyIfOneDoesNotExist(int levelIndex)
+        {
+            if (!PlayerPrefs.HasKey(LEVEL_DATA_KEY + levelIndex))
             {
-                PlayerPrefs.SetString(LEVEL_DATA_KEY, "");
+                PlayerPrefs.SetString(LEVEL_DATA_KEY + levelIndex, "");
             }
 
-            if (!PlayerPrefs.HasKey(LEVEL_INDEX_KEY))
+            if (!PlayerPrefs.HasKey(LEVEL_INDEX_KEY + levelIndex))
             {
-                PlayerPrefs.SetInt(LEVEL_INDEX_KEY, SceneManager.GetActiveScene().buildIndex);
+                PlayerPrefs.SetInt(LEVEL_INDEX_KEY + levelIndex, SceneManager.GetActiveScene().buildIndex);
             }
 
             if (!PlayerPrefs.HasKey(SFX_KEY))
             {
-                PlayerPrefs.SetFloat(SFX_KEY, 0.5f);
+                PlayerPrefs.SetFloat(SFX_KEY, DEFAULT_VOLUME);
             }
 
             if (!PlayerPrefs.HasKey(MUSIC_KEY))
             {
-                PlayerPrefs.SetFloat(MUSIC_KEY, 0.5f);
+                PlayerPrefs.SetFloat(MUSIC_KEY, DEFAULT_VOLUME);
             }
 
             if (!PlayerPrefs.HasKey(MASTER_VOLUME_KEY))
             {
-                PlayerPrefs.SetFloat(MASTER_VOLUME_KEY, 0.5f);
+                PlayerPrefs.SetFloat(MASTER_VOLUME_KEY, DEFAULT_VOLUME);
             }
+
+            if (!PlayerPrefs.HasKey(LANGUAGE_SELECTED_KEY))
+            {
+                PlayerPrefs.SetInt(LANGUAGE_SELECTED_KEY, (int)Language.En);
+            }
+
         }
 
-        public static bool DoesSaveFileExist()
+        public static bool DoesSaveFileExist(int index = 0)
         {
-            return PlayerPrefs.HasKey(LEVEL_DATA_KEY);
+            return PlayerPrefs.HasKey(LEVEL_DATA_KEY + index);
         }
 
+        public static void DeleteData(int index = 0)
+        {
+            PlayerPrefs.DeleteKey(LEVEL_DATA_KEY + index);
+            PlayerPrefs.Save();
+            var current_lang = LanguageManager.Instance.currentLanguage;
+            LanguageManager.Instance.setLanguage(current_lang);
+        }
 
+        public static void setSaveFileIndex(int index)
+        {
+            CurrentSaveFileIndex = index;
+        }
 
     }
 

@@ -29,6 +29,22 @@ namespace UI
         [SerializeField] private float distanceFromElement = -73.0f;
         private bool hasInitMenusIDs = false;
 
+        [Header("Input Related")]
+        [SerializeField] MenuInputType currentInput;
+        [SerializeField] MenuInputType blockedInput;
+        [SerializeField] float verticalInputDelay = 0.15f;
+        [SerializeField] float horizontalInputDelay = 0.15f;
+        [SerializeField] float acceptedInputDelay = 0.15f;
+
+        Coroutine _verticalInputCoroutine = null;
+        Coroutine _horizontalInputCoroutine = null;
+        Coroutine _acceptedInputCoroutine = null;
+
+        [Header("Blocky Sliders")]
+        [SerializeField] BlockySlider SFX;
+        [SerializeField] BlockySlider Music;
+        [SerializeField] BlockySlider Master;
+
         void InitMenusIDs()
         {
             const int FIRST_ID = 2_000_000;
@@ -39,15 +55,15 @@ namespace UI
                 {
                     menus[i].menuID = FIRST_ID - i;
                 }
-
             }
-
         }
 
         void Start()
         {
             selectedElement = 0;
             Debug.Assert(selector != null, "Necesitamos una imagen para apuntar a los elementos", this);
+            SaveSystem.SaveSystem.LoadVolumePrefs();
+            LoadVolumeValues();
         }
 
         void Update()
@@ -66,32 +82,35 @@ namespace UI
 
 
                 AjustSelector();
+                LoadVolumeValues();
             }
 
 
-            if (inputReciver.Movement.y > menuDeadZone)
-            {
-                selectDownUntilFoundActiveElement();
-            }
+            ProcessInput();
 
-            else if (inputReciver.Movement.y < -menuDeadZone)
+            if (MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.VERTICAL_UP, currentInput))
             {
                 selectUpUntilFoundActiveElement();
             }
 
-            if (inputReciver.Jump)
+            else if (MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.VERTICAL_DOWN, currentInput))
+            {
+                selectDownUntilFoundActiveElement();
+            }
+
+            if (MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.ACCEPTED, currentInput))
             {
                 ExecuteFunctionForUIElement();
             }
 
-            if (selectionType == ElementSelectionType.TWO_SIDED)
+            if (selectionType == ElementSelectionType.BLOCKY_SLIDER)
             {
                 twoSidedLogic();
             }
 
-
-
             AjustSelector();
+
+            currentInput = MenuInputType.NONE;
 
         }
 
@@ -111,6 +130,13 @@ namespace UI
                 hasInitMenusIDs = true;
             }
 
+            if (SFX != null)
+            { SFX.OnBlockChangeAction += OnSfxChange; }
+            if (Music != null)
+            { Music.OnBlockChangeAction += OnMusicChange; }
+            if (Master != null)
+            { Master.OnBlockChangeAction += OnMasterChange; }
+
             GameManager.Instance.Subscribe(OnStateChange);
 
             GameManager.Instance.SetGameState(GameStates.Paused);
@@ -128,6 +154,14 @@ namespace UI
                 Input.Actions.Instance.OnWeaponUpToggledEvent -= selectUp;
                 Input.Actions.Instance.OnWeaponDownToggledEvent -= selectDown;*/
             }
+
+
+            if (SFX != null)
+            { SFX.OnBlockChangeAction -= OnSfxChange; }
+            if (Music != null)
+            { Music.OnBlockChangeAction -= OnMusicChange; }
+            if (Master != null)
+            { Master.OnBlockChangeAction -= OnMasterChange; }
         }
 
         /// <summary>
@@ -283,6 +317,8 @@ namespace UI
             currentMenuID = previousMenuID;
         }
 
+
+
         private void ActivateMenusOfSameGameState()
         {
             previousMenuID = currentMenuID;
@@ -320,7 +356,7 @@ namespace UI
 
         private void twoSidedLogic()
         {
-            if (inputReciver.Movement.x > 0.1f)
+            if (MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.HORIZONTAL_RIGHT, currentInput))
             {
                 BlockySlider slider = currentMenu.elements[selectedElement].blockySlider;
                 if (slider == null)
@@ -330,7 +366,7 @@ namespace UI
                 }
                 slider.increaseBlocks();
             }
-            else if (inputReciver.Movement.x < -0.1f)
+            else if (MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.HORIZONTAL_LEFT, currentInput))
             {
                 BlockySlider slider = currentMenu.elements[selectedElement].blockySlider;
                 if (slider == null)
@@ -342,6 +378,110 @@ namespace UI
             }
 
         }
+
+        private void ProcessInput()
+        {
+            bool isVerticalBlocked = MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.ANY_VERTICAL, blockedInput);
+            bool isHorizontalBlocked = MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.ANY_HORIZONTAL, blockedInput);
+            bool isAcceptedBlocked = MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.ACCEPTED, blockedInput);
+
+            if (!isVerticalBlocked && inputReciver.Movement.y > this.menuDeadZone)
+            {
+                currentInput |= MenuInputType.VERTICAL_DOWN;
+                _verticalInputCoroutine = StartCoroutine(blockVerticalInput());
+            }
+            else if (!isVerticalBlocked && inputReciver.Movement.y < -this.menuDeadZone)
+            {
+                currentInput |= MenuInputType.VERTICAL_UP;
+                _verticalInputCoroutine = StartCoroutine(blockVerticalInput());
+            }
+
+            if (!isHorizontalBlocked && inputReciver.Movement.x > this.menuDeadZone)
+            {
+                currentInput |= MenuInputType.HORIZONTAL_RIGHT;
+                _horizontalInputCoroutine = StartCoroutine(blockHorizontalInput());
+            }
+            else if (!isHorizontalBlocked && inputReciver.Movement.x < -this.menuDeadZone)
+            {
+                currentInput |= MenuInputType.HORIZONTAL_LEFT;
+                _horizontalInputCoroutine = StartCoroutine(blockHorizontalInput());
+            }
+
+            if (!isAcceptedBlocked && inputReciver.Jump)
+            {
+                currentInput |= MenuInputType.ACCEPTED;
+                _acceptedInputCoroutine = StartCoroutine(blockAcceptedInput());
+
+            }
+
+        }
+
+        #region Coroutines
+
+        IEnumerator blockVerticalInput()
+        {
+            MenuInputTypeUtils.setBit(MenuInputType.ANY_VERTICAL, ref blockedInput);
+            yield return new WaitForSeconds(verticalInputDelay);
+            MenuInputTypeUtils.unsetBit(MenuInputType.ANY_VERTICAL, ref blockedInput);
+        }
+
+        IEnumerator blockHorizontalInput()
+        {
+            MenuInputTypeUtils.setBit(MenuInputType.ANY_HORIZONTAL, ref blockedInput);
+            yield return new WaitForSeconds(horizontalInputDelay);
+            MenuInputTypeUtils.unsetBit(MenuInputType.ANY_HORIZONTAL, ref blockedInput);
+        }
+
+        IEnumerator blockAcceptedInput()
+        {
+            MenuInputTypeUtils.setBit(MenuInputType.ACCEPTED, ref blockedInput);
+            yield return new WaitForSeconds(acceptedInputDelay);
+            MenuInputTypeUtils.unsetBit(MenuInputType.ACCEPTED, ref blockedInput);
+        }
+
+        IEnumerator LoadVolumeLevelOnNextFrame()
+        {
+            yield return new WaitForEndOfFrame();
+
+            if (SFX != null)
+            { SFX.setPercent(SaveSystem.SaveSystem.GetVolume(SoundType.SFX)); }
+            if (Music != null)
+            { Music.setPercent(SaveSystem.SaveSystem.GetVolume(SoundType.Music)); }
+            if (Master != null)
+            { Master.setPercent(SaveSystem.SaveSystem.GetVolume(SoundType.Master)); }
+
+        }
+
+        #endregion
+
+        #region OnVolumeChangeEvents
+
+        private void OnSfxChange(float _percent)
+        {
+            SaveSystem.SaveSystem.SaveVolume(SoundType.SFX, _percent);
+        }
+
+        private void OnMusicChange(float _percent)
+        {
+            SaveSystem.SaveSystem.SaveVolume(SoundType.Music, _percent);
+        }
+
+        private void OnMasterChange(float _percent)
+        {
+            SaveSystem.SaveSystem.SaveVolume(SoundType.Master, _percent);
+        }
+
+        #endregion
+
+
+        /// <summary>
+        /// Carga los valores para el volumen
+        /// </summary>
+        private void LoadVolumeValues()
+        {
+            StartCoroutine(LoadVolumeLevelOnNextFrame());
+        }
+
 
     }
 
@@ -359,9 +499,15 @@ namespace UI
         public bool turnOff;
 
         /// <summary>
-        ///  OPCIONAL : es para los de tipo ElementSelectionType.TWO_SIDED
+        ///  OPCIONAL : es para los de tipo ElementSelectionType.BLOCKY_SLIDER
         /// </summary>
         public BlockySlider blockySlider;
+
+
+        /// <summary>
+        ///  OPCIONAL : es para los de tipo ElementSelectionType.TEXT_SWITCHER 
+        /// </summary>
+        public TextSwitcher textSwitcher;
 
         public ElementSelectionType elementSelectionType;
     }
@@ -391,7 +537,8 @@ namespace UI
     public enum ElementSelectionType
     {
         REGULAR = 0, //  preciona la barrar de enter o espacio el button 'A' para hacer algo
-        TWO_SIDED = 1, // precionar le para moverte de lada a lada en otras palabras 'D' y 'A'
+        BLOCKY_SLIDER = 1, // precionar le para moverte de lada a lada en otras palabras 'D' y 'A'
+        TEXT_SWITCHER = 2,
     }
 
 }

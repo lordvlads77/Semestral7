@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Menu SubMenu Opcions Inicio
   m_EditorClassIdentifier: 
   languageContainers:
-  - text: Start
+  - text: Confirm
     language: 0
-  - text: Inicio
+  - text: Confirmar
     language: 1
