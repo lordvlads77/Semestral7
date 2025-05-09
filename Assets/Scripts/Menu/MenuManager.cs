@@ -147,7 +147,7 @@ public sealed class MenuManager : MonoBehaviour
                     resolutionSwitcher.setIndex(0);
                     for (int i = 0; resolutionSwitcher.indexCount > i; ++i)
                     {
-                        if(resolutionString.ToLower() == resolutionSwitcher.getCurrentString.ToLower())
+                        if (resolutionString.ToLower() == resolutionSwitcher.getCurrentString.ToLower())
                         {
                             break;
                         }
@@ -586,10 +586,21 @@ public sealed class MenuManager : MonoBehaviour
 
             if (currentSelection > -1 && currentSelection < 4)
             {
-                int save_file_index = currentArrayInUse[currentSelection].GetComponent<SaveFileSelectable>().saveFileIndex;
-                EDebug.Log($"save file index = {save_file_index}");
-                SaveSystem.SaveSystem.CreateKeyIfOneDoesNotExist(save_file_index);
-                desiredState = CURRENT_MENU_STATE.MAIN_MENU;
+                SaveFileSelectable saveFile = currentArrayInUse[currentSelection].GetComponent<SaveFileSelectable>();
+                int save_file_index = saveFile.saveFileIndex;
+
+                if (!saveFile.isBeingUsed)
+                {
+                    const string TutorialLevelPath = "Scenes/TutorialLevel";
+                    EDebug.Log(StringUtils.AddColorToString($"Loading|{TutorialLevelPath}|",Color.cyan),this);
+                    LoadingManager.Instance.LoadSceneByName(TutorialLevelPath);
+                }
+                else
+                {
+                    EDebug.Log($"save file index = {save_file_index}");
+                    SaveSystem.SaveSystem.CreateKeyIfOneDoesNotExist(save_file_index);
+                    desiredState = CURRENT_MENU_STATE.MAIN_MENU;
+                }
             }
 
             else if (currentSelection == 4)
