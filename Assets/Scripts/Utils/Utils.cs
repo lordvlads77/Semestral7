@@ -524,7 +524,6 @@ namespace Utils
             result.Add(WindowResolution.R2560X1440, "2560X1440");
             result.Add(WindowResolution.R2560X1600, "2560X1600");
             result.Add(WindowResolution.R3440X1440, "3440X1440");
-            result.Add(WindowResolution.R3440X1440, "3440X1440");
             result.Add(WindowResolution.R3840X2160, "3840X2160");
             result.Add(WindowResolution.R5120X2880, "5120X2880");
             result.Add(WindowResolution.R7680X4320, "7680X4320");
@@ -548,7 +547,6 @@ namespace Utils
             result.Add("1920X1200", WindowResolution.R1920X1200);
             result.Add("2560X1440", WindowResolution.R2560X1440);
             result.Add("2560X1600", WindowResolution.R2560X1600);
-            result.Add("3440X1440", WindowResolution.R3440X1440);
             result.Add("3440X1440", WindowResolution.R3440X1440);
             result.Add("3840X2160", WindowResolution.R3840X2160);
             result.Add("5120X2880", WindowResolution.R5120X2880);
