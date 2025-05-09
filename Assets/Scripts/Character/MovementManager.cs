@@ -271,9 +271,8 @@ private void GetDirectionAndMove()
         private IEnumerator PerformAttack()
         {
             Animator.SetTrigger(AnimAttack);
-            int num = 0;
+            int num = (int) Weapon;
             Collider weaponCollider = weapon[num].GetComponent<Collider>();
-            //yield return new WaitForSeconds(0.25f);
             weapon[num].inUse = true;
             if (weaponCollider != null) weaponCollider.enabled = true;
             while (Animator.GetCurrentAnimatorStateInfo(0).IsName("UnarmedCombat_Patadon") || 
@@ -282,7 +281,7 @@ private void GetDirectionAndMove()
             { yield return null; }
             weapon[num].inUse = false;
             if (weaponCollider != null) weaponCollider.enabled = false;
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSeconds(0.25f);
             _attackRoutine = null;
         }
         public void IncreaseMaxHealth(float amount)
