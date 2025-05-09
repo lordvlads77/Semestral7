@@ -51,6 +51,7 @@ namespace UI
 
         private void OnEnable()
         {
+            StartCoroutine(MenuInputTypeUtils.setWaitThenUnsetBit(MenuInputType.ACCEPTED, inputDelay, new Utils.Ref<MenuInputType>(ref blockedInput)));
         }
 
         private void OnDisable()
