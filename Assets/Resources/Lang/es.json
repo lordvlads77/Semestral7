@@ -7,5 +7,7 @@
   "npc_dialog.blacksmith_npc.first_line": "Que buen día el día de hoy.",
   "IntroductionMsg": "Hola caballero, estas aqui para entrenar tus habilidades, primero veamos como te mueves con esa armadura, usa la palanca izquierda o wasd para moverte",
   "CameraTuto": "Para ver a tu alrededor usa la palanca derecha o mueve to mouse",
-  "Combate": "Para pasar a la siguente area debes de usar tus arma para golpear a estos muñecos, usa "
+  "Combate": "Para pasar a la siguente area debes de usar tus arma para golpear a estos muñecos, usa las flechas para desenvainar y usa el boton derecho o el click izquierdo para atacar",
+  "CombatIns": "Para fijar a un objetivo usa el gatillo izquiero o el click derecho, para correr usa el gatillo superior derecho o el shift y para esquivar usa el boton izquierdo o la tecla x",
+  "continueSignal": "Ir al pueblo"
 }

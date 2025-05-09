@@ -21,7 +21,7 @@ namespace Character
 
         public Transform lookAt;
         private Transform _trueLookAt;
-        [SerializeField] private float lerpValue = 1.0f;
+        [SerializeField] private float lerpValue = 10.0f;
         
         public Transform lockTarget;
         
@@ -34,7 +34,7 @@ namespace Character
         private double _alpha = -Math.PI / 2;
         private float currentAlpha;
         private float currentTheta;
-        private float smoothSpeed = 1f;
+        private float smoothSpeed = 25f;
         
         [SerializeField]
         private float maxLockDistance = 10f;
