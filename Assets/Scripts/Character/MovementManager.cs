@@ -274,8 +274,7 @@ private void GetDirectionAndMove()
             Animator.SetTrigger(AnimAttack);
             int num = 0;
             Collider weaponCollider = weapon[num].GetComponent<Collider>();
-            if (weaponCollider != null) weaponCollider.enabled = false;
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds(0.15f);
             weapon[num].inUse = true;
             if (weaponCollider != null) weaponCollider.enabled = true;
             while (Animator.GetCurrentAnimatorStateInfo(0).IsName("UnarmedCombat_Patadon") || 
