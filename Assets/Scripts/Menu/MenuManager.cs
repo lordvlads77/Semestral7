@@ -28,7 +28,7 @@ public sealed class MenuManager : MonoBehaviour
     [SerializeField] private BlockySlider Master;
 
     [Header("TextSwitcher")]
-    [SerializeField] private UI.TextSwitcher textSwitcher;
+    [SerializeField] private UI.TextSwitcher languageSwitcher;
     [SerializeField] private UI.TextSwitcher resolutionSwitcher;
 
     [Header("Confirmation Menu")]
@@ -80,7 +80,7 @@ public sealed class MenuManager : MonoBehaviour
         //selector.gameObject.SetActive(false);
         currentSelection = 0;
         ChangeSelectorPosition();
-        EDebug.Assert(textSwitcher != null, $"El script necesita un {nameof(TextSwitcher)}", this);
+        EDebug.Assert(languageSwitcher != null, $"El script necesita un {nameof(TextSwitcher)}", this);
         EDebug.Assert(conformationMenu != null, $"El script necesita un {nameof(UI.ConformationMenu)}", this);
     }
 
@@ -126,6 +126,37 @@ public sealed class MenuManager : MonoBehaviour
                 menuOptions.SetActive(true);
                 menuInicio.SetActive(false);
                 SaveFileOptions.SetActive(false);
+                Language lang = LanguageManager.Instance.currentLanguage;
+
+                switch (lang)
+                {
+                    case Language.En:
+                        languageSwitcher.setIndex(0);
+                        break;
+
+                    case Language.Es:
+                        languageSwitcher.setIndex(1);
+                        break;
+                }
+
+                WindowResolution winRes = SaveSystem.SaveSystem.GetWindowResolution();
+                string resolutionString = "640x480";
+
+                if (Utils.WindowEnumUtils.winToStr.TryGetValue(winRes, out resolutionString))
+                {
+                    resolutionSwitcher.setIndex(0);
+                    for (int i = 0; resolutionSwitcher.indexCount > i; ++i)
+                    {
+                        if(resolutionString.ToLower() == resolutionSwitcher.getCurrentString.ToLower())
+                        {
+                            break;
+                        }
+
+                        resolutionSwitcher.IncreaseIndex();
+                        resolutionSwitcher.ManualUpdate();
+                    }
+
+                }
 
                 // si no existe un elemento zero buscar hasta encontar uno 
                 ChangeCurrentSelectionUntilObjectIsFound();
@@ -173,7 +204,7 @@ public sealed class MenuManager : MonoBehaviour
 
     private void OnEnable()
     {
-        textSwitcher.textChanged += this.OnLanguageChange;
+        languageSwitcher.textChanged += this.OnLanguageChange;
         Actions.Instance.OnWeaponDownToggledEvent += OnWeaponDown;
         Actions.Instance.OnWeaponUpToggledEvent += OnWeaponUp;
         Actions.Instance.OnWeaponRightToggledEvent += OnWeaponRight;
@@ -211,7 +242,7 @@ public sealed class MenuManager : MonoBehaviour
 
         SFX.OnBlockChangeAction -= SFXVolumeChange;
 
-        textSwitcher.textChanged -= this.OnLanguageChange;
+        languageSwitcher.textChanged -= this.OnLanguageChange;
     }
 
     #endregion
@@ -506,13 +537,13 @@ public sealed class MenuManager : MonoBehaviour
 
         if (currentSelection == 3 && rightKeyPressed)
         {
-            textSwitcher.IncreaseIndex();
+            languageSwitcher.IncreaseIndex();
             _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
         }
 
         if (currentSelection == 3 && leftKeyPressed)
         {
-            textSwitcher.DecreaseIndex();
+            languageSwitcher.DecreaseIndex();
             _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
         }
 
@@ -533,10 +564,13 @@ public sealed class MenuManager : MonoBehaviour
 
         if (cosa.Jump && !isAcceptedInputBlocked)
         {
+
             _acceptedInputBlock = StartCoroutine(BlockAcceptedInput());
             if (currentSelection == 5)
             {
-                desiredState = CURRENT_MENU_STATE.MAIN_MENU;
+                conformationMenu.gameObject.SetActive(true);
+                conformationMenu.acceptedInputEvent += SaveSettingsOnTrue;
+                //desiredState = CURRENT_MENU_STATE.MAIN_MENU;
             }
         }
 
@@ -572,6 +606,9 @@ public sealed class MenuManager : MonoBehaviour
 
     #endregion
 
+
+    #region ConfirmationMenuEvents
+
     private void DeleteAllDataOnTrue(bool shouldDeleteEverthing)
     {
         EDebug.Log(shouldDeleteEverthing ? "deleted" : "not deleted");
@@ -585,10 +622,22 @@ public sealed class MenuManager : MonoBehaviour
 
     private void SaveSettingsOnTrue(bool shouldSaveSetting)
     {
-        SaveSystem.SaveSystem.SaveLanguageSelection(LanguageManager.Instance.currentLanguage);
-        WindowResolution newRes = (WindowResolution)resolutionSwitcher.currentIndex;
+        desiredState = CURRENT_MENU_STATE.MAIN_MENU;
+        if (!shouldSaveSetting) { return; }
 
+        SaveSystem.SaveSystem.SaveLanguageSelection(LanguageManager.Instance.currentLanguage);
+        WindowResolution winResult = WindowResolution.R640X480;
+        WindowResolution temp = WindowResolution.R640X480;
+        if (WindowEnumUtils.strToWin.TryGetValue(resolutionSwitcher.getCurrentString, out temp))
+        {
+            winResult = temp;
+        }
+
+        SaveSystem.SaveSystem.SaveWindowResolution(winResult);
+        GameManager.Instance.ChangeResolution(winResult);
     }
+
+    #endregion
 
     private void OnLanguageChange(string language)
     {
