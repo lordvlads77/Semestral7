@@ -68,6 +68,12 @@ namespace UI
 
         void Update()
         {
+            if (currentGameState == GameStates.Playing)
+            {
+                this.selectedElement = 0;
+                return;
+            }
+
             ElementSelectionType selectionType = currentMenu.elements[selectedElement].elementSelectionType;
 
 
