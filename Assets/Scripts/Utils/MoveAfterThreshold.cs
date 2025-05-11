@@ -17,12 +17,12 @@ namespace Utils
 
             Vector3 PlayerPos = Player.transform.position;
             Vector3 ThresPos = Threhold.transform.position;
-            if (PlayerPos.x > ThresPos.x)
+            if (PlayerPos.x < ThresPos.x)
             {
                 Player.transform.position = newLocation.position;
                 hasBeenMove = true;
             }
-            if (PlayerPos.z > ThresPos.z)
+            if (PlayerPos.z < ThresPos.z)
             {
                 Player.transform.position = newLocation.position;
                 hasBeenMove = true;

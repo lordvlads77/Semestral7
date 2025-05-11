@@ -273,6 +273,10 @@ private void GetDirectionAndMove()
         {
             Animator.SetTrigger(AnimAttack);
             int num = (int) Weapon;
+            if (num < 0 || num >= weapon.Length) {
+                EDebug.LogError($"Invalid Weapon Index: {num}. Make sure it's within the limits of the array.");
+                yield break;
+            }
             Collider weaponCollider = weapon[num].GetComponent<Collider>();
             weapon[num].inUse = true;
             if (weaponCollider != null) weaponCollider.enabled = true;

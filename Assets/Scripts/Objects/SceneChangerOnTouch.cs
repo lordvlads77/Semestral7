@@ -1,18 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SceneChangerOnTouch : MonoBehaviour
+namespace Objects
 {
-    [SerializeField] private string sceneToLoad;
-
-    private void OnTriggerEnter(Collider other)
+    public class SceneChangerOnTouch : MonoBehaviour
     {
-        // Cambia "Player" por la tag del objeto que debe activar el cambio de escena
-        if (other.CompareTag("Player"))
+        [SerializeField] private string sceneToLoad;
+        
+        private void OnTriggerEnter(Collider other)
         {
-            SceneManager.LoadScene(sceneToLoad);
+            if (other.CompareTag("Player"))
+            {
+                SceneManager.LoadScene(sceneToLoad);
+            }
         }
     }
 }
