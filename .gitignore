@@ -72,3 +72,8 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# Custom
+
+# The Project was opened in android studio once and now I will remove all of it's files frrom the project
+/[Aa]ssets/[Ss]cripts/.[Ii]dea/*
