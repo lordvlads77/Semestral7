@@ -295,6 +295,16 @@ namespace SaveSystem
                 PlayerPrefs.SetInt(LANGUAGE_SELECTED_KEY, (int)Language.En);
             }
 
+            if (!PlayerPrefs.HasKey(WINDOW_RESOLUTION_KEY))
+            {
+                PlayerPrefs.SetInt(WINDOW_RESOLUTION_KEY, (int)WindowResolution.R800X600);
+            }
+
+            if (!PlayerPrefs.HasKey(WINDOW_MODE_KEY))
+            {
+                PlayerPrefs.SetInt(WINDOW_MODE_KEY, (int)WindowMode.Fullscreen);
+            }
+
         }
 
         public static bool DoesSaveFileExist(int index = 0)
