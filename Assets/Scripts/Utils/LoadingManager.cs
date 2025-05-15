@@ -7,15 +7,6 @@ namespace Utils
 {
     public sealed class LoadingManager : RegulatorSingleton<LoadingManager>
     {
-        public enum LOAD_STAGES
-        {
-            NONE,
-            LoadLoadingScreen,
-            UnloadCurrentScene,
-            LoadNextScene,
-            UnloadLoadingScreen,
-            Finished,
-        }
 
         public int currentSceneIndex { get; private set; } = -1337;
         private bool loadByIndex = false;
@@ -24,7 +15,6 @@ namespace Utils
         public int sceneIndexToLoad = -1;
         public float sceneProgress = 0.0f;
         public float fadeOutTime = 0.1f;
-        public LOAD_STAGES loadStage { get; private set; } = LOAD_STAGES.NONE;
 
         private const string loadingScreenScene = "Scenes/Yhaliff/Test_Loading_Scene";
 
@@ -49,8 +39,6 @@ namespace Utils
             fadeOutTime = _fadeOutTime;
             Prepare();
             loadLevel();
-
-            //    ExecuteLoadingStage();
         }
 
         public void LoadSceneByIndex(int scene_index, float _fadeOutTime = 1.0f)
@@ -60,14 +48,16 @@ namespace Utils
             fadeOutTime = _fadeOutTime;
             Prepare();
             loadLevel();
-            //            ExecuteLoadingStage();
         }
 
         private async void loadLevel()
         {
             if (instantiatedCanvas != null)
             {
-                StopCoroutine(fadeOutCoroutine);
+                if (fadeOutCoroutine != null)
+                {
+                    StopCoroutine(fadeOutCoroutine);
+                }
                 Destroy(instantiatedCanvas.gameObject);
                 instantiatedCanvas = null;
             }
@@ -111,7 +101,7 @@ namespace Utils
             yield return null;
         }
 
-        private IEnumerator playFadOutAnimationThenDestroy(float time)
+        private IEnumerator playFadeOutAnimationThenDestroy(float time)
         {
             instantiatedCanvas.PlayFadeOut(time);
             while (instantiatedCanvas.isPlayingFadeAnimation)
@@ -142,7 +132,7 @@ namespace Utils
         private void OnSceneLoaded(Scene newScene, LoadSceneMode loadSceneMode)
         {
             StopCoroutine(progressCoroutine);
-            fadeOutCoroutine = StartCoroutine(playFadOutAnimationThenDestroy(fadeOutTime));
+            fadeOutCoroutine = StartCoroutine(playFadeOutAnimationThenDestroy(fadeOutTime));
 
             SceneManager.sceneLoaded -= OnSceneLoaded;
             SceneManager.sceneUnloaded -= OnSceneUnloaded;
