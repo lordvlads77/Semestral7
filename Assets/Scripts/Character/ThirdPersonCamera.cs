@@ -1,6 +1,7 @@
 using System;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Utils;
 
 namespace Character
@@ -285,5 +286,28 @@ namespace Character
             }
             #endif
         }
+
+        #region OnSceneLoaded
+
+        private void OnEnable()
+        {
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
+        private void OnDisable()
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded ;
+        }
+
+        // change Camera when the scene changes
+        private void OnSceneLoaded(Scene _scene,LoadSceneMode _loadSceneMode)
+        {
+            cam = Camera.main;
+            if(!_trueLookAt) _trueLookAt = new GameObject("LookAtTransform").transform;
+            if (!lookAt) {
+                lookAt = GameObject.FindWithTag("Player").transform;
+            }
+        }
+        #endregion
     }
 }
