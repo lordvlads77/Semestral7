@@ -8,6 +8,7 @@ using Random = UnityEngine.Random;
 namespace Entity
 {
     [RequireComponent(typeof(NavMeshAgent))]
+    [SelectionBase]
     public class Enemy : LivingEntity
     {
         private readonly int _animDirV = Animator.StringToHash("DirV");
@@ -293,6 +294,11 @@ namespace Entity
                 agent.isStopped = false;
                 Animator.enabled = true;
             }
+        }
+
+        [ContextMenu("Get Hurt")]private void GetHurt()
+        {
+            this.TakeDamage(this.transform.position,Vector3.left,DamageType.Physical,DamageType.Ice,10000.0f,0.0f,1.0f,1.0f,0.5f,1000000.0f);
         }
 
     }
