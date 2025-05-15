@@ -29,7 +29,6 @@ namespace Utils
             }
             else
             {
-
                 EDebug.Log($"<color=red> Tag =|{other.tag}|</color>", this);
             }
 
