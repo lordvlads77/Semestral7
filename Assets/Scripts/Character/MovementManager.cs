@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Controllers;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Utils;
 
 namespace Character
@@ -72,8 +73,14 @@ namespace Character
             IInput.OnCrouchToggledEvent += ToggleCrouch;
             IInput.OnAttackTriggeredEvent += Punch;
             GameManager.Instance.RegisterUnsubscribeAction(UnSubscribe);
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
-        
+
+        private void OnDisable()
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
+
         private void UnSubscribe()
         {
             IInput.OnCrouchToggledEvent -= ToggleCrouch;
@@ -345,6 +352,14 @@ private void GetDirectionAndMove()
             gameState = state;
             anim.enabled = (state == GameStates.Playing);
         }
+
+
+        private void OnSceneLoaded(Scene _scene, LoadSceneMode _loadSceneMode)
+        {
+            // load the camera of the current scene
+            _cam = Camera.main;
+        }
+
         
     }
 }
