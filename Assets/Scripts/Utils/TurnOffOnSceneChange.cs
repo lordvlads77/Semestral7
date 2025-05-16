@@ -1,23 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Utils
 {
-    // TODO : IMPLEMENTAR ESTA CLASE
-    public class TurnOffOnSceneChange : MonoBehaviour
+    public sealed class TurnOffOnSceneChange : MonoBehaviour
     {
-        // Start is called before the first frame update
-        void Start()
-        {
 
+        [SerializeField] GameObject ObjectToTurnOff;
+
+        private void Awake()
+        {
+            if(ObjectToTurnOff == null)
+            {
+                ObjectToTurnOff = GetComponent<GameObject>();
+            }
+
+            EDebug.Assert(ObjectToTurnOff != null, $"Need to attach a game object to the variable |{nameof(ObjectToTurnOff)}| make this script work", this);
+            SceneManager.activeSceneChanged += OnSceneLoaded;
         }
 
-        // Update is called once per frame
-        void Update()
+        private void OnSceneLoaded(Scene _current, Scene _next)
         {
-
+            ObjectToTurnOff.SetActive(false);
         }
+
     }
 
 }
