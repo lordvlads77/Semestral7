@@ -68,7 +68,7 @@ namespace UI
 
         void Update()
         {
-            if (currentGameState == GameStates.Playing)
+            if (currentGameState == GameStates.Playing || currentMenu.elements.Length < 1)
             {
                 this.selectedElement = 0;
                 return;
