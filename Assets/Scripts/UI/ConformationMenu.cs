@@ -35,6 +35,10 @@ namespace UI
         /// True = el usario preciono 'Yes', false = el usario precino 'NO'
         /// </summary>
         public Action<bool> acceptedInputEvent;
+        private void Awake()
+        {
+            blockedInput |= MenuInputType.ACCEPTED;
+        }
 
         void Start()
         {
@@ -51,7 +55,7 @@ namespace UI
 
         private void OnEnable()
         {
-            StartCoroutine(MenuInputTypeUtils.setWaitThenUnsetBit(MenuInputType.ACCEPTED, inputDelay, new Utils.Ref<MenuInputType>(ref blockedInput)));
+            StartCoroutine(blockAcceptedInput());
         }
 
         private void OnDisable()
@@ -76,6 +80,9 @@ namespace UI
         {
             bool should_deny_horizontal_input = MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.ANY_HORIZONTAL, blockedInput);
             bool should_deny_accepted = MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.ACCEPTED, blockedInput);
+            //EDebug.Log($"should_deny_accepted = {should_deny_accepted}");
+            //EDebug.Log($"should_deny_horizontal_input = {should_deny_horizontal_input}");
+
 
             if (!should_deny_horizontal_input)
             {
@@ -95,12 +102,12 @@ namespace UI
 
             if (inputReceiver.Movement.x > 0.1f)
             {
-                StartCoroutine(MenuInputTypeUtils.setWaitThenUnsetBit(MenuInputType.ANY_HORIZONTAL, inputDelay, new Utils.Ref<MenuInputType>(ref blockedInput)));
+                StartCoroutine(blockHorizontalInput());
                 currentInput |= MenuInputType.HORIZONTAL_RIGHT;
             }
             else if (inputReceiver.Movement.x < -0.1f)
             {
-                StartCoroutine(MenuInputTypeUtils.setWaitThenUnsetBit(MenuInputType.ANY_HORIZONTAL, inputDelay, new Utils.Ref<MenuInputType>(ref blockedInput)));
+                StartCoroutine(blockHorizontalInput());
                 currentInput |= MenuInputType.HORIZONTAL_LEFT;
             }
         }
@@ -167,6 +174,13 @@ namespace UI
             blockedInput |= MenuInputType.ANY_HORIZONTAL;
             yield return new WaitForSeconds(inputDelay);
             MenuInputTypeUtils.unsetBit(MenuInputType.ANY_HORIZONTAL, ref blockedInput);
+        }
+
+        IEnumerator blockAcceptedInput()
+        {
+            blockedInput |= MenuInputType.ACCEPTED;
+            yield return new WaitForSeconds(inputDelay);
+            MenuInputTypeUtils.unsetBit(MenuInputType.ACCEPTED, ref blockedInput);
         }
 
         #endregion
