@@ -11071,7 +11071,7 @@ PrefabInstance:
     - target: {fileID: 3914368709694496275, guid: 005805781f381f64a879d82c201d1bd8,
         type: 3}
       propertyPath: stopConditions
-      value: 96
+      value: 224
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -18314,7 +18314,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5380833302022311900}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 31bce0eb406738d4ca3680d26e483f15, type: 3}
   m_Name: 
