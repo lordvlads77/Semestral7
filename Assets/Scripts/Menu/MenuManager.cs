@@ -396,7 +396,7 @@ public sealed class MenuManager : MonoBehaviour
     {
         EDebug.Log("<color=orange>Tutorial</color>");
 
-        LoadingManager.Instance.LoadSceneByName("Scenes/TutorialLevel");
+        LoadingManager.Instance.LoadSceneByName("Scenes/TutorialLevel Nuevo");
     }
 
     public void Cargar()
