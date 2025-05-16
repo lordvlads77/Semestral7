@@ -131,8 +131,13 @@ namespace Utils
 
         private void OnSceneLoaded(Scene newScene, LoadSceneMode loadSceneMode)
         {
-            StopCoroutine(progressCoroutine);
-            fadeOutCoroutine = StartCoroutine(playFadeOutAnimationThenDestroy(fadeOutTime));
+            //StopCoroutine(progressCoroutine);
+            StopAllCoroutines();
+            if (instantiatedCanvas != null)
+            {
+                fadeOutCoroutine = StartCoroutine(playFadeOutAnimationThenDestroy(fadeOutTime));
+            }
+
 
             SceneManager.sceneLoaded -= OnSceneLoaded;
             SceneManager.sceneUnloaded -= OnSceneUnloaded;
