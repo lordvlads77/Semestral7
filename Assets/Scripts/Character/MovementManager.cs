@@ -33,7 +33,8 @@ namespace Character
         [SerializeField] private float jumpHeight = 2f;
         [HideInInspector] public Vector3 dir;
         [HideInInspector] public float horizontalInput, verticalInput;
-        [SerializeField] public CharacterController controller;
+
+        [SerializeField] private CharacterController controller;
         private Vector3 _spherePos;
         private Vector3 _velocity;
 
@@ -326,7 +327,6 @@ namespace Character
                 yield return new WaitForEndOfFrame();
             }
             while (!isInAttackingState);
-
 
             controller.enabled = false;
             EDebug.Log("MoveController Disabled");

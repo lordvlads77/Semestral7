@@ -6710,7 +6710,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1239992349}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6651ad92ace9ede46a2e2f1f6314acaf, type: 3}
+  m_Script: {fileID: 11500000, guid: b912d6452db89c64d85bd94ac562f3df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   SceneName: Scenes/Nuevo Menu
@@ -11238,18 +11238,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2041007321}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2041007323 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3914368709694496275, guid: 005805781f381f64a879d82c201d1bd8,
-    type: 3}
-  m_PrefabInstance: {fileID: 2041007321}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 100573477}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e182f0b617482b64288ec48fbfb72429, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &2041007324
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11262,7 +11250,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54b6d53b5d810f145b6f2cb39e5da3ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playPersistent: {fileID: 2041007323}
 --- !u!1001 &2044899539
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14516,7 +14503,7 @@ Transform:
   m_GameObject: {fileID: 5380833302022311900}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.9999878, z: -0, w: -0.004950211}
-  m_LocalPosition: {x: -2.3, y: 1.85, z: 8.93}
+  m_LocalPosition: {x: -2.3, y: 0.81, z: 8.93}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -18401,14 +18388,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5380833302022311900}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 31bce0eb406738d4ca3680d26e483f15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthImage: {fileID: 5028796686468968}
-  healthBackgroundImg: {fileID: 5351221107238745359}
-  player: {fileID: 2044310253568215568}
+  viada: {fileID: 5028796686468968}
+  jugador: {fileID: 2044310253568215568}
 --- !u!136 &9202856032771810629
 CapsuleCollider:
   m_ObjectHideFlags: 0
