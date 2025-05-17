@@ -33,7 +33,7 @@ namespace Character
         [HideInInspector] public Vector3 dir;
         [HideInInspector] public float horizontalInput, verticalInput;
     
-        [SerializeField] private CharacterController controller;
+        [SerializeField] public CharacterController controller;
         private Vector3 _spherePos;
         private Vector3 _velocity;
     
@@ -281,6 +281,8 @@ private void GetDirectionAndMove()
             weapon[num].inUse = true;
             if (weaponCollider != null) weaponCollider.enabled = true;
             bool damageApplied = false;
+            controller.enabled = false;
+            EDebug.Log("MoveController Disabled");
             while (Animator.GetCurrentAnimatorStateInfo(0).IsName("UnarmedCombat_Patadon") || 
                    Animator.GetCurrentAnimatorStateInfo(0).IsName("1HStandingMeleeAttackDownguard") ||
                    Animator.GetCurrentAnimatorStateInfo(0).IsName("2HWeaponSwing"))
@@ -292,7 +294,8 @@ private void GetDirectionAndMove()
             }
             weapon[num].inUse = false;
             if (weaponCollider != null) weaponCollider.enabled = false;
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds(1.25f);
+            controller.enabled = true;
             _attackRoutine = null;
         }
         public void IncreaseMaxHealth(float amount)
