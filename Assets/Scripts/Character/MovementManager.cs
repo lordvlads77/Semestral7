@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Controllers;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Utils;
 
 namespace Character
@@ -32,19 +33,19 @@ namespace Character
         [SerializeField] private float jumpHeight = 2f;
         [HideInInspector] public Vector3 dir;
         [HideInInspector] public float horizontalInput, verticalInput;
-    
+
         [SerializeField] private CharacterController controller;
         private Vector3 _spherePos;
         private Vector3 _velocity;
-    
+
         [SerializeField] private StateManager stateManager;
         public Animator anim;
-        
+
         private Camera _cam;
         private ThirdPersonCamera _cm;
         private Coroutine _attackRoutine = null;
-        [SerializeField] private Weapon [] weapon;
-        
+        [SerializeField] private Weapon[] weapon;
+
         [Header("Dodge Settings")]
         [SerializeField] private float dodgeSpeed = 10f; // Fuerza de impulso
         [SerializeField] private float dodgeDuration = 0.5f; // Duración de la esquiva
@@ -55,35 +56,42 @@ namespace Character
         private bool isDodging = false;
         private bool canDodge = true;
         private Rigidbody rb;
-        
+        private static readonly string[] attackAnimationNames = { "UnarmedCombat_Patadon", "1HStandingMeleeAttackDownguard", "2HWeaponSwing" };
         protected override void OnAwoken()
         {
             anim = GetComponent<Animator>();
             controller = GetComponent<CharacterController>();
             stateManager.EnterMovementState(MovementState.Walk, this);
             _cam = Camera.main;
-            IInput = (Input.Actions.Instance != null)? Input.Actions.Instance : MiscUtils.GetOrCreateGameManager().gameObject.GetComponent<Input.Actions>();
+            IInput = (Input.Actions.Instance != null) ? Input.Actions.Instance : MiscUtils.GetOrCreateGameManager().gameObject.GetComponent<Input.Actions>();
             if (_cam) _cm = _cam.GetComponent<ThirdPersonCamera>();
             if (!_cm) _cm = GetComponent<ThirdPersonCamera>(); // You had the script here, right
         }
-        
+
         private void OnEnable()
         {
             IInput.OnCrouchToggledEvent += ToggleCrouch;
             IInput.OnAttackTriggeredEvent += Punch;
             GameManager.Instance.RegisterUnsubscribeAction(UnSubscribe);
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
-        
+
+        private void OnDisable()
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
+
         private void UnSubscribe()
         {
             IInput.OnCrouchToggledEvent -= ToggleCrouch;
             GameManager.TryGetInstance()?.Unsubscribe(OnStateChange);
         }
-        
+
         private void Update()
         {
-            if(gameState != GameStates.Playing) { return; }
-            if (isDead) {
+            if (gameState != GameStates.Playing) { return; }
+            if (isDead)
+            {
                 stateManager.EnterMovementState(MovementState.Dead, this);
                 return;
             }
@@ -159,7 +167,7 @@ namespace Character
         {
             stateManager.EnterMovementState(state, this);
         }
-        
+
         private void HandleActions() // This method will be refactored later (Inputs n shit)
         {
             if (!isDodging)
@@ -174,92 +182,92 @@ namespace Character
                 StartCoroutine(Dodge());
             }
         }
-        
-private void GetDirectionAndMove()
-{
-    horizontalInput = IInput.Movement.x;
-    verticalInput = IInput.Movement.y;
-    anim.SetFloat(AnimVInput, verticalInput);
-    anim.SetFloat(AnimHInput, horizontalInput);
 
-    bool isZLock = _cm != null && _cm.type == CameraTypes.Locked && _cm.lockTarget != null;
-
-    if (isZLock)
-    {
-        // Si estamos en Z-Lock, mover hacia el objetivo
-        Vector3 toTarget = (_cm.lockTarget.position - transform.position);
-        toTarget.y = 0; // Mantener solo el movimiento horizontal
-        Vector3 forward = toTarget.normalized;
-        Vector3 right = Vector3.Cross(Vector3.up, forward);
-
-        // Movimiento orbital y radial
-        dir = (right * horizontalInput + forward * verticalInput).normalized;
-
-        // Girar el jugador hacia el objetivo
-        if (toTarget.sqrMagnitude > 0.01f)
+        private void GetDirectionAndMove()
         {
-            transform.rotation = Quaternion.Slerp(
-                transform.rotation,
-                Quaternion.LookRotation(forward),
-                Time.deltaTime * 10f
-            );
+            horizontalInput = IInput.Movement.x;
+            verticalInput = IInput.Movement.y;
+            anim.SetFloat(AnimVInput, verticalInput);
+            anim.SetFloat(AnimHInput, horizontalInput);
+
+            bool isZLock = _cm != null && _cm.type == CameraTypes.Locked && _cm.lockTarget != null;
+
+            if (isZLock)
+            {
+                // Si estamos en Z-Lock, mover hacia el objetivo
+                Vector3 toTarget = (_cm.lockTarget.position - transform.position);
+                toTarget.y = 0; // Mantener solo el movimiento horizontal
+                Vector3 forward = toTarget.normalized;
+                Vector3 right = Vector3.Cross(Vector3.up, forward);
+
+                // Movimiento orbital y radial
+                dir = (right * horizontalInput + forward * verticalInput).normalized;
+
+                // Girar el jugador hacia el objetivo
+                if (toTarget.sqrMagnitude > 0.01f)
+                {
+                    transform.rotation = Quaternion.Slerp(
+                        transform.rotation,
+                        Quaternion.LookRotation(forward),
+                        Time.deltaTime * 10f
+                    );
+                }
+            }
+            else
+            {
+                // Si no estamos en Z-Lock, movimiento normal basado en la cámara
+                Vector3[] camVec = MathUtils.CanonBasis(_cam.transform);
+                dir = (camVec[0] * verticalInput + camVec[1] * horizontalInput).normalized;
+
+                // Girar el jugador hacia la dirección del movimiento
+                if (dir.magnitude > 0)
+                {
+                    transform.rotation = Quaternion.Slerp(
+                        transform.rotation,
+                        Quaternion.LookRotation(camVec[0]),
+                        Time.deltaTime * 10f
+                    );
+                }
+            }
+
+            // Seleccionar la velocidad apropiada
+            Vector3 speeds = walkSpeeds;
+            if (IInput.RightBumper)
+                speeds = runSpeeds;
+            else if (stateManager.CurrentMovementState == MovementState.Crouch)
+                speeds = crouchSpeeds;
+            else if (stateManager.CurrentMovementState == MovementState.Sprint)
+                speeds = sprintSpeeds;
+
+            float forwardSpeed = Mathf.Lerp(0, speeds.x, Mathf.Abs(verticalInput));
+            float backwardSpeed = Mathf.Lerp(0, speeds.y, Mathf.Abs(verticalInput));
+            float sideSpeed = Mathf.Lerp(0, speeds.z, Mathf.Abs(horizontalInput));
+
+            if (verticalInput > 0)
+                currentMovementSpeed = forwardSpeed;
+            else if (verticalInput < 0)
+                currentMovementSpeed = backwardSpeed;
+            else
+                currentMovementSpeed = sideSpeed;
+
+            if (verticalInput != 0 && horizontalInput != 0)
+                currentMovementSpeed = Mathf.Lerp(currentMovementSpeed, sideSpeed, 0.5f);
+
+            // Mover el personaje
+            controller.Move(dir * (currentMovementSpeed * Time.deltaTime));
         }
-    }
-    else
-    {
-        // Si no estamos en Z-Lock, movimiento normal basado en la cámara
-        Vector3[] camVec = MathUtils.CanonBasis(_cam.transform);
-        dir = (camVec[0] * verticalInput + camVec[1] * horizontalInput).normalized;
 
-        // Girar el jugador hacia la dirección del movimiento
-        if (dir.magnitude > 0)
-        {
-            transform.rotation = Quaternion.Slerp(
-                transform.rotation,
-                Quaternion.LookRotation(camVec[0]),
-                Time.deltaTime * 10f
-            );
-        }
-    }
-
-    // Seleccionar la velocidad apropiada
-    Vector3 speeds = walkSpeeds;
-    if (IInput.RightBumper)
-        speeds = runSpeeds;
-    else if (stateManager.CurrentMovementState == MovementState.Crouch)
-        speeds = crouchSpeeds;
-    else if (stateManager.CurrentMovementState == MovementState.Sprint)
-        speeds = sprintSpeeds;
-
-    float forwardSpeed = Mathf.Lerp(0, speeds.x, Mathf.Abs(verticalInput));
-    float backwardSpeed = Mathf.Lerp(0, speeds.y, Mathf.Abs(verticalInput));
-    float sideSpeed = Mathf.Lerp(0, speeds.z, Mathf.Abs(horizontalInput));
-
-    if (verticalInput > 0)
-        currentMovementSpeed = forwardSpeed;
-    else if (verticalInput < 0)
-        currentMovementSpeed = backwardSpeed;
-    else
-        currentMovementSpeed = sideSpeed;
-
-    if (verticalInput != 0 && horizontalInput != 0)
-        currentMovementSpeed = Mathf.Lerp(currentMovementSpeed, sideSpeed, 0.5f);
-
-    // Mover el personaje
-    controller.Move(dir * (currentMovementSpeed * Time.deltaTime));
-}
-        
         private void Jump()
         {
             _velocity.y = Mathf.Sqrt(jumpHeight * 2f * gravity);
             anim.SetTrigger(AnimJump);
         }
-        
+
         private void ToggleCrouch()
         {
-            stateManager.EnterMovementState(stateManager.CurrentMovementState == MovementState.Crouch? MovementState.Walk : MovementState.Crouch, this);
+            stateManager.EnterMovementState(stateManager.CurrentMovementState == MovementState.Crouch ? MovementState.Walk : MovementState.Crouch, this);
         }
-        
+
         private void Punch()
         {
             if (stateManager.CurrentFightingState == FightingState.NonCombat && GameManager.Instance.NpcCloseBy(transform.position))
@@ -267,20 +275,68 @@ private void GetDirectionAndMove()
                 // Start the dialogue thing
                 return;
             }
+
+
             if (_attackRoutine == null) _attackRoutine = StartCoroutine(PerformAttack());
         }
+
         private IEnumerator PerformAttack()
         {
             Animator.SetTrigger(AnimAttack);
-            int num = (int) Weapon;
+
+            int num = (int)Weapon;
+            if (num < 0 || num >= weapon.Length)
+            {
+                EDebug.LogError($"Invalid Weapon Index: {num}. Make sure it's within the limits of the array.");
+                yield break;
+            }
             Collider weaponCollider = weapon[num].GetComponent<Collider>();
             weapon[num].inUse = true;
             if (weaponCollider != null) weaponCollider.enabled = true;
             bool damageApplied = false;
-            while (Animator.GetCurrentAnimatorStateInfo(0).IsName("UnarmedCombat_Patadon") || 
+
+
+            /// Esperara hasta que el estado de animation cambie de a unos de los siguientes nombres
+            /// { "UnarmedCombat_Patadon", "1HStandingMeleeAttackDownguard", "2HWeaponSwing" };
+            int safety_var = 2000;
+            bool isInAttackingState = false;
+            do
+            {
+                var clipInfo = Animator.GetCurrentAnimatorClipInfo(0);
+
+                for (int i = 0; i < clipInfo.Length; ++i)
+                {
+                    EDebug.Log(StringUtils.AddColorToString($"{clipInfo[i].clip.name}", Color.yellow));
+                    for (int j = 0; j < attackAnimationNames.Length; ++j)
+                    {
+                        if (clipInfo[i].clip.name == attackAnimationNames[j])
+                        {
+                            isInAttackingState = true;
+                            break;
+                        }
+
+                    }
+
+                }
+
+
+                safety_var -= 1;
+                if (safety_var < 1)
+                {
+                    break;
+                }
+                yield return new WaitForEndOfFrame();
+            }
+            while (!isInAttackingState);
+
+
+
+            while (Animator.GetCurrentAnimatorStateInfo(0).IsName("UnarmedCombat_Patadon") ||
                    Animator.GetCurrentAnimatorStateInfo(0).IsName("1HStandingMeleeAttackDownguard") ||
                    Animator.GetCurrentAnimatorStateInfo(0).IsName("2HWeaponSwing"))
-            { if (!damageApplied && Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.5f) {
+            {
+                if (!damageApplied && Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.5f)
+                {
                     damageApplied = true;
                     weapon[num].inUse = false;
                 }
@@ -317,7 +373,7 @@ private void GetDirectionAndMove()
             anim.SetBool(AnimGrounded, true);
             controller.Move(_velocity * Time.deltaTime);
         }
-        
+
         private readonly Color _groundCheck = new Color(1f, 0.1f, 0.1f, 0.25f);
         private void OnDrawGizmos()
         {
@@ -330,17 +386,25 @@ private void GetDirectionAndMove()
         {
             // Should put away the weapons, change stance 
         }
-        
+
         public void StartSwordAndShieldCombat()
         {
             // Should take out the weapons, change stance 
         }
-        
+
         protected override void OnStateChange(GameStates state)
         {
             gameState = state;
             anim.enabled = (state == GameStates.Playing);
         }
-        
+
+
+        private void OnSceneLoaded(Scene _scene, LoadSceneMode _loadSceneMode)
+        {
+            // load the camera of the current scene
+            _cam = Camera.main;
+        }
+
+
     }
 }

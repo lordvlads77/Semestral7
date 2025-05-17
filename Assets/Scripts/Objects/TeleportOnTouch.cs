@@ -1,3 +1,4 @@
+using Character;
 using UnityEngine;
 
 namespace Objects
@@ -5,6 +6,7 @@ namespace Objects
     public class TeleportOnTouch : MonoBehaviour
     {
         [SerializeField] private Transform teleportDestination;
+        [SerializeField] private ThirdPersonCamera thirdPersonCamera;
 
         private void OnTriggerEnter(Collider other)
         {
@@ -14,6 +16,7 @@ namespace Objects
                 other.transform.position = teleportDestination.position;
                 other.transform.rotation = teleportDestination.rotation;
                 Camera.main.transform.position += teleportDestination.position;
+                thirdPersonCamera.SetCameraToOrigin();
                 other.GetComponent<CharacterController>().enabled = true;
             }
         }
