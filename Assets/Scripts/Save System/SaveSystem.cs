@@ -22,6 +22,8 @@ namespace SaveSystem
         public const string WINDOW_RESOLUTION_KEY = "WindowResolution";
         public const string WINDOW_MODE_KEY = "WindowMode";
 
+        public const string EMPTY_SAVE_FILE = "NULL";
+
         const string SEPARATOR = "|*|";
 
         public static Action OnSaveData;
@@ -43,7 +45,7 @@ namespace SaveSystem
 
             string current_level_data = LEVEL_DATA_KEY + saveIndex;
 
-            PlayerPrefs.SetInt(current_level_data, SceneManager.GetActiveScene().buildIndex);
+            PlayerPrefs.SetInt(LEVEL_INDEX_KEY + saveIndex, SceneManager.GetActiveScene().buildIndex);
             PlayerPrefs.SetString(current_level_data, sb.ToString());
             PlayerPrefs.Save();
             OnSaveData?.Invoke();
@@ -57,6 +59,11 @@ namespace SaveSystem
             if (string.IsNullOrWhiteSpace(raw_data))
             {
                 EDebug.LogWarning($"No data exist to load |{raw_data}|");
+                return;
+            }
+            else if (raw_data == EMPTY_SAVE_FILE)
+            {
+                EDebug.Log("This save file is being used but does not have any data on it");
                 return;
             }
 
@@ -78,84 +85,14 @@ namespace SaveSystem
             OnLoadData?.Invoke();
         }
 
-        public static void LoadVolumePrefs()
+        public static void CreateEmptySaveFile(int index)
         {
-            if (!PlayerPrefs.HasKey(MASTER_VOLUME_KEY)) PlayerPrefs.SetFloat(MASTER_VOLUME_KEY, DEFAULT_VOLUME);
-            if (!PlayerPrefs.HasKey(MUSIC_KEY)) PlayerPrefs.SetFloat(MUSIC_KEY, DEFAULT_VOLUME);
-            if (!PlayerPrefs.HasKey(SFX_KEY)) PlayerPrefs.SetFloat(SFX_KEY, DEFAULT_VOLUME);
-            PlayerPrefs.Save();
+            CreateKeyIfOneDoesNotExist(index);
+            PlayerPrefs.SetString(LEVEL_DATA_KEY + index, EMPTY_SAVE_FILE);
+            CurrentSaveFileIndex = index;
         }
 
-        public static void LoadLevelEntitiesData(int loadIndex = 0)
-        {
-            CreateKeyIfOneDoesNotExist(loadIndex);
-
-            string raw_data = PlayerPrefs.GetString(LEVEL_DATA_KEY + loadIndex);
-            if (string.IsNullOrWhiteSpace(raw_data))
-            {
-                EDebug.LogError("No data exist to load");
-                return;
-            }
-
-            int index = 0;
-            string[] data_divided = raw_data.Split(SEPARATOR);
-
-            LivingEntity[] allLivingEntities = GameObject.FindObjectsByType<LivingEntity>(FindObjectsSortMode.None);
-
-            LoadPlayerData(allLivingEntities, data_divided, ref index);
-            LoadEnemyData(allLivingEntities, data_divided, ref index);
-        }
-
-        public static void LoadLevel()
-        {
-            CreateKeyIfOneDoesNotExist(CurrentSaveFileIndex);
-            LoadGameScene();
-        }
-
-        public static void SaveVolume(SoundType soundType, float newVolume)
-        {
-            switch (soundType)
-            {
-                case SoundType.Master:
-                    SaveFloatValue(MASTER_VOLUME_KEY, newVolume);
-                    break;
-
-                case SoundType.Music:
-                    SaveFloatValue(MUSIC_KEY, newVolume);
-                    break;
-
-                case SoundType.SFX:
-                    SaveFloatValue(SFX_KEY, newVolume);
-                    break;
-
-            }
-            MiscUtils.GetOrCreateGameManager().SoundManager.ChangeGameVolume();
-        }
-
-        public static float GetVolume(SoundType soundType)
-        {
-            CreateKeyIfOneDoesNotExist(CurrentSaveFileIndex);
-            float result = -1f;
-
-            switch (soundType)
-            {
-                case SoundType.Master:
-                    result = PlayerPrefs.GetFloat(MASTER_VOLUME_KEY, DEFAULT_VOLUME);
-                    break;
-
-                case SoundType.Music:
-
-                    result = PlayerPrefs.GetFloat(MUSIC_KEY, DEFAULT_VOLUME);
-                    break;
-
-                case SoundType.SFX:
-                    result = PlayerPrefs.GetFloat(SFX_KEY, DEFAULT_VOLUME);
-                    break;
-            }
-            return result;
-        }
-
-        #region SAVING_FUNCTIONS
+        #region SAVING_LOGIC_FUNCTIONS
 
         private static string SavePlayerData(LivingEntity[] _allLivingEntities)
         {
@@ -205,11 +142,29 @@ namespace SaveSystem
         {
             PlayerPrefs.SetInt(WINDOW_RESOLUTION_KEY, (int)windowResolution);
         }
+        public static void SaveVolume(SoundType soundType, float newVolume)
+        {
+            switch (soundType)
+            {
+                case SoundType.Master:
+                    SaveFloatValue(MASTER_VOLUME_KEY, newVolume);
+                    break;
+
+                case SoundType.Music:
+                    SaveFloatValue(MUSIC_KEY, newVolume);
+                    break;
+
+                case SoundType.SFX:
+                    SaveFloatValue(SFX_KEY, newVolume);
+                    break;
+
+            }
+            MiscUtils.GetOrCreateGameManager().SoundManager.ChangeGameVolume();
+        }
 
         #endregion
 
-
-        #region LOADING_FUNCTIONS
+        #region LOADING_LOGIC_FUNCTIONS
 
         private static void LoadPlayerData(LivingEntity[] allLivingEntities, string[] data_divided, ref int index)
         {
@@ -246,7 +201,66 @@ namespace SaveSystem
         }
 
 
+        public static void LoadVolumePrefs()
+        {
+            if (!PlayerPrefs.HasKey(MASTER_VOLUME_KEY)) PlayerPrefs.SetFloat(MASTER_VOLUME_KEY, DEFAULT_VOLUME);
+            if (!PlayerPrefs.HasKey(MUSIC_KEY)) PlayerPrefs.SetFloat(MUSIC_KEY, DEFAULT_VOLUME);
+            if (!PlayerPrefs.HasKey(SFX_KEY)) PlayerPrefs.SetFloat(SFX_KEY, DEFAULT_VOLUME);
+            PlayerPrefs.Save();
+        }
+
+        public static void LoadLevelEntitiesData(int loadIndex = 0)
+        {
+            CreateKeyIfOneDoesNotExist(loadIndex);
+
+            string raw_data = PlayerPrefs.GetString(LEVEL_DATA_KEY + loadIndex);
+            if (string.IsNullOrWhiteSpace(raw_data))
+            {
+                EDebug.LogError("No data exist to load");
+                return;
+            }
+
+            int index = 0;
+            string[] data_divided = raw_data.Split(SEPARATOR);
+
+            LivingEntity[] allLivingEntities = GameObject.FindObjectsByType<LivingEntity>(FindObjectsSortMode.None);
+
+            LoadPlayerData(allLivingEntities, data_divided, ref index);
+            LoadEnemyData(allLivingEntities, data_divided, ref index);
+        }
+
+        public static void LoadLevel()
+        {
+            CreateKeyIfOneDoesNotExist(CurrentSaveFileIndex);
+            LoadGameScene();
+        }
+
+
         #endregion
+
+        #region GET_FUNCTIONS
+        public static float GetVolume(SoundType soundType)
+        {
+            CreateKeyIfOneDoesNotExist(CurrentSaveFileIndex);
+            float result = -1f;
+
+            switch (soundType)
+            {
+                case SoundType.Master:
+                    result = PlayerPrefs.GetFloat(MASTER_VOLUME_KEY, DEFAULT_VOLUME);
+                    break;
+
+                case SoundType.Music:
+
+                    result = PlayerPrefs.GetFloat(MUSIC_KEY, DEFAULT_VOLUME);
+                    break;
+
+                case SoundType.SFX:
+                    result = PlayerPrefs.GetFloat(SFX_KEY, DEFAULT_VOLUME);
+                    break;
+            }
+            return result;
+        }
 
         public static Language GetLanguage()
         {
@@ -262,6 +276,8 @@ namespace SaveSystem
 
             return (WindowResolution)result;
         }
+
+        #endregion
 
         public static void CreateKeyIfOneDoesNotExist(int levelIndex)
         {
@@ -312,10 +328,18 @@ namespace SaveSystem
             return PlayerPrefs.HasKey(LEVEL_DATA_KEY + index);
         }
 
+        public static bool isSaveFileEmpty(int index)
+        {
+            CreateKeyIfOneDoesNotExist(index);
+            string result = PlayerPrefs.GetString(LEVEL_DATA_KEY + index);
+            return result == EMPTY_SAVE_FILE;
+        }
+
         public static void DeleteData(int index = 0)
         {
             PlayerPrefs.DeleteKey(LEVEL_DATA_KEY + index);
             PlayerPrefs.Save();
+            // hacer que el nuevo menu demuestre si se borro los datos 
             var current_lang = LanguageManager.Instance.currentLanguage;
             LanguageManager.Instance.setLanguage(current_lang);
         }

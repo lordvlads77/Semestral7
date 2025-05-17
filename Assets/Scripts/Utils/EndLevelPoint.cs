@@ -11,13 +11,13 @@ namespace Utils
     {
 
         public string SceneName = "Scenes/Nuevo Menu";
-        private Rigidbody rigidbody;
+        private Rigidbody body;
 
         private void Awake()
         {
-            rigidbody = GetComponent<Rigidbody>();
-            rigidbody.useGravity = false;
-            rigidbody.isKinematic = true;
+            body = GetComponent<Rigidbody>();
+            body.useGravity = false;
+            body.isKinematic = true;
         }
 
         private void OnTriggerEnter(Collider other)

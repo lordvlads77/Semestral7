@@ -139,24 +139,7 @@ public sealed class MenuManager : MonoBehaviour
                         break;
                 }
 
-                WindowResolution winRes = SaveSystem.SaveSystem.GetWindowResolution();
-                string resolutionString = "640x480";
-
-                if (Utils.WindowEnumUtils.winToStr.TryGetValue(winRes, out resolutionString))
-                {
-                    resolutionSwitcher.setIndex(0);
-                    for (int i = 0; resolutionSwitcher.indexCount > i; ++i)
-                    {
-                        if (resolutionString.ToLower() == resolutionSwitcher.getCurrentString.ToLower())
-                        {
-                            break;
-                        }
-
-                        resolutionSwitcher.IncreaseIndex();
-                        resolutionSwitcher.ManualUpdate();
-                    }
-
-                }
+                StartCoroutine(UpdateSettingNextFrame());
 
                 // si no existe un elemento zero buscar hasta encontar uno 
                 ChangeCurrentSelectionUntilObjectIsFound();
@@ -173,6 +156,13 @@ public sealed class MenuManager : MonoBehaviour
                 menuOptions.SetActive(false);
                 menuInicio.SetActive(true);
                 SaveFileOptions.SetActive(false);
+
+                int file_index = SaveSystem.SaveSystem.CurrentSaveFileIndex;
+                if (SaveSystem.SaveSystem.isSaveFileEmpty(file_index))
+                {
+                    currentArrayInUse[2].gameObject.SetActive(false);
+                }
+
                 // si no existe un elemento zero buscar hasta encontar uno 
                 ChangeCurrentSelectionUntilObjectIsFound();
                 ChangeCurrentSelectionUntilObjectIsFound(false);
@@ -332,19 +322,8 @@ public sealed class MenuManager : MonoBehaviour
 
     void ChangeSelectorPosition()
     {
-
         selector.SetParent(currentArrayInUse[currentSelection]);
         selector.anchoredPosition = new Vector2(-90, 0);
-        /*if (currentState == CURRENT_MENU_STATE.INTRO || currentState == CURRENT_MENU_STATE.MAIN_MENU)
-        {
-            selector.SetParent(currentArrayInUse[currentSelection]);
-            selector.anchoredPosition = new Vector2(-73, 0);
-        }
-        else if (currentState == CURRENT_MENU_STATE.OPTIONS)
-        {
-            selector.SetParent(optionsItems[currentSelection]);
-            selector.anchoredPosition = new Vector2(-73, 0);
-        }*/
     }
 
     void ChangeCurrentSelection(bool _add = true)
@@ -402,7 +381,12 @@ public sealed class MenuManager : MonoBehaviour
     public void Cargar()
     {
         EDebug.Log("<color=orange>Cargar</color>");
-        SaveSystem.SaveSystem.LoadEverything();
+        int current_index = SaveSystem.SaveSystem.CurrentSaveFileIndex;
+        if (!SaveSystem.SaveSystem.isSaveFileEmpty(current_index))
+        {
+            SaveSystem.SaveSystem.LoadEverything();
+        }
+        
     }
 
     public void Options()
@@ -600,18 +584,12 @@ public sealed class MenuManager : MonoBehaviour
                 SaveFileSelectable saveFile = currentArrayInUse[currentSelection].GetComponent<SaveFileSelectable>();
                 int save_file_index = saveFile.saveFileIndex;
                 EDebug.Log($"save file index = {save_file_index}");
-                /* TODO : IF YOU CAN NOT ADD A TUTORIAL BUTTON UN COMMENT THIS OTHER EARSE PLS
-                if (!saveFile.isBeingUsed)
+                SaveSystem.SaveSystem.setSaveFileIndex(save_file_index);
+                bool makeEmpySaveFile = !SaveSystem.SaveSystem.DoesSaveFileExist(save_file_index);
+                if (makeEmpySaveFile)
                 {
-                    const string TutorialLevelPath = "Scenes/TutorialLevel";
-                    EDebug.Log(StringUtils.AddColorToString($"Loading|{TutorialLevelPath}|",Color.cyan),this);
-                    LoadingManager.Instance.LoadSceneByName(TutorialLevelPath);
+                    SaveSystem.SaveSystem.CreateEmptySaveFile(save_file_index);
                 }
-                else
-                {
-                }*/
-
-                SaveSystem.SaveSystem.CreateKeyIfOneDoesNotExist(save_file_index);
                 desiredState = CURRENT_MENU_STATE.MAIN_MENU;
             }
 
@@ -634,7 +612,6 @@ public sealed class MenuManager : MonoBehaviour
 
     private void DeleteAllDataOnTrue(bool shouldDeleteEverthing)
     {
-        EDebug.Log(shouldDeleteEverthing ? "deleted" : "not deleted");
         if (!shouldDeleteEverthing) { return; }
 
         for (int i = 0; i < currentArrayInUse.Length; i++)
@@ -649,6 +626,7 @@ public sealed class MenuManager : MonoBehaviour
         if (!shouldSaveSetting) { return; }
 
         SaveSystem.SaveSystem.SaveLanguageSelection(LanguageManager.Instance.currentLanguage);
+        //SaveSystem.SaveSystem.SaveWindowResolution()
         WindowResolution winResult = WindowResolution.R640X480;
         WindowResolution temp = WindowResolution.R640X480;
         if (WindowEnumUtils.strToWin.TryGetValue(resolutionSwitcher.getCurrentString, out temp))
@@ -699,6 +677,33 @@ public sealed class MenuManager : MonoBehaviour
         isAcceptedInputBlocked = true;
         yield return new WaitForSeconds(acceptedInputDelay);
         isAcceptedInputBlocked = false;
+    }
+
+    private IEnumerator UpdateSettingNextFrame()
+    {
+        yield return new WaitForEndOfFrame();
+
+        WindowResolution winRes = SaveSystem.SaveSystem.GetWindowResolution();
+        string resolutionString = "640X480";
+
+        if (Utils.WindowEnumUtils.winToStr.TryGetValue(winRes, out resolutionString))
+        {
+            resolutionSwitcher.setIndex(0);
+            for (int i = 0; resolutionSwitcher.indexCount > i; ++i)
+            {
+                if (resolutionString.ToLower() == resolutionSwitcher.getStringAtIndex((uint)i).ToLower())
+                {
+                    resolutionSwitcher.ManualUpdate();
+                    break;
+                }
+
+                resolutionSwitcher.IncreaseIndex();
+
+            }
+
+        }
+        yield return new WaitForEndOfFrame();
+
     }
 
     #endregion

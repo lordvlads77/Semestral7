@@ -93,6 +93,14 @@ namespace UI
 
         public string getCurrentString => textsToSwitchInto[currentIndex];
         public int indexCount => textsToSwitchInto.Length;
+
+        public string getStringAtIndex(uint index)
+        {
+            string result = "";
+            EDebug.Assert(index < textsToSwitchInto.Length,"El indice este fuera de rango", this);
+            result = textsToSwitchInto[index];
+            return result;
+        }
     }
 
 }
