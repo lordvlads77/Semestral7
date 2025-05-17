@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 6548382104752218712}
   - component: {fileID: 2158328493408701790}
   - component: {fileID: 626624232478949639}
-  - component: {fileID: 7069683908673859886}
+  - component: {fileID: 8258221203581757470}
+  - component: {fileID: 4483947005668021548}
   m_Layer: 0
   m_Name: "CosaQueHaceDa\xF1o"
   m_TagString: Untagged
@@ -29,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.197, y: 0.787, z: 2.51}
-  m_LocalScale: {x: 0.44315, y: 0.44315, z: 0.44315}
+  m_LocalScale: {x: 30, y: 30, z: 30}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -41,7 +42,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2173702185589018756}
-  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 4677581802238187169, guid: 46fa848d04f60f340b0c128f2bb594e4, type: 3}
 --- !u!23 &626624232478949639
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -84,8 +85,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!135 &7069683908673859886
-SphereCollider:
+--- !u!65 &8258221203581757470
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -103,5 +104,21 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 0.020039465, y: 0.011413798, z: 0.020039465}
+  m_Center: {x: -0.000000007450581, y: 0.0028385997, z: 0}
+--- !u!114 &4483947005668021548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2173702185589018756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4ed147dcc7670043935a52944e47441, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageAmount: 20
+  armorPiercing: 0
+  camShakeStr: 0.3
+  camShakeFrames: 10

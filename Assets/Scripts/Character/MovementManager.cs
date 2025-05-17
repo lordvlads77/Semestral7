@@ -42,6 +42,8 @@ namespace Character
         
         private Camera _cam;
         private ThirdPersonCamera _cm;
+        private Coroutine _attackRoutine = null;
+        [SerializeField] private Weapon [] weapon;
         
         [Header("Dodge Settings")]
         [SerializeField] private float dodgeSpeed = 10f; // Fuerza de impulso
@@ -106,21 +108,27 @@ namespace Character
 
             if (inputDir.sqrMagnitude > 0.1f)
             {
-                // Obtener forward y right planos de la cámara
                 Vector3 camForward = _cam.transform.forward;
                 Vector3 camRight = _cam.transform.right;
                 camForward.y = 0;
                 camRight.y = 0;
                 camForward.Normalize();
                 camRight.Normalize();
-                anim.SetTrigger(DogeAnim);
-                // Convertir el input a dirección en el mundo según cámara
+
                 dodgeDirection = (camForward * inputDir.z + camRight * inputDir.x).normalized;
+
+                // Determinar dirección para animación (adelante o atrás)
+                float dot = Vector3.Dot(dodgeDirection, transform.forward);
+                int animDir = dot > 0 ? 1 : -1;
+                anim.SetInteger("DodgeDirection", animDir);
             }
             else
             {
                 dodgeDirection = transform.forward;
+                anim.SetInteger("DodgeDirection", 1); // Default a adelante si no hay input
             }
+
+            anim.SetTrigger(DogeAnim);
 
             _velocity = dodgeDirection * dodgeSpeed;
             float elapsedTime = 0f;
@@ -131,15 +139,13 @@ namespace Character
                 yield return null;
             }
 
-            
             isDodging = false;
             canTakeDamage = true;
-            
-            float decelerationTime = 0.2f; 
+
+            float decelerationTime = 0.2f;
             float elapsedDecel = 0f;
             while (elapsedDecel < decelerationTime)
             {
-                
                 _velocity = Vector3.Lerp(_velocity, Vector3.zero, elapsedDecel / decelerationTime);
                 controller.Move(_velocity * Time.deltaTime);
                 elapsedDecel += Time.deltaTime;
@@ -218,7 +224,7 @@ private void GetDirectionAndMove()
 
     // Seleccionar la velocidad apropiada
     Vector3 speeds = walkSpeeds;
-    if (IInput.LeftBumper)
+    if (IInput.RightBumper)
         speeds = runSpeeds;
     else if (stateManager.CurrentMovementState == MovementState.Crouch)
         speeds = crouchSpeeds;
@@ -259,22 +265,48 @@ private void GetDirectionAndMove()
             if (stateManager.CurrentFightingState == FightingState.NonCombat && GameManager.Instance.NpcCloseBy(transform.position))
             {
                 // Start the dialogue thing
+                return;
             }
-
-            anim.SetTrigger(AnimAttack);
+            if (_attackRoutine == null) _attackRoutine = StartCoroutine(PerformAttack());
+        }
+        private IEnumerator PerformAttack()
+        {
+            Animator.SetTrigger(AnimAttack);
+            int num = (int) Weapon;
+            if (num < 0 || num >= weapon.Length) {
+                EDebug.LogError($"Invalid Weapon Index: {num}. Make sure it's within the limits of the array.");
+                yield break;
+            }
+            Collider weaponCollider = weapon[num].GetComponent<Collider>();
+            weapon[num].inUse = true;
+            if (weaponCollider != null) weaponCollider.enabled = true;
+            bool damageApplied = false;
+            while (Animator.GetCurrentAnimatorStateInfo(0).IsName("UnarmedCombat_Patadon") || 
+                   Animator.GetCurrentAnimatorStateInfo(0).IsName("1HStandingMeleeAttackDownguard") ||
+                   Animator.GetCurrentAnimatorStateInfo(0).IsName("2HWeaponSwing"))
+            { if (!damageApplied && Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.5f) {
+                    damageApplied = true;
+                    weapon[num].inUse = false;
+                }
+                yield return null;
+            }
+            weapon[num].inUse = false;
+            if (weaponCollider != null) weaponCollider.enabled = false;
+            yield return new WaitForSeconds(0.25f);
+            _attackRoutine = null;
         }
         public void IncreaseMaxHealth(float amount)
         {
             maxHealth += amount;
         }
-        
+
         private bool IsGrounded()
         {
             Vector3 vec = this.transform.position;
             _spherePos = new Vector3(vec.x, vec.y - groundYOffset, vec.z);
             return Physics.CheckSphere(_spherePos, controller.radius - 0.05f, groundLayers);
         }
-        
+
         private void ApplyGravity()
         {
             if (!IsGrounded())

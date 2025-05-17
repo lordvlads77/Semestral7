@@ -1,6 +1,5 @@
 using System;
 using Controllers;
-using Input;
 using UnityEngine;
 using Utils;
 
@@ -13,19 +12,6 @@ namespace Character
         private void Awake()
         {
             _input = Input.Actions.Instance;
-        }
-
-        private void GreatSwordUse(LivingEntity entity)
-        {
-            if (entity.Weapon == WeaponType.GreatSword) return;
-        }
-
-        private void LightSwordUse(LivingEntity entity)
-        {
-            if (entity.Weapon == WeaponType.LightSword)
-            {
-                return;
-            }
         }
 
         private void OnEnable()
@@ -57,20 +43,10 @@ namespace Character
             WeaponSystem.Instance.SheathTwoHandedWeapon();
         }
 
-        private void Attacking()
-        {
-            
-        }
-
         private void LowerHands()
         {
             WeaponSystem.Instance.LoweringHands();
         }
-
-        /*public void TwoHandsiesWeaponSwing()
-        {
-            WeaponSystem.Instance.Attack();
-        }*/
 
         private void OnDisable()
         {

@@ -46,8 +46,7 @@ namespace Character
 
         public void WithdrawOneHandedWeapon()
         {
-            if (isWeaponInUse == false)
-            {
+            if (isWeaponInUse == false) {
                 isWeaponInUse = true;
                 AnimationController.Instance.OneHandWeaponWithdraw(animator);
                 AnimationController.Instance.WeaponType(animator, 1);
@@ -55,12 +54,8 @@ namespace Character
                 //Add SFX Calling Here
                 oneHandedWeapon.SetActive(true);
             }
-            else
-            {
-                EDebug.Log("You already have a weapon equipped");
-            }
-            if (twoHandedHand.activeInHierarchy)
-            {
+            else EDebug.Log("You already have a weapon equipped");
+            if (twoHandedHand.activeInHierarchy) {
                 SheathTwoHandedWeapon();
                 WithdrawOneHandedWeapon();
                 EDebug.Log("Switching to one handed weapon");
@@ -70,32 +65,24 @@ namespace Character
         public void SheathOneHandedWeapon()
         {
             isWeaponInUse = true;
-            if (isWeaponInUse)
-            {
+            if (isWeaponInUse) {
                 isWeaponInUse = false;
                 //Add VFX Calling Here if applicable
                 //Add SFX Calling Here
                 AnimationController.Instance.WeaponType(animator, 0);
-                if (!oneHandedWeapon.activeInHierarchy)
-                {
-                    EDebug.Log("You already Sheathed your weapon");
-                }
+                if (!oneHandedWeapon.activeInHierarchy) EDebug.Log("You already Sheathed your weapon");
                 else
                 {
                     AnimationController.Instance.OneHandWeaponSheath(animator);
                     oneHandedWeapon.SetActive(false);
                 }
             }
-            else
-            {
-                EDebug.Log("You already sheathed your weapon");
-            }
+            else EDebug.Log("You already sheathed your weapon");
         }
 
         public void WithdrawTwoHandedWeapon()
         {
-            if (isWeaponInUse == false)
-            {
+            if (isWeaponInUse == false) {
                 isWeaponInUse = true;
                 AnimationController.Instance.TwoHandsWeaponWithdraw(animator);
                 AnimationController.Instance.WeaponType(animator, 2);
@@ -104,12 +91,8 @@ namespace Character
                 twoHandedWeapon.SetActive(false);
                 twoHandedHand.SetActive(true);
             }
-            else
-            {
-                EDebug.Log("You already have a weapon equipped");
-            }
-            if (oneHandedWeapon.activeInHierarchy)
-            {
+            else EDebug.Log("You already have a weapon equipped");
+            if (oneHandedWeapon.activeInHierarchy) {
                 SheathOneHandedWeapon();
                 WithdrawTwoHandedWeapon();
                 EDebug.Log("Switching to two handed weapon");
@@ -118,8 +101,7 @@ namespace Character
         
         public void SheathTwoHandedWeapon()
         {
-            if (isWeaponInUse)
-            {
+            if (isWeaponInUse) {
                 isWeaponInUse = false;
                 AnimationController.Instance.TwoHandsWeaponSheath(animator);
                 AnimationController.Instance.WeaponType(animator, 0);
@@ -129,39 +111,30 @@ namespace Character
                 twoHandedWeapon.SetActive(true);
             }
             else
-            {
                 EDebug.Log("You already sheathed your weapon");
-            }
         }
 
         public void LoweringHands()
         {
-            if (isWeaponInUse == false & areHandsInUse)
-            {
-                AnimationController.Instance.LowerHands(animator);
-            }
+            if (isWeaponInUse == false & areHandsInUse) AnimationController.Instance.LowerHands(animator);
         }
 
         public void HandsArebeingUsed()
         {
             areHandsInUse = true;
-            if (areHandsInUse)
-            {
-                AnimationController.Instance.HandsUsing(animator);
-            }
+            if (areHandsInUse) AnimationController.Instance.HandsUsing(animator);
         }
 
         public void Attack()
         {
             AnimationController.Instance.WeaponType(animator, 0);
             CombatUtils.Attack(player, enemy.GetComponent<LivingEntity>());
-            if (player.GetComponent<LivingEntity>().Weapon == WeaponType.Unarmed )
-            {
+            if (player.GetComponent<LivingEntity>().Weapon == WeaponType.Unarmed ) {
                 AnimationController.Instance.UsingHands(animator);
                 stateManager.EnterFightingState(FightingState.UnarmedFighting, player.GetComponent<MovementManager>());
                 HandsArebeingUsed();
                 areHandsInUse = true;
-                Debug.Log("hAds are in use");
+                EDebug.Log("hAnDs ArR iN uSe");
             }
         }
         

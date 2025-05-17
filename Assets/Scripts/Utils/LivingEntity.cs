@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Entity;
+using HUD;
 using Scriptables;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -69,6 +70,10 @@ namespace Utils
             if (dialogSprites.nameDivider == null) hasSprites = false;
             return hasSprites;
         }
+        
+        public event Action OnHit;
+        public event Action OnKilled;
+        public event Action OnHeal;
 
         private void Awake()
         {
@@ -134,14 +139,21 @@ namespace Utils
         {
             if (canTakeDamage)
             {
+                OnHit?.Invoke();
                 float damageReduction = GetDamageReduction(armorPenetration);
                 float finalDamage = damage * (1 - damageReduction);
                 if (Random.value < critRate)
                     finalDamage *= critDmg; // Rand -> 0 - 1 The higher the critRate, the higher the chance of crit
                 _health -= finalDamage;
                 EDebug.Log(this.entityName + "Took " + finalDamage + " damage. Health: " + _health);
-                if (_health <= 0 && !isDead)
-                {
+                Rigidbody rb = GetComponent<Rigidbody>();
+                if (rb != null) {
+                    Vector3 knockBackForce = hitDirection * knockBack;
+                    knockBackForce.y += 0.5f;
+                    rb.AddForce(knockBackForce, ForceMode.Impulse);
+                }
+                else transform.position += hitDirection * knockBack;
+                if (_health <= 0 && !isDead) {
                     isDead = true;
                     Die();
                     if (criticalDmgParticles.Length > 0)
@@ -150,8 +162,7 @@ namespace Utils
                     else
                         Debug.LogWarning("criticalDmgParticles array is empty.");
                 }
-                else
-                {
+                else {
                     if (_damageImmunityCoroutine != null)
                         StopCoroutine(_damageImmunityCoroutine);
                     _damageImmunityCoroutine = StartCoroutine(DamageImmunity());
@@ -160,13 +171,9 @@ namespace Utils
                     else
                         Debug.LogWarning("dmgParticles array is empty.");
                 }
-
-                // Create knockBack logic here some time later
-                if (stagger > 0)
-                {
+                if (stagger > 0) {
                     // Same with the stagger stuff
                 }
-
                 if (armorClass > 1) ReduceArmorDurability();
                 OnDamageTaken();
             }
@@ -176,6 +183,7 @@ namespace Utils
         protected virtual void OnDamageTaken()
         {
             HurtFX?.Hit(hurtFXVars);
+            if (isPlayer) CamShaker.Instance.ShakeIt(0.25f, 10);
         }
         protected virtual void OnHurtButNoDamage(){}
         protected virtual void OnHealed(){}
@@ -184,6 +192,7 @@ namespace Utils
         public virtual void Heal(float amount)
         {
             _health = Mathf.Min(maxHealth, _health + amount);
+            OnHeal?.Invoke();
             OnHealed();
         }
 
@@ -256,6 +265,8 @@ namespace Utils
 
         protected virtual void Die()
         {
+            isDead = true;
+            OnKilled?.Invoke();
             // So... what happens when the entity dies? 
             // I could try a skinned mesh particle system that could look cool, but I don't know...
             // What are we making? 

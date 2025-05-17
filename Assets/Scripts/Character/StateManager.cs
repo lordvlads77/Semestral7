@@ -104,8 +104,8 @@ namespace Character
         
         private void UpdateCrouchState(MovementManager movement)
         {
-            if (_input.LeftBumper) ExitMovementState(movement, MovementState.Run);
-            if (_input.RightBumper) ExitMovementState(movement, MovementState.Walk);
+            if (_input.RightBumper) ExitMovementState(movement, MovementState.Run);
+            //if (_input.RightBumper) ExitMovementState(movement, MovementState.Walk);
         }
 
         private void EnterWalkState(MovementManager movement)
@@ -117,7 +117,7 @@ namespace Character
         {
             if ((_input.LeftBumper) && (movement.horizontalInput != 0 || movement.verticalInput != 0))
                 ExitMovementState(movement, MovementState.Run);
-            if (_input.RightBumper) ExitMovementState(movement, MovementState.Crouch);
+            if (_input.RightBumper) ExitMovementState(movement, MovementState.Run);
         }
 
         private void EnterRunState(MovementManager movement)
@@ -128,8 +128,8 @@ namespace Character
         private void UpdateRunState(MovementManager movement)
         {
             if (movement.dir.magnitude < 0.1f) ExitMovementState(movement, MovementState.Crouch);
-            if (_input.LeftBumper) ExitMovementState(movement, MovementState.Walk);
-            if (_input.RightBumper) ExitMovementState(movement, MovementState.Crouch);
+            if (!_input.RightBumper) ExitMovementState(movement, MovementState.Walk);
+            //if (_input.RightBumper) ExitMovementState(movement, MovementState.Crouch);
         }
         
         private void EnterSprintState(MovementManager movement)
@@ -140,9 +140,9 @@ namespace Character
 
         private void UpdateSprintState(MovementManager movement)
         {
-            if (movement.dir.magnitude < 0.1f) ExitMovementState(movement, MovementState.Crouch);
+            //if (movement.dir.magnitude < 0.1f) ExitMovementState(movement, MovementState.Crouch);
             if (_input.LeftBumper) ExitMovementState(movement, MovementState.Walk);
-            if (_input.RightBumper) ExitMovementState(movement, MovementState.Crouch);
+            //if (_input.RightBumper) ExitMovementState(movement, MovementState.Crouch);
         }
 
         private void EnterDeadState(MovementManager movement)
@@ -196,7 +196,7 @@ namespace Character
                     _animator.SetBool("UnarmedCombat", false);
                     _animator.SetBool("SwordAndShield", false);
                     _animator.SetBool("1HSwordMov", false);
-                    _animator.SetBool("2HSwordMov", false);;
+                    _animator.SetBool("2HSwordMov", false);
                     break;
                 case FightingState.UnarmedFighting:
                     _animator.SetBool("UnarmedCombat", true);
