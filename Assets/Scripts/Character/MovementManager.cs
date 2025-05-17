@@ -33,8 +33,7 @@ namespace Character
         [SerializeField] private float jumpHeight = 2f;
         [HideInInspector] public Vector3 dir;
         [HideInInspector] public float horizontalInput, verticalInput;
-
-        [SerializeField] private CharacterController controller;
+        [SerializeField] public CharacterController controller;
         private Vector3 _spherePos;
         private Vector3 _velocity;
 
@@ -295,7 +294,6 @@ namespace Character
             if (weaponCollider != null) weaponCollider.enabled = true;
             bool damageApplied = false;
 
-
             /// Esperara hasta que el estado de animation cambie de a unos de los siguientes nombres
             /// { "UnarmedCombat_Patadon", "1HStandingMeleeAttackDownguard", "2HWeaponSwing" };
             int safety_var = 2000;
@@ -330,8 +328,9 @@ namespace Character
             while (!isInAttackingState);
 
 
-
-            while (Animator.GetCurrentAnimatorStateInfo(0).IsName("UnarmedCombat_Patadon") ||
+            controller.enabled = false;
+            EDebug.Log("MoveController Disabled");
+            while (Animator.GetCurrentAnimatorStateInfo(0).IsName("UnarmedCombat_Patadon") || 
                    Animator.GetCurrentAnimatorStateInfo(0).IsName("1HStandingMeleeAttackDownguard") ||
                    Animator.GetCurrentAnimatorStateInfo(0).IsName("2HWeaponSwing"))
             {
@@ -344,9 +343,12 @@ namespace Character
             }
             weapon[num].inUse = false;
             if (weaponCollider != null) weaponCollider.enabled = false;
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds(1.25f);
+            controller.enabled = true;
             _attackRoutine = null;
+
         }
+
         public void IncreaseMaxHealth(float amount)
         {
             maxHealth += amount;
