@@ -424,6 +424,17 @@ public partial class @PlaInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""7cf63187-fa80-4daf-a029-329f0248a122"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Weapon-Up"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""cfdea8ef-0a96-416b-8793-db7d9efeb792"",
                     ""path"": ""<XInputController>/dpad/down"",
                     ""interactions"": """",
@@ -501,6 +512,17 @@ public partial class @PlaInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""b28008f1-3c64-4e16-a716-5d32d0a6dfaa"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Weapon-Left"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""add9d06c-c10a-4a5b-8620-ea731e15dce1"",
                     ""path"": ""<XInputController>/dpad/right"",
                     ""interactions"": """",
@@ -528,6 +550,17 @@ public partial class @PlaInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Weapon-Right"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ce289a8e-26eb-4b6f-b360-c2ebe91a06ec"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
                     ""action"": ""Weapon-Right"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
