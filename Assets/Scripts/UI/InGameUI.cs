@@ -145,7 +145,7 @@ namespace UI
 
             GameManager.Instance.Subscribe(OnStateChange);
 
-            GameManager.Instance.SetGameState(GameStates.Paused);
+            //GameManager.Instance.SetGameState(GameStates.Paused);
             OnStateChange(GameManager.Instance.GameState);
         }
 
@@ -277,8 +277,11 @@ namespace UI
 
         private void AjustSelector()
         {
-            selector.transform.SetParent(currentMenu.elements[selectedElement].rectTransform);
-            selector.rectTransform.anchoredPosition = new Vector2(distanceFromElement, 0);
+            if (currentMenu.elements.Length > 0)
+            {
+                selector.transform.SetParent(currentMenu.elements[selectedElement].rectTransform);
+                selector.rectTransform.anchoredPosition = new Vector2(distanceFromElement, 0);
+            }
         }
 
         private void ExecuteFunctionForUIElement()
