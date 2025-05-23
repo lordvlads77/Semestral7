@@ -168,7 +168,17 @@ MonoBehaviour:
     dialogBox: {fileID: 0}
     dialogOption: {fileID: 0}
     nameDivider: {fileID: 0}
+  hurtFXVars:
+    blinks: 1
+    renderer: {fileID: 0}
+    ogMaterials: []
+    hitMaterials: []
+    animTime: 0.1
   isPlayer: 0
+  groundLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  weaponTypeOverride: 0
   dmgParticles:
   - {fileID: 3104916853003571433, guid: e8b652848777dab47afdd50a040605b5, type: 3}
   criticalDmgParticles:
@@ -178,19 +188,24 @@ MonoBehaviour:
   armorClass: 1
   armorDurability: 3
   damageTypeResistance: 0
+  isInDialog: 0
   isDead: 0
   canTakeDamage: 1
   gameState: 0
-  boxCollider: {fileID: 0}
-  body: {fileID: 0}
-  animator: {fileID: 0}
+  homeRadius: 5
+  homeBound: 1
+  weapon: {fileID: 0}
+  ohImDie: []
+  detectionRange: 2
   agent: {fileID: 0}
   player: {fileID: 0}
-  damage: 1
-  speed: 1
-  attackCooldown: 0.4
-  timeInsdeAttackRange: 0
+  curState: 0
+  walkSpeed: 1
+  runSpeed: 1
+  minMaxAttackCooldown: {x: 0.5, y: 2.5}
+  timeWithinAttackRange: 0
   attackRange: 1
+  enemyType: 0
 --- !u!195 &289274270726782372
 NavMeshAgent:
   m_ObjectHideFlags: 0
