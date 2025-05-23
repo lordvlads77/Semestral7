@@ -53,6 +53,8 @@ public sealed class MenuManager : MonoBehaviour
 
     private bool _downClicked = false;
     private bool _upClicked = false;
+    private bool _rightClick = false;
+    private bool _leftClick = false;
 
     //  bool isVerticalInputBlocked = false;
     //  bool isHorizontalInputBlocked = false;
@@ -267,10 +269,6 @@ public sealed class MenuManager : MonoBehaviour
         currentInputInUse |= MenuInputType.VERTICAL_DOWN;
         ChangeCurrentSelectionUntilObjectIsFound(true);
 
-        // DONDE CORESPONDA
-        // InvokeRepeating (0.5s a 0.75s para iniciar, 0.15s para repetir)
-        // (Rutina, basicamente lo que tenías en update pa' que se mueva solo si lo mantienes presionado)
-        // La rutina debe checar el estado de "pressed" y matarse sola 
     }
 
     private void OnWeaponUp()
@@ -280,6 +278,7 @@ public sealed class MenuManager : MonoBehaviour
         if (MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.ANY_VERTICAL, blockedInput)) { return; }
         currentInputInUse |= MenuInputType.VERTICAL_UP;
         ChangeCurrentSelectionUntilObjectIsFound(false);
+
     }
 
     private void OnWeaponRight()
@@ -287,6 +286,14 @@ public sealed class MenuManager : MonoBehaviour
         EDebug.Log(StringUtils.AddColorToString($"{nameof(OnWeaponRight)}", Color.cyan));
         if (MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.ANY_HORIZONTAL, blockedInput)) { return; }
         currentInputInUse |= MenuInputType.HORIZONTAL_RIGHT;
+
+
+        // DONDE CORESPONDA
+        // InvokeRepeating (0.5s a 0.75s para iniciar, 0.15s para repetir)
+        // (Rutina, basicamente lo que tenías en update pa' que se mueva solo si lo mantienes presionado)
+        // La rutina debe checar el estado de "pressed" y matarse sola 
+
+        InvokeRepeating(nameof(ReapeatingOnWeaponRight), 0.5f, 1.0f);
     }
 
     private void OnWeaponLeft()
@@ -294,6 +301,8 @@ public sealed class MenuManager : MonoBehaviour
         EDebug.Log(StringUtils.AddColorToString($"{nameof(OnWeaponLeft)}", Color.cyan));
         if (MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.ANY_HORIZONTAL, blockedInput)) { return; }
         currentInputInUse |= MenuInputType.HORIZONTAL_LEFT;
+
+        InvokeRepeating(nameof(ReapeatingOnWeaponLeft), 0.5f, 1.0f);
     }
 
     private void OnJump()
@@ -315,6 +324,33 @@ public sealed class MenuManager : MonoBehaviour
             ChangeSelectorPosition();
         }
     }
+
+    #endregion
+
+    #region RepeatingFunctions
+
+    private void ReapeatingOnWeaponRight()
+    {
+        if (!MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.ANY_HORIZONTAL, blockedInput)) 
+        { 
+            CancelInvoke(nameof(ReapeatingOnWeaponRight));
+            return; 
+        }
+        currentInputInUse |= MenuInputType.HORIZONTAL_RIGHT;
+    }
+
+    private void ReapeatingOnWeaponLeft()
+    {
+
+        if (!MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.ANY_HORIZONTAL, blockedInput)) 
+        { 
+            CancelInvoke(nameof(ReapeatingOnWeaponLeft));
+            return; 
+        }
+        currentInputInUse |= MenuInputType.HORIZONTAL_LEFT;
+
+    }
+
 
     #endregion
 
@@ -386,7 +422,7 @@ public sealed class MenuManager : MonoBehaviour
         {
             SaveSystem.SaveSystem.LoadEverything();
         }
-        
+
     }
 
     public void Options()
