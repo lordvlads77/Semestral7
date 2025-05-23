@@ -151,7 +151,7 @@ GameObject:
   - component: {fileID: 1219060138979349197}
   - component: {fileID: 2604203169803953437}
   m_Layer: 3
-  m_Name: Character_Knight_02_Yellow
+  m_Name: Tutorial_Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
