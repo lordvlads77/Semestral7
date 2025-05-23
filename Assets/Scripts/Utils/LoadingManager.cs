@@ -16,7 +16,6 @@ namespace Utils
         public float sceneProgress = 0.0f;
         public float fadeOutTime = 0.1f;
 
-        private const string loadingScreenScene = "Scenes/Yhaliff/Test_Loading_Scene";
 
         private Coroutine progressCoroutine = null;
         private Coroutine fadeOutCoroutine = null;
