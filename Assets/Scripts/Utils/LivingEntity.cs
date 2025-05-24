@@ -462,6 +462,10 @@ namespace Utils
             {
                 StartCoroutine(moveCharacterOnSceneLoaded(entity_pos));
             }
+            else
+            {
+                transform.position = entity_pos;
+            }
 
         }
 
