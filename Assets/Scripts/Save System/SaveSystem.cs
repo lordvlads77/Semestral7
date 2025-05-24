@@ -61,6 +61,17 @@ namespace SaveSystem
             OnSaveData?.Invoke();
         }
 
+        /// <summary>
+        /// Load the player and level with a coroutine
+        /// </summary>
+        /// <remarks> USE THIS INSTEAD OF 'LoadEverything'  </remarks>
+        /// <param name="loadingIndex"></param>
+        public static void LoadPlayerAndLevel(int loadingIndex = 0)
+        {
+            CoroutineCaller.Instance.StartCoroutine(LoadEverything2(loadingIndex));
+        }
+
+        [Obsolete("LoadEverything is deprecated, please use  LoadPlayerAndLevel instead. Reason : LoadPlayerAndLevel is a uses coroutine the other blocks everthing")]
         public static void LoadEverything(int loadIndex = 0)
         {
             CreateKeyIfOneDoesNotExist(loadIndex);
@@ -95,7 +106,7 @@ namespace SaveSystem
             OnLoadData?.Invoke();
         }
 
-        public static IEnumerator LoadEverything2(int loadIndex = 0)
+        private static IEnumerator LoadEverything2(int loadIndex = 0)
         {
             CreateKeyIfOneDoesNotExist(loadIndex);
 
@@ -138,6 +149,7 @@ namespace SaveSystem
             EDebug.Log($"<color=orange>Current Index = {index}</color>");
             OnLoadData?.Invoke();
         }
+
 
         public static void CreateEmptySaveFile(int index)
         {
