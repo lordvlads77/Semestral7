@@ -12,12 +12,14 @@ namespace SaveSystem
     {
         public void SaveLevel()
         {
-            SaveSystem.SaveLevelData();
+            int index = SaveSystem.CurrentSaveFileIndex;
+            SaveSystem.SaveLevelData(index);
         }
 
         public void LoadLevel()
         {
-            SaveSystem.LoadEverything();
+            int index = SaveSystem.CurrentSaveFileIndex;
+            SaveSystem.LoadPlayerAndLevel(index);
         }
     }
 
