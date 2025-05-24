@@ -428,7 +428,7 @@ public partial class @PlaInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/2"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""Weapon-Up"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -459,6 +459,17 @@ public partial class @PlaInputActions: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""2003df73-a2bb-4f25-a27d-042b47dafd19"",
                     ""path"": ""<Keyboard>/downArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Weapon-Down"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f4f04adc-599b-4cef-9ee3-ecbf758aa544"",
+                    ""path"": ""<Keyboard>/4"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
@@ -516,7 +527,7 @@ public partial class @PlaInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/1"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""Weapon-Left"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -560,7 +571,7 @@ public partial class @PlaInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/3"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""Weapon-Right"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
