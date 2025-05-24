@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Text;
 using Entity;
 using UnityEngine;
@@ -7,6 +8,13 @@ using Utils;
 
 namespace SaveSystem
 {
+    public enum LoadingLevelState
+    {
+        NONE,
+        STARTED,
+        FINISHED,
+    }
+
     public static class SaveSystem
     {
         const string LEVEL_DATA_KEY = "level_data";
@@ -28,6 +36,8 @@ namespace SaveSystem
 
         public static Action OnSaveData;
         public static Action OnLoadData;
+
+        public static LoadingLevelState loadingLevelState = LoadingLevelState.NONE;
 
         public static int CurrentSaveFileIndex { get; private set; } = 0;
         public const float DEFAULT_VOLUME = 0.5f;
@@ -72,7 +82,51 @@ namespace SaveSystem
             int index = 0;
             string[] data_divided = raw_data.Split(SEPARATOR);
 
-            LoadGameScene();
+            LoadGameScene(loadIndex);
+
+            LivingEntity[] allLivingEntities = GameObject.FindObjectsByType<LivingEntity>(FindObjectsSortMode.None);
+
+            LoadPlayerData(allLivingEntities, data_divided, ref index);
+            LoadEnemyData(allLivingEntities, data_divided, ref index);
+
+            EDebug.Log("<color=orange>Loading data </color>");
+            EDebug.Log($"<color=orange>Total elements = {data_divided.Length}</color>");
+            EDebug.Log($"<color=orange>Current Index = {index}</color>");
+            OnLoadData?.Invoke();
+        }
+
+        public static IEnumerator LoadEverything2(int loadIndex = 0)
+        {
+            CreateKeyIfOneDoesNotExist(loadIndex);
+
+            string raw_data = PlayerPrefs.GetString(LEVEL_DATA_KEY + loadIndex);
+            if (string.IsNullOrWhiteSpace(raw_data))
+            {
+                EDebug.LogWarning($"No data exist to load |{raw_data}|");
+                yield break;
+            }
+            else if (raw_data == EMPTY_SAVE_FILE)
+            {
+                EDebug.Log("This save file is being used but does not have any data on it");
+                yield break;
+            }
+
+            CurrentSaveFileIndex = loadIndex;
+
+            int index = 0;
+            string[] data_divided = raw_data.Split(SEPARATOR);
+
+            CoroutineCaller.Instance.StartCoroutine(LoadGameScene2(loadIndex));
+
+            while (loadingLevelState != LoadingLevelState.FINISHED)
+            {
+                yield return new WaitForEndOfFrame();
+            }
+
+            loadingLevelState = LoadingLevelState.NONE;
+            float watingTime = 0.1f;
+            yield return new WaitForSeconds(watingTime);
+            EDebug.Log($"<color=cyand>Wait for seconds=|{watingTime}|</color>");
 
             LivingEntity[] allLivingEntities = GameObject.FindObjectsByType<LivingEntity>(FindObjectsSortMode.None);
 
@@ -196,8 +250,31 @@ namespace SaveSystem
         {
             if (SceneManager.GetActiveScene().buildIndex != PlayerPrefs.GetInt(LEVEL_INDEX_KEY + loadIndex))
             {
-                SceneManager.LoadScene(PlayerPrefs.GetInt(LEVEL_INDEX_KEY + loadIndex));
+                LoadingManager.Instance.LoadSceneByIndex(PlayerPrefs.GetInt(LEVEL_INDEX_KEY + loadIndex));
             }
+        }
+
+        private static IEnumerator LoadGameScene2(int loadIndex = 0)
+        {
+            if (SceneManager.GetActiveScene().buildIndex != PlayerPrefs.GetInt(LEVEL_INDEX_KEY + loadIndex))
+            {
+                LoadingManager.Instance.LoadSceneByIndex(PlayerPrefs.GetInt(LEVEL_INDEX_KEY + loadIndex));
+            }
+
+            loadingLevelState = LoadingLevelState.STARTED;
+            float current_progress = LoadingManager.Instance.sceneProgress;
+
+            while (current_progress < 0.8999f)
+            {
+                yield return new WaitForEndOfFrame();
+                current_progress = LoadingManager.Instance.sceneProgress;
+            }
+
+            yield return new WaitForEndOfFrame();
+
+            loadingLevelState = LoadingLevelState.FINISHED;
+
+            yield return null;
         }
 
 
