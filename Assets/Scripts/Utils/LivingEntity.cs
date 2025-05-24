@@ -70,7 +70,7 @@ namespace Utils
             if (dialogSprites.nameDivider == null) hasSprites = false;
             return hasSprites;
         }
-        
+
         public event Action OnHit;
         public event Action OnKilled;
         public event Action OnHeal;
@@ -79,23 +79,23 @@ namespace Utils
         {
             HurtFX = GetComponent<HurtFX>();
             if (HurtFX == null) { HurtFX = gameObject.AddComponent<HurtFX>(); }
-            groundLayers = (groundLayers == 0)? LayerMask.GetMask("Default", "Ground") : groundLayers;
-            
+            groundLayers = (groundLayers == 0) ? LayerMask.GetMask("Default", "Ground") : groundLayers;
+
             _health = GetMaxHealth();
             Weapon = weaponTypeOverride;
             entityName = HasCustomName() ? this.entityName : MiscUtils.GetRandomName(
                 MiscUtils.GetOrCreateGameManager().randomNames, this.nameCustomization);
-            
+
             EDebug.Log("LivingEntity ► Awake: " + this.entityName.ToString());
             OnAwoken();
 
             Animator = GetComponent<Animator>();
-            
+
             GameManager.Instance.Subscribe(OnStateChange);
             OnStateChange(GameManager.Instance.GameState);
-            
+
             if (!isPlayer) return;
-            IInput = (Input.Actions.Instance != null)? Input.Actions.Instance : MiscUtils.GetOrCreateGameManager().gameObject.GetComponent<Input.Actions>();
+            IInput = (Input.Actions.Instance != null) ? Input.Actions.Instance : MiscUtils.GetOrCreateGameManager().gameObject.GetComponent<Input.Actions>();
             _wLTHandler = () => ChangeWeapon(WeaponType.LightSword);
             _wUTHandler = () => ChangeWeapon(WeaponType.GreatSword);
             _wRTHandler = () => ChangeWeapon(WeaponType.NamePending3);
@@ -147,13 +147,15 @@ namespace Utils
                 _health -= finalDamage;
                 EDebug.Log(this.entityName + "Took " + finalDamage + " damage. Health: " + _health);
                 Rigidbody rb = GetComponent<Rigidbody>();
-                if (rb != null) {
+                if (rb != null)
+                {
                     Vector3 knockBackForce = hitDirection * knockBack;
                     knockBackForce.y += 0.5f;
                     rb.AddForce(knockBackForce, ForceMode.Impulse);
                 }
                 else transform.position += hitDirection * knockBack;
-                if (_health <= 0 && !isDead) {
+                if (_health <= 0 && !isDead)
+                {
                     isDead = true;
                     Die();
                     if (criticalDmgParticles.Length > 0)
@@ -162,7 +164,8 @@ namespace Utils
                     else
                         Debug.LogWarning("criticalDmgParticles array is empty.");
                 }
-                else {
+                else
+                {
                     if (_damageImmunityCoroutine != null)
                         StopCoroutine(_damageImmunityCoroutine);
                     _damageImmunityCoroutine = StartCoroutine(DamageImmunity());
@@ -171,7 +174,8 @@ namespace Utils
                     else
                         Debug.LogWarning("dmgParticles array is empty.");
                 }
-                if (stagger > 0) {
+                if (stagger > 0)
+                {
                     // Same with the stagger stuff
                 }
                 if (armorClass > 1) ReduceArmorDurability();
@@ -185,9 +189,9 @@ namespace Utils
             HurtFX?.Hit(hurtFXVars);
             if (isPlayer) CamShaker.Instance.ShakeIt(0.25f, 10);
         }
-        protected virtual void OnHurtButNoDamage(){}
-        protected virtual void OnHealed(){}
-        protected virtual void OnAwoken(){}
+        protected virtual void OnHurtButNoDamage() { }
+        protected virtual void OnHealed() { }
+        protected virtual void OnAwoken() { }
 
         public virtual void Heal(float amount)
         {
@@ -281,7 +285,7 @@ namespace Utils
             _health = Mathf.Clamp(health, 0, maxHealth);
             // If 0 death
         }
-        
+
         protected virtual void OnStateChange(GameStates state)
         {
             gameState = state;
@@ -451,7 +455,13 @@ namespace Utils
             entity_pos.y = float.Parse(dataDivided[index]);
             index += 1;
             entity_pos.z = float.Parse(dataDivided[index]);
+
             transform.position = entity_pos;
+
+            if (isPlayer)
+            {
+                StartCoroutine(moveCharacterOnSceneLoaded(entity_pos));
+            }
 
         }
 
@@ -472,6 +482,29 @@ namespace Utils
         private void loadDamageType(string[] _data, ref int index)
         {
             damageTypeResistance = (DamageType)int.Parse(_data[index]);
+        }
+
+        #endregion
+
+        #region Coroutines
+
+        IEnumerator moveCharacterOnSceneLoaded(Vector3 new_pos)
+        {
+            yield return new WaitForEndOfFrame();
+
+            float current_progress = LoadingManager.Instance.sceneProgress;
+            while (current_progress < 0.89f)
+            {
+                EDebug.Log(StringUtils.AddColorToString($"%{current_progress}", Color.cyan));
+                yield return new WaitForEndOfFrame();
+                current_progress = LoadingManager.Instance.sceneProgress;
+            }
+
+            var temp = GetComponent<CharacterController>();
+            temp.enabled = false;
+            transform.position = new_pos;
+            temp.enabled = true;
+
         }
 
         #endregion
