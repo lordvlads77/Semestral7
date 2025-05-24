@@ -4,6 +4,7 @@ using Input;
 using UI;
 using UnityEngine;
 using Utils;
+using SaveSystem;
 
 public sealed class MenuManager : MonoBehaviour
 {
@@ -420,7 +421,8 @@ public sealed class MenuManager : MonoBehaviour
         int current_index = SaveSystem.SaveSystem.CurrentSaveFileIndex;
         if (!SaveSystem.SaveSystem.isSaveFileEmpty(current_index))
         {
-            SaveSystem.SaveSystem.LoadEverything();
+            CoroutineCaller.Instance.StartCoroutine(SaveSystem.SaveSystem.LoadEverything2(current_index));
+            //StartCoroutine(SaveSystem.SaveSystem.LoadEverything2(current_index));
         }
 
     }
