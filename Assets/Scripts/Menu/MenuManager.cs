@@ -8,20 +8,26 @@ using SaveSystem;
 
 public sealed class MenuManager : MonoBehaviour
 {
-
-    //Animator animator;
+    Input.Actions inputReceiver;
+    [Header("Menu Selector")]
     [SerializeField] RectTransform selector;
+    [SerializeField] int currentSelection = 0;
+
+    [Header("Menu Elements For Menu Items")]
     [SerializeField] Transform[] menuItems;
     [SerializeField] Transform[] optionsItems;
     [SerializeField] Transform[] saveFileItems;
+    [SerializeField] Transform[] deleteFileItems;
     Transform[] currentArrayInUse;
-    [SerializeField] int currentSelection = 0;
+
+    [Header("Menu State")]
     [SerializeField] CURRENT_MENU_STATE currentState = CURRENT_MENU_STATE.INTRO;
     CURRENT_MENU_STATE desiredState = CURRENT_MENU_STATE.INTRO;
+
+    [Header("Menu Parent Objects")]
     [SerializeField] GameObject menuInicio;
     [SerializeField] GameObject menuOptions;
     [SerializeField] GameObject SaveFileOptions;
-    Input.Actions cosa;
 
     [Header("BlockySlider")]
     [SerializeField] private BlockySlider SFX;
@@ -68,11 +74,12 @@ public sealed class MenuManager : MonoBehaviour
         MAIN_MENU,
         OPTIONS,
         SAVE_FILE_SELECT,
+        SAVE_FILE_DELETE,
     }
 
     private void Awake()
     {
-        cosa = GameManager.Instance.GetComponent<Actions>(); // Actions.Instance;
+        inputReceiver = GameManager.Instance.GetComponent<Actions>(); // Actions.Instance;
     }
 
     void Start()
@@ -103,6 +110,8 @@ public sealed class MenuManager : MonoBehaviour
                 break;
             case CURRENT_MENU_STATE.SAVE_FILE_SELECT:
                 ProcessSaveFileSelect();
+                break;
+            case CURRENT_MENU_STATE.SAVE_FILE_DELETE:
                 break;
         }
 
@@ -239,7 +248,6 @@ public sealed class MenuManager : MonoBehaviour
     }
 
     #endregion
-
 
     #region VolumeChangeFunctions
 
@@ -421,7 +429,7 @@ public sealed class MenuManager : MonoBehaviour
         int current_index = SaveSystem.SaveSystem.CurrentSaveFileIndex;
         if (!SaveSystem.SaveSystem.isSaveFileEmpty(current_index))
         {
-            CoroutineCaller.Instance.StartCoroutine(SaveSystem.SaveSystem.LoadEverything2(current_index));
+            SaveSystem.SaveSystem.LoadPlayerAndLevel(current_index);
             //StartCoroutine(SaveSystem.SaveSystem.LoadEverything2(current_index));
         }
 
@@ -446,14 +454,14 @@ public sealed class MenuManager : MonoBehaviour
         if (MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.ANY_VERTICAL, blockedInput)) { return; }
 
 
-        if (cosa.Movement.y > 0.1f)
+        if (inputReceiver.Movement.y > 0.1f)
         {
             currentInputInUse |= MenuInputType.VERTICAL_UP;
             ChangeCurrentSelectionUntilObjectIsFound(false);
             StopCoroutine(BlockVerticalInput());
             _verticalInputBlock = StartCoroutine(BlockVerticalInput());
         }
-        else if (cosa.Movement.y < -0.1f)
+        else if (inputReceiver.Movement.y < -0.1f)
         {
 
             currentInputInUse |= MenuInputType.VERTICAL_DOWN;
@@ -467,13 +475,13 @@ public sealed class MenuManager : MonoBehaviour
     {
         if (MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.ANY_HORIZONTAL, blockedInput)) { return; }
 
-        if (cosa.Movement.x > 0.1f)
+        if (inputReceiver.Movement.x > 0.1f)
         {
             currentInputInUse |= MenuInputType.HORIZONTAL_RIGHT;
             StopCoroutine(BlockHorizontalInput());
             _horizontalInputBlock = StartCoroutine(BlockHorizontalInput());
         }
-        else if (cosa.Movement.x < -0.1f)
+        else if (inputReceiver.Movement.x < -0.1f)
         {
             currentInputInUse |= MenuInputType.HORIZONTAL_LEFT;
             StopCoroutine(BlockHorizontalInput());
@@ -491,7 +499,7 @@ public sealed class MenuManager : MonoBehaviour
     {
         ProcessVerticalMovement();
 
-        if (cosa.Jump && !isAcceptedInputBlocked)
+        if (inputReceiver.Jump && !isAcceptedInputBlocked)
         {
             _acceptedInputBlock = StartCoroutine(BlockAcceptedInput());
 
@@ -595,7 +603,7 @@ public sealed class MenuManager : MonoBehaviour
 
 
 
-        if (cosa.Jump && !isAcceptedInputBlocked)
+        if (inputReceiver.Jump && !isAcceptedInputBlocked)
         {
 
             _acceptedInputBlock = StartCoroutine(BlockAcceptedInput());
@@ -613,7 +621,7 @@ public sealed class MenuManager : MonoBehaviour
     {
 
         ProcessVerticalMovement();
-        if (cosa.Jump && !isAcceptedInputBlocked)
+        if (inputReceiver.Jump && !isAcceptedInputBlocked)
         {
             _acceptedInputBlock = StartCoroutine(BlockAcceptedInput());
 
@@ -642,6 +650,15 @@ public sealed class MenuManager : MonoBehaviour
 
     }
 
+    private void ProcessDeleteSaveFileSelect()
+    {
+        ProcessVerticalMovement();
+        if (inputReceiver.Jump && !isAcceptedInputBlocked)
+        {
+            _acceptedInputBlock = StartCoroutine(BlockAcceptedInput());
+        }
+
+    }
 
     #endregion
 
