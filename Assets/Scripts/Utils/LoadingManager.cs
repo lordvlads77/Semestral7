@@ -84,6 +84,7 @@ namespace Utils
             SceneManager.sceneLoaded += OnSceneLoaded;
             SceneManager.sceneUnloaded += OnSceneUnloaded;
             SceneManager.activeSceneChanged += OnActiveSceneChanged;
+            sceneProgress = 0.0f;
             //loadStage = LOAD_STAGES.LoadLoadingScreen;
         }
 
