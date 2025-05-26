@@ -6,30 +6,25 @@ namespace HUD
 {
     public class BarraVida : MonoBehaviour
     {
-        public Image healthImage;
-        public Image healthBackgroundImg;
-        [SerializeField] private LivingEntity player;
-    
-        private float _initHealth;
-        private Vector2 _healthImgOgSize;
-        private Vector2 _healthBgImgOgSize;
 
-        private void Start()
+        public Image viada;
+
+        [SerializeField] LivingEntity jugador;
+
+        private void barrachange()
         {
-            if (player == null) return;
-            _initHealth = player.GetHealth();
-            _healthImgOgSize = healthImage.rectTransform.sizeDelta;
-            _healthBgImgOgSize = healthBackgroundImg.rectTransform.sizeDelta;
+            if (jugador != null)
+            {
+                float vidaActual = jugador.GetHealth();
+                float maxVida = jugador.GetMaxHealth();
+                viada.fillAmount = vidaActual / maxVida;
+            }
+        }
+        void Update()
+        {
+            barrachange();
         }
 
-        private void LateUpdate()
-        {
-            if (player == null) return;
-            float maxHealth = player.GetMaxHealth();
-            float scale = maxHealth / _initHealth;
-            healthBackgroundImg.rectTransform.sizeDelta = new Vector2(_healthBgImgOgSize.x * scale, _healthBgImgOgSize.y);
-            healthImage.rectTransform.sizeDelta = new Vector2(_healthImgOgSize.x * scale, _healthImgOgSize.y);
-            healthImage.rectTransform.anchoredPosition = new Vector2(0, healthImage.rectTransform.anchoredPosition.y);
-        }
+
     }
 }

@@ -48,9 +48,9 @@ namespace Character
             private float offsetX;
             [SerializeField] [Range(-1.0f, 1.0f)]
             private float offsetY;
-            [SerializeField] [Range(0.0f, 90.0f)]
+            [SerializeField] [Range(0.0f, 80.0f)]
             private float maxVerticalAngle;
-            [SerializeField] [Range(0.0f, 90.0f)]
+            [SerializeField] [Range(0.0f, 80.0f)]
             private float minVerticalAngle;
             [SerializeField] 
             private float cameraDistance;
@@ -62,7 +62,7 @@ namespace Character
 
             public Vector2 GetOffset() {return new Vector2(offsetX, offsetY);}
         
-            public Vector2 GetLimitVerticalAnglesRadians(){ return new Vector2(maxVerticalAngle * (float)Math.PI / 180.0f, (minVerticalAngle * (float)Math.PI / 180.0f));}
+            public Vector2 GetLimitVerticalAnglesRadians(){ return new Vector2(maxVerticalAngle * (float)Math.PI / 180.0f, (minVerticalAngle * (float)Math.PI / 90.0f));}
         }
         
         [SerializeField]
@@ -210,7 +210,12 @@ namespace Character
         {
             double originTheta = Math.PI / 2;
             double originAlpha = -Math.PI / 2;
-            if(!_trueLookAt) _trueLookAt = transform.Find("LookAtTransform");
+            _alpha = -Math.PI / 2;
+            _theta = Math.PI / 2;
+            currentAlpha = (float)_alpha;
+            currentTheta = (float)_theta;
+            _tTheta = 0.5f;
+            if (!_trueLookAt) _trueLookAt = transform.Find("LookAtTransform");
             float camDistance = settings.GetCameraDistance();
             if (lookAt)
             {
