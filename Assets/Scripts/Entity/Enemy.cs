@@ -296,7 +296,7 @@ namespace Entity
             }
         }
 
-        [ContextMenu("Get Hurt")]private void GetHurt()
+        [ContextMenu("Get Hurt")]public void GetHurt()
         {
             this.TakeDamage(this.transform.position, Vector3.left, DamageType.Physical, DamageType.Ice, 10000.0f, 0.0f, 1.0f, 1.0f, 0.5f, 1000000.0f);
         }
