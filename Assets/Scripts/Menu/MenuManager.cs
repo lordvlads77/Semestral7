@@ -5,6 +5,7 @@ using UI;
 using UnityEngine;
 using Utils;
 using SaveSystem;
+using UnityEditor;
 
 public sealed class MenuManager : MonoBehaviour
 {
@@ -28,6 +29,7 @@ public sealed class MenuManager : MonoBehaviour
     [SerializeField] GameObject menuInicio;
     [SerializeField] GameObject menuOptions;
     [SerializeField] GameObject SaveFileOptions;
+    [SerializeField] GameObject DeleteFileOptions;
 
     [Header("BlockySlider")]
     [SerializeField] private BlockySlider SFX;
@@ -112,6 +114,8 @@ public sealed class MenuManager : MonoBehaviour
                 ProcessSaveFileSelect();
                 break;
             case CURRENT_MENU_STATE.SAVE_FILE_DELETE:
+                ProcessDeleteSaveFileSelect();
+//                EDebug.LogError($"non handled case |{currentState}|", this);
                 break;
         }
 
@@ -130,6 +134,7 @@ public sealed class MenuManager : MonoBehaviour
                 menuOptions.SetActive(false);
                 menuInicio.SetActive(true);
                 SaveFileOptions.SetActive(false);
+                DeleteFileOptions.SetActive(false);
                 break;
 
             case CURRENT_MENU_STATE.OPTIONS:
@@ -138,6 +143,7 @@ public sealed class MenuManager : MonoBehaviour
                 menuOptions.SetActive(true);
                 menuInicio.SetActive(false);
                 SaveFileOptions.SetActive(false);
+                DeleteFileOptions.SetActive(false);
                 Language lang = LanguageManager.Instance.currentLanguage;
 
                 switch (lang)
@@ -190,13 +196,27 @@ public sealed class MenuManager : MonoBehaviour
                 menuOptions.SetActive(false);
                 menuInicio.SetActive(false);
                 SaveFileOptions.SetActive(true);
+                DeleteFileOptions.SetActive(false);
+
+                ChangeSelectorPosition();
+                hasVolumeValuesBeenLoaded = false;
+                StartCoroutine(UpdateTextNextFrame());
+                break;
+            case CURRENT_MENU_STATE.SAVE_FILE_DELETE:
+                currentSelection = 0;
+                currentArrayInUse = deleteFileItems;
+
+                menuOptions.SetActive(false);
+                menuInicio.SetActive(false);
+                SaveFileOptions.SetActive(false);
+                DeleteFileOptions.SetActive(true);
 
                 ChangeSelectorPosition();
                 hasVolumeValuesBeenLoaded = false;
                 break;
 
             default:
-                EDebug.LogError("Falta evaluar condicion", this);
+                EDebug.LogError($"Falta evaluar condicion = |{currentState}|", this);
                 break;
         }
 
@@ -313,6 +333,9 @@ public sealed class MenuManager : MonoBehaviour
 
         InvokeRepeating(nameof(ReapeatingOnWeaponLeft), 0.5f, 1.0f);
     }
+    /// <summary>
+    /// TODO : REMOVE THIS FUNCTION
+    /// </summary>
 
     private void OnJump()
     {
@@ -641,12 +664,17 @@ public sealed class MenuManager : MonoBehaviour
 
             else if (currentSelection == 4)
             {
+
+                desiredState = CURRENT_MENU_STATE.SAVE_FILE_DELETE;
+            }
+
+            else if (currentSelection == 5)
+            {
                 conformationMenu.gameObject.SetActive(true);
                 conformationMenu.acceptedInputEvent += DeleteAllDataOnTrue;
             }
 
         }
-
 
     }
 
@@ -656,6 +684,16 @@ public sealed class MenuManager : MonoBehaviour
         if (inputReceiver.Jump && !isAcceptedInputBlocked)
         {
             _acceptedInputBlock = StartCoroutine(BlockAcceptedInput());
+            if (currentSelection > -1 && currentSelection < 4) 
+            { 
+                conformationMenu.gameObject.SetActive(true);
+                conformationMenu.acceptedInputEvent += DeleteSaveFileOnTrue;
+            }
+            else if(currentSelection == 4)
+            {
+                desiredState = CURRENT_MENU_STATE.SAVE_FILE_SELECT;
+            }
+
         }
 
     }
@@ -673,6 +711,14 @@ public sealed class MenuManager : MonoBehaviour
         {
             SaveSystem.SaveSystem.DeleteData(i);
         }
+        Language current_lang = LanguageManager.Instance.currentLanguage;
+        LanguageManager.Instance.ForceLanguageChange(current_lang);
+    }
+
+    private void DeleteSaveFileOnTrue(bool shouldDeleteFile)
+    {
+        if(!shouldDeleteFile) { return; }
+        SaveSystem.SaveSystem.DeleteData(currentSelection);
     }
 
     private void SaveSettingsOnTrue(bool shouldSaveSetting)
@@ -759,6 +805,14 @@ public sealed class MenuManager : MonoBehaviour
         }
         yield return new WaitForEndOfFrame();
 
+    }
+
+    private IEnumerator UpdateTextNextFrame()
+    {
+        yield return new WaitForEndOfFrame();
+        Language lang = LanguageManager.Instance.currentLanguage;
+        LanguageManager.Instance.ForceLanguageChange(lang);
+        yield return new WaitForEndOfFrame();
     }
 
     #endregion
