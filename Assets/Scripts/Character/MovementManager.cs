@@ -328,9 +328,7 @@ namespace Character
             }
             while (!isInAttackingState);
 
-            controller.enabled = false;
-            EDebug.Log("MoveController Disabled");
-            while (Animator.GetCurrentAnimatorStateInfo(0).IsName("UnarmedCombat_Patadon") || 
+            while (Animator.GetCurrentAnimatorStateInfo(0).IsName("UnarmedCombat_Patadon") ||
                    Animator.GetCurrentAnimatorStateInfo(0).IsName("1HStandingMeleeAttackDownguard") ||
                    Animator.GetCurrentAnimatorStateInfo(0).IsName("2HWeaponSwing"))
             {
@@ -343,8 +341,7 @@ namespace Character
             }
             weapon[num].inUse = false;
             if (weaponCollider != null) weaponCollider.enabled = false;
-            yield return new WaitForSeconds(1.25f);
-            controller.enabled = true;
+            yield return new WaitForSeconds(0.25f);
             _attackRoutine = null;
 
         }
