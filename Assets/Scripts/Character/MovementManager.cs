@@ -57,6 +57,9 @@ namespace Character
         private bool canDodge = true;
         private Rigidbody rb;
         private static readonly string[] attackAnimationNames = { "UnarmedCombat_Patadon", "1HStandingMeleeAttackDownguard", "2HWeaponSwing" };
+        
+        public static MovementManager Instance;
+        public static event Action OnPlayerSpawned;
         protected override void OnAwoken()
         {
             anim = GetComponent<Animator>();
@@ -66,10 +69,20 @@ namespace Character
             IInput = (Input.Actions.Instance != null) ? Input.Actions.Instance : MiscUtils.GetOrCreateGameManager().gameObject.GetComponent<Input.Actions>();
             if (_cam) _cm = _cam.GetComponent<ThirdPersonCamera>();
             if (!_cm) _cm = GetComponent<ThirdPersonCamera>(); // You had the script here, right
+            if (Instance == null)
+            {
+                Instance = this;
+                DontDestroyOnLoad(gameObject);
+            }
+            else
+            {
+                Destroy(gameObject); // Evita duplicados
+            }
         }
 
         private void OnEnable()
         {
+            OnPlayerSpawned?.Invoke();
             IInput.OnCrouchToggledEvent += ToggleCrouch;
             IInput.OnAttackTriggeredEvent += Punch;
             GameManager.Instance.RegisterUnsubscribeAction(UnSubscribe);
@@ -403,8 +416,14 @@ namespace Character
         {
             // load the camera of the current scene
             _cam = Camera.main;
+            if (_scene.name.Contains("Nuevo Menu"))
+            {
+                Destroy(gameObject); // o solo desactiva componentes
+                /* } else {
+                     gameObject.SetActive(true);
+                 }*/
+            }
         }
-
 
     }
 }

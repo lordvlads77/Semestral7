@@ -1,7 +1,9 @@
 using System;
+using UI;
 using UnityEditor;
 using UnityEngine;
 using Utils;
+using UnityEngine.SceneManagement;
 
 namespace Character
 {
@@ -35,6 +37,8 @@ namespace Character
         private float currentAlpha;
         private float currentTheta;
         private float smoothSpeed = 25f;
+
+        public static NewLoadingScreen NewLoadingScreen;
         
         [SerializeField]
         private float maxLockDistance = 10f;
@@ -86,11 +90,32 @@ namespace Character
             _trueLookAt = transform.Find("LookAtTransform");
             if(!_trueLookAt) _trueLookAt = new GameObject("LookAtTransform").transform;
             if (!lookAt) {
-                lookAt = GameObject.FindWithTag("Player").transform;
+                lookAt = transform;
+            }
+            SetCameraToOrigin();
+        }
+
+        private void OnEnable()
+        {
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
+        private void OnDisable()
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
+
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            // Reasigna al jugador
+            var player = GameObject.FindGameObjectWithTag("Player");
+            if (player)
+            {
+                lookAt = player.transform;
+                SetCameraToOrigin();
             }
         }
 
-        
         void Update()
         {
             if (GameManager.Instance.GameState != GameStates.Playing) return;
