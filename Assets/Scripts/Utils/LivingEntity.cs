@@ -51,6 +51,8 @@ namespace Utils
         private Action _wUTHandler;
         private Action _wRTHandler;
         private Action _wDTHandler;
+        // if the id is -1337 that mean a something went wrong
+        public long id { get; private set; } = -1337;
 
         public float GetHealth() { return _health; }
         public float GetMaxHealth() { return maxHealth; }
@@ -105,7 +107,8 @@ namespace Utils
             IInput.OnWeaponRightToggledEvent += _wRTHandler;
             IInput.OnWeaponDownToggledEvent += _wDTHandler;
             if (hurtFXVars != null && hurtFXVars.renderer != null) hurtFXVars.ogMaterials = hurtFXVars.renderer.materials;
-            else EDebug.LogError("hurtFXVars or the renderer are not initialized/set", this);
+            else { EDebug.LogError("hurtFXVars or the renderer are not initialized/set", this); }
+            id = IDManager.Instance.GetNewID();
         }
 
         private void OnEnable()
@@ -332,6 +335,8 @@ namespace Utils
             sb.Append(transform.position.y);
             sb.Append('/');
             sb.Append(transform.position.z);
+            sb.Append('/');
+            sb.Append(id);
 
             return sb.ToString();
         }
@@ -457,6 +462,10 @@ namespace Utils
             entity_pos.z = float.Parse(dataDivided[index]);
 
             transform.position = entity_pos;
+
+
+            index += 1;
+            id = int.Parse(dataDivided[index]);
 
             if (isPlayer)
             {
