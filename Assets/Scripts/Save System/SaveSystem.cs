@@ -421,7 +421,7 @@ namespace SaveSystem
         {
             CreateKeyIfOneDoesNotExist(index);
             string result = PlayerPrefs.GetString(LEVEL_DATA_KEY + index);
-            return result == EMPTY_SAVE_FILE;
+            return result == EMPTY_SAVE_FILE || result == "";
         }
 
         public static void DeleteData(int index = 0)
