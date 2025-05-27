@@ -42,4 +42,18 @@ public class LanguageManager : Utils.Singleton<LanguageManager>
         forcedChange -= _forcedChange;
     }
 
+    public void ForceLanguageChange(Utils.Language newLanguage)
+    {
+        /// this is a hack to get around code that looks like this
+        /// 
+        /// if (current_language == new_language) {return ;} // aka do nothing
+        ///
+        /// assuming you have a better idea please tell me
+
+        Instance.setLanguage(Utils.Language.En);
+        Instance.setLanguage(Utils.Language.Es);
+        Instance.setLanguage(newLanguage);
+    }
+
+
 }
