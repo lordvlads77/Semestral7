@@ -10,6 +10,8 @@ using UnityEngine.Windows;
 using Random = UnityEngine.Random;
 using Color = UnityEngine.Color;
 using SCG = System.Collections.Generic;
+using Entity;
+using System.Linq;
 
 namespace Utils
 {
@@ -409,6 +411,48 @@ namespace Utils
             }
             if (sound != null) sound.enabled = true;
         }
+
+        public static int CountEnemiesInScene()
+        {
+            return GameObject.FindObjectsByType<Enemy>(FindObjectsSortMode.None).Length;
+        }
+
+        public static int CountEnemiesInScene(LivingEntity[] allEntities)
+        {
+            int result = 0;
+            for (int i = 0; i < allEntities.Length; ++i)
+            {
+                if (allEntities[i].TryGetComponent<Enemy>(out Enemy e))
+                {
+                    result++;
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="entities"></param>
+        /// <returns></returns>
+        public static List<Enemy> extractEnemiesFromLivingEntities(LivingEntity[] entities)
+        {
+            /// TODO : TERMINAR DE IMPLEMENTAR ESTO
+            List<Enemy> result = new();
+
+            for (int i = 0; i < entities.Length; ++i)
+            {
+                if (entities[i].TryGetComponent<Enemy>(out Enemy e))
+                {
+                    result.Add(e);
+                }
+
+            }
+
+            return result;
+        }
+
     }
 
     [Serializable]
