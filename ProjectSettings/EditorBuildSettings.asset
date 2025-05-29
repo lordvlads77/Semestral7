@@ -38,6 +38,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TutorialLevel Nuevo.unity
     guid: 9b90d1c5050158c4ea069a01af3df58d
+  - enabled: 1
+    path: Assets/Scenes/Niveles/Nivel-1.unity
+    guid: d8c38fc20b16cb3449d536519c8c6e3e
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 1fee60b202b1fd34a94805ab53544dfe,
       type: 3}
