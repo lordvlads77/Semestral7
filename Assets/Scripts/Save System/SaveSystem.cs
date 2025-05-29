@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Entity;
 using UnityEngine;
@@ -71,7 +73,7 @@ namespace SaveSystem
             CoroutineCaller.Instance.StartCoroutine(LoadEverything2(loadingIndex));
         }
 
-        [Obsolete("LoadEverything is deprecated, please use  LoadPlayerAndLevel instead. Reason : LoadPlayerAndLevel is a uses coroutine the other blocks everthing")]
+        [Obsolete("LoadEverything is deprecated, please use  LoadPlayerAndLevel instead. Reason : LoadPlayerAndLevel uses coroutine the other blocks everything and looks bad")]
         public static void LoadEverything(int loadIndex = 0)
         {
             CreateKeyIfOneDoesNotExist(loadIndex);
@@ -96,9 +98,9 @@ namespace SaveSystem
             LoadGameScene(loadIndex);
 
             LivingEntity[] allLivingEntities = GameObject.FindObjectsByType<LivingEntity>(FindObjectsSortMode.None);
-
+            int enemyCount = Utils.MiscUtils.CountEnemiesInScene(allLivingEntities);
             LoadPlayerData(allLivingEntities, data_divided, ref index);
-            LoadEnemyData(allLivingEntities, data_divided, ref index);
+            LoadEnemyData(allLivingEntities, data_divided, ref index, out int enemys_loaded);
 
             EDebug.Log("<color=orange>Loading data </color>");
             EDebug.Log($"<color=orange>Total elements = {data_divided.Length}</color>");
@@ -106,6 +108,11 @@ namespace SaveSystem
             OnLoadData?.Invoke();
         }
 
+        /// <summary>
+        /// The Coroutine version of LoadEverthing
+        /// </summary>
+        /// <param name="loadIndex">which of the save file are being used</param>
+        /// <returns></returns>
         private static IEnumerator LoadEverything2(int loadIndex = 0)
         {
             CreateKeyIfOneDoesNotExist(loadIndex);
@@ -135,14 +142,27 @@ namespace SaveSystem
             }
 
             loadingLevelState = LoadingLevelState.NONE;
-            float watingTime = 0.1f;
+            float watingTime = 0.16f;
             yield return new WaitForSeconds(watingTime);
+            yield return new WaitForEndOfFrame();
             EDebug.Log($"<color=cyand>Wait for seconds=|{watingTime}|</color>");
 
             LivingEntity[] allLivingEntities = GameObject.FindObjectsByType<LivingEntity>(FindObjectsSortMode.None);
 
+
             LoadPlayerData(allLivingEntities, data_divided, ref index);
-            LoadEnemyData(allLivingEntities, data_divided, ref index);
+
+            int index_before_enemies = index;
+
+            int enemies_in_scene = Utils.MiscUtils.CountEnemiesInScene(allLivingEntities);
+
+            LoadEnemyData(allLivingEntities, data_divided, ref index, out int enemys_loaded);
+
+            if (enemies_in_scene < enemys_loaded)
+            {
+                disableExtraEnemies(allLivingEntities, enemys_loaded, enemies_in_scene);
+            }
+
 
             EDebug.Log("<color=orange>Loading data </color>");
             EDebug.Log($"<color=orange>Total elements = {data_divided.Length}</color>");
@@ -208,6 +228,7 @@ namespace SaveSystem
         {
             PlayerPrefs.SetInt(WINDOW_RESOLUTION_KEY, (int)windowResolution);
         }
+
         public static void SaveVolume(SoundType soundType, float newVolume)
         {
             switch (soundType)
@@ -242,19 +263,30 @@ namespace SaveSystem
                     index += 1;
 
                 }
+                if (data_divided.Length >= index)
+                {
+                    break;
+                }
             }
         }
 
-        private static void LoadEnemyData(LivingEntity[] allLivingEntities, string[] data_divided, ref int index)
+        private static void LoadEnemyData(LivingEntity[] allLivingEntities, string[] data_divided, ref int index, out int enemys_loaded)
         {
+            enemys_loaded = 0;
             for (int i = 0; i < allLivingEntities.Length; ++i)
             {
                 if (allLivingEntities[i].gameObject.TryGetComponent<Enemy>(out Enemy result))
                 {
                     result.loadData(data_divided[index]);
                     index += 1;
+                    enemys_loaded += 1;
+                }
+                if (data_divided.Length >= index)
+                {
+                    break;
                 }
             }
+
         }
 
 
@@ -315,7 +347,7 @@ namespace SaveSystem
             LivingEntity[] allLivingEntities = GameObject.FindObjectsByType<LivingEntity>(FindObjectsSortMode.None);
 
             LoadPlayerData(allLivingEntities, data_divided, ref index);
-            LoadEnemyData(allLivingEntities, data_divided, ref index);
+            LoadEnemyData(allLivingEntities, data_divided, ref index, out int enemys_loaded);
         }
 
         public static void LoadLevel()
@@ -328,6 +360,7 @@ namespace SaveSystem
         #endregion
 
         #region GET_FUNCTIONS
+
         public static float GetVolume(SoundType soundType)
         {
             CreateKeyIfOneDoesNotExist(CurrentSaveFileIndex);
@@ -437,6 +470,21 @@ namespace SaveSystem
         {
             CurrentSaveFileIndex = index;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="allEntities"></param>
+        /// <param name="enemies_loaded"></param>
+        /// <param name="enemies_in_scene"></param>
+        private static void disableExtraEnemies(LivingEntity[] allEntities, int enemies_loaded, int enemies_in_scene)
+        {
+            /// TODO: TERMINAR ESTO
+            List<Enemy> enemies = Utils.MiscUtils.extractEnemiesFromLivingEntities(allEntities));
+
+
+        }
+
 
     }
 
