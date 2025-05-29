@@ -438,7 +438,6 @@ namespace Utils
         /// <returns></returns>
         public static List<Enemy> extractEnemiesFromLivingEntities(LivingEntity[] entities)
         {
-            /// TODO : TERMINAR DE IMPLEMENTAR ESTO
             List<Enemy> result = new();
 
             for (int i = 0; i < entities.Length; ++i)
