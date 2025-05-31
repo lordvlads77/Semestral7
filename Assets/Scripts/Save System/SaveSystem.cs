@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Entity;
 using UnityEngine;
@@ -142,7 +141,7 @@ namespace SaveSystem
             }
 
             loadingLevelState = LoadingLevelState.NONE;
-            float watingTime = 0.16f;
+            float watingTime = 0.10f;
             yield return new WaitForSeconds(watingTime);
             yield return new WaitForEndOfFrame();
             EDebug.Log($"<color=cyand>Wait for seconds=|{watingTime}|</color>");
@@ -152,15 +151,13 @@ namespace SaveSystem
 
             LoadPlayerData(allLivingEntities, data_divided, ref index);
 
-            int index_before_enemies = index;
+            List<Enemy> enemies = Utils.MiscUtils.extractEnemiesFromLivingEntities(allLivingEntities);
 
-            int enemies_in_scene = Utils.MiscUtils.CountEnemiesInScene(allLivingEntities);
+            LoadEnemyData(enemies, data_divided, ref index, out int enemys_loaded);
 
-            LoadEnemyData(allLivingEntities, data_divided, ref index, out int enemys_loaded);
-
-            if (enemies_in_scene < enemys_loaded)
+            if (enemies.Count > enemys_loaded)
             {
-                disableExtraEnemies(allLivingEntities, enemys_loaded, enemies_in_scene);
+                disableExtraEnemies(enemies, enemys_loaded, index);
             }
 
 
@@ -263,7 +260,7 @@ namespace SaveSystem
                     index += 1;
 
                 }
-                if (data_divided.Length >= index)
+                if (data_divided.Length <= index)
                 {
                     break;
                 }
@@ -273,7 +270,36 @@ namespace SaveSystem
         private static void LoadEnemyData(LivingEntity[] allLivingEntities, string[] data_divided, ref int index, out int enemys_loaded)
         {
             enemys_loaded = 0;
-            for (int i = 0; i < allLivingEntities.Length; ++i)
+            List<Enemy> enemies = new List<Enemy>();
+
+            for (int i = 0; i < allLivingEntities.Length; i++)
+            {
+                if (allLivingEntities[i].TryGetComponent<Enemy>(out Enemy e))
+                {
+                    enemies.Add(e);
+                }
+            }
+            LoadEnemyData(enemies, data_divided, ref index, out enemys_loaded);
+
+        }
+
+        private static void LoadEnemyData(List<Enemy> enemies, string[] data_divided, ref int index, out int enemys_loaded)
+        {
+            enemys_loaded = 0;
+
+            for (int i = 1; i < enemies.Count; ++i)
+            {
+
+                if (data_divided.Length <= index)
+                {
+                    break;
+                }
+                enemies[i].loadData(data_divided[index]);
+                index += 1;
+                enemys_loaded += 1;
+            }
+
+            /*for (int i = 0; i < allLivingEntities.Length; ++i)
             {
                 if (allLivingEntities[i].gameObject.TryGetComponent<Enemy>(out Enemy result))
                 {
@@ -285,7 +311,7 @@ namespace SaveSystem
                 {
                     break;
                 }
-            }
+            }*/
 
         }
 
@@ -474,14 +500,23 @@ namespace SaveSystem
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="allEntities"></param>
+        /// <param name="enemies">List that contains the enemies</param>
         /// <param name="enemies_loaded"></param>
-        /// <param name="enemies_in_scene"></param>
-        private static void disableExtraEnemies(LivingEntity[] allEntities, int enemies_loaded, int enemies_in_scene)
+        /// <param name="index"></param>
+        private static void disableExtraEnemies(List<Enemy> enemies, int enemies_loaded, int index)
         {
-            /// TODO: TERMINAR ESTO
-            List<Enemy> enemies = Utils.MiscUtils.extractEnemiesFromLivingEntities(allEntities));
+            if (enemies.Count < 1)
+            {
+                return;
+            }
 
+            int start_index = enemies_loaded;
+
+            for(int i = start_index; i < enemies.Count; i++)
+            {
+                enemies[i].gameObject.SetActive(false);
+            }
+            
 
         }
 
