@@ -55,9 +55,9 @@ namespace Entity
         {
             _coward = Random.value < 0.3f;
             agent = GetComponent<NavMeshAgent>();
-            GameObject tempPlayer = GameObject.FindGameObjectWithTag("Player");
-            EDebug.Assert(tempPlayer != null, "Couldn't find player character", this);
-            player = tempPlayer.GetComponent<LivingEntity>();
+            // GameObject tempPlayer = GameObject.FindGameObjectWithTag("Player");
+            // EDebug.Assert(tempPlayer != null, "Couldn't find player character", this);
+            // player = tempPlayer.GetComponent<LivingEntity>();
             
             agent.speed = walkSpeed;
             runSpeed = Mathf.Max(walkSpeed, runSpeed);
