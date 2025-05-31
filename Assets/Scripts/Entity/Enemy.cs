@@ -97,7 +97,7 @@ namespace Entity
 
         private void LazyUpdate() // This updates only once per second
         {
-            if (gameState is GameStates.Paused or GameStates.Joining) return;
+            if (gameState is GameStates.Paused or GameStates.Joining || GetHealth() < 0.01) return;
             UpdateStates();
         }
 
