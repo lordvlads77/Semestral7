@@ -464,6 +464,11 @@ public sealed class MenuManager : MonoBehaviour
         desiredState = CURRENT_MENU_STATE.OPTIONS;
     }
 
+    public void Credits()
+    {
+        LoadingManager.Instance.LoadSceneByName("Creditos");
+    }
+
     public void Salir()
     {
         EDebug.Log("<color=orange>Quitting</color>");
@@ -546,6 +551,10 @@ public sealed class MenuManager : MonoBehaviour
                     break;
 
                 case 4:
+                    Credits();
+                    break;
+
+                case 5:
                     Salir();
                     break;
             }
