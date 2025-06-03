@@ -1,15 +1,20 @@
 using System;
 using UI;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using Utils;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace Character
 {
     public class ThirdPersonCamera : MonoBehaviour
     {
         private Input.Actions _input;
+
+        private bool camMovedFT = false;
+        [SerializeField] Text tutoTex;
         
         public Camera cam;
         public CameraTypes type = CameraTypes.FreeLook;
@@ -140,6 +145,11 @@ namespace Character
             {
                 _lockIndicator.SetActive(false);
             }
+
+            if (camMovedFT == true)
+            {
+                tutoTex.gameObject.SetActive(false);
+            }
         }
 
         void FindClosestTarget(Collider[] enemies)
@@ -197,6 +207,7 @@ namespace Character
             if (h != 0) _alpha += h * sensitivity * Time.deltaTime;
             if (v != 0)
             {
+                
                 Vector2 limitAnglesRads = settings.GetLimitVerticalAnglesRadians();
                 float maxAngle = ((float)Math.PI / 2) - limitAnglesRads.x;
                 float minAngle = ((float)Math.PI / 2) + limitAnglesRads.y;
@@ -204,6 +215,11 @@ namespace Character
                 _tTheta += v * sensitivity * Time.deltaTime;
                 _tTheta = Mathf.Clamp(_tTheta, 0f, 1f);
                 _theta = Mathf.Lerp(maxAngle, minAngle, _tTheta);
+                
+            }
+            if (!camMovedFT && (Mathf.Abs(h) > 0.5f || Mathf.Abs(v) > 1f))
+            {
+                camMovedFT = true;
             }
             // Smooth the angles
             currentAlpha = Mathf.Lerp(currentAlpha, (float)_alpha, Time.deltaTime * smoothSpeed);
