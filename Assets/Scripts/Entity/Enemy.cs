@@ -31,6 +31,9 @@ namespace Entity
         private Coroutine _attackRoutine;
         [SerializeField] private Weapon weapon;
         [SerializeField] private ParticleSystem[] ohImDie;
+        private bool _isKnockedBack = false;
+        [SerializeField] private float knockbackForce = 2f;
+        [SerializeField] private float knockbackDuration = 0.25f;
 
         [Header("AI Components")] 
         [SerializeField, Range(2f, 50f)] private float detectionRange;
@@ -53,6 +56,8 @@ namespace Entity
 
         private void Start()
         {
+            Rigidbody rb = GetComponent<Rigidbody>();
+            rb.isKinematic = true;
             _coward = Random.value < 0.3f;
             agent = GetComponent<NavMeshAgent>();
             GameObject tempPlayer = GameObject.FindGameObjectWithTag("Player");
@@ -152,14 +157,17 @@ namespace Entity
             Animator.SetFloat(_animType, rand);
             Animator.SetTrigger(_animHit);
             HurtFX?.Hit(hurtFXVars);
+            Vector3 awayFromPlayer = (transform.position - player.transform.position).normalized;
+            Knockback(awayFromPlayer);
             if (curState is EnemyState.Idle or EnemyState.Chasing && _coward && HealthPercent <= 0.25f && !InHomeRange())
                 curState = EnemyState.Fleeing;
         }
 
         private void FixedUpdate()
         {
-            if (gameState != GameStates.Playing) return;
-
+            if (gameState != GameStates.Playing || curState == EnemyState.Dead || curState == EnemyState.Dying)
+                return;
+    
             switch (curState)
             {
                 case EnemyState.Idle:
@@ -167,7 +175,7 @@ namespace Entity
                     return;
                 case EnemyState.Chasing:
                     agent.speed = runSpeed;
-                    GoToDestination(MathUtils.RandomPos(0.25f ,player.transform.position));
+                    GoToDestination(MathUtils.RandomPos(0.25f, player.transform.position));
                     if (Vector3.Distance(player.transform.position, transform.position) <= attackRange)
                         StartCoroutine(AttackRoutine());
                     break;
@@ -180,7 +188,6 @@ namespace Entity
                         GoToDestination(_home.position);
                     }
                     break;
-                
             }
         }
 
@@ -205,7 +212,9 @@ namespace Entity
 
         private IEnumerator AttackRoutine()
         {
-            if (_attackRoutine != null) yield break;
+            if (_attackRoutine != null || curState == EnemyState.Dying || curState == EnemyState.Dead)
+                yield break;
+    
             EDebug.Log("AttackRoutine called by:" + this.entityName.ToString());
             _attackCooldown = Random.Range(minMaxAttackCooldown.x, minMaxAttackCooldown.y);
             _attackRoutine = StartCoroutine(PerformAttack());
@@ -224,7 +233,34 @@ namespace Entity
             yield return new WaitForSeconds(_attackCooldown);
             _attackRoutine = null;
         }
-        
+        public void Knockback(Vector3 direction)
+        {
+            if (_isKnockedBack || curState == EnemyState.Dying || curState == EnemyState.Dead)
+                return;
+
+            StartCoroutine(KnockbackRoutine(direction));
+        }
+
+        private IEnumerator KnockbackRoutine(Vector3 direction)
+        {
+            _isKnockedBack = true;
+            agent.isStopped = true;
+
+            float timer = 0f;
+            Vector3 start = transform.position;
+            Vector3 end = start + direction.normalized * knockbackForce;
+
+            while (timer < knockbackDuration)
+            {
+                transform.position = Vector3.Lerp(start, end, timer / knockbackDuration);
+                timer += Time.deltaTime;
+                yield return null;
+            }
+
+            transform.position = end;
+            agent.isStopped = false;
+            _isKnockedBack = false;
+        }
         private IEnumerator DieRoutine()
         {
             //_animDead / _animDying
@@ -263,11 +299,23 @@ namespace Entity
 
         protected override void Die()
         {
+            if (curState == EnemyState.Dying || curState == EnemyState.Dead) return;
+
             base.Die();
             Animator.SetBool("Dead", true);
-            Animator.SetInteger("AnimType", (int) Random.Range(0, 1));
+            Animator.SetInteger("AnimType", Random.Range(0, 1));
             curState = EnemyState.Dying;
-            if (_imDieCoroutine == null) _imDieCoroutine = StartCoroutine(OhImDieThankYouForever());
+
+            // ✅ Detener completamente el agente de navegación
+            if (agent != null)
+            {
+                agent.ResetPath();            // Borra la ruta actual
+                agent.isStopped = true;      // Detiene el movimiento
+                agent.enabled = false;       // Opcional: desactiva por completo
+            }
+
+            if (_imDieCoroutine == null)
+                _imDieCoroutine = StartCoroutine(OhImDieThankYouForever());
         }
 
         private IEnumerator OhImDieThankYouForever()
