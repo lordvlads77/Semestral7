@@ -345,7 +345,7 @@ MonoBehaviour:
   weaponTypeOverride: 1
   dmgParticles: []
   criticalDmgParticles: []
-  maxHealth: 10
+  maxHealth: 6
   dmgImmunityTime: 0.05
   armorClass: 1
   armorDurability: 3
@@ -357,6 +357,8 @@ MonoBehaviour:
   homeRadius: 5
   homeBound: 1
   weapon: {fileID: 1991002830861214437}
+  ohImDie:
+  - {fileID: 3616568078490749277, guid: 7b4fa4b2369377d448ca95172f9be8c0, type: 3}
   detectionRange: 5
   agent: {fileID: 1225457222793485134}
   player: {fileID: 0}
