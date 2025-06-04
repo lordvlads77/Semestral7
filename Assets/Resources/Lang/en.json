@@ -7,8 +7,8 @@
   "npc_dialog.blacksmith_npc.first_line": "Fine day we're having.",
   "IntroductionMsg": "hello knight, you are here to train your skills, first lets see you move with that armor, use the left stick or wasd to move",
   "CameraTuto": "To move the camera you must use the rick stick or move your mouse",
-  "Combate": "In order to pass this door you must use your weapons in this dummies, use the arrows to unsheat your weapon, and use the right button or the left click to attack",
-  "CombatIns": "To lock a target use the left trigger or the right click, to run use the superior right trigger or the shift and to doge use the left button or the x key",
+  "movementTuto": "Use WASD or your left stick to move",
+  "CombatTuto": "Use the up arrow with your control or keyboard to unsheathe your sword and use the right button or the left click to attack",
   "continueSignal": "Go to the village",
 
   "acabar": "Defeat this enemies to continue",
