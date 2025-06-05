@@ -150,7 +150,7 @@ namespace Character
 
             if (camMovedFT == true)
             {
-                tutoTex.gameObject.SetActive(false);
+                tutoTex?.gameObject.SetActive(false);
             }
         }
 

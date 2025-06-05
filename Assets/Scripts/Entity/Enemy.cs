@@ -54,6 +54,13 @@ namespace Entity
 
         private Coroutine _imDieCoroutine;
 
+        private NavMeshAgent GetSelfAgent()
+        {
+            agent ??= agent = GetComponent<NavMeshAgent>();
+            if (agent.speed == 0) agent.speed = walkSpeed;
+            return agent;
+        }
+
         private void Start()
         {
             Rigidbody rb = GetComponent<Rigidbody>();
@@ -63,7 +70,6 @@ namespace Entity
             GameObject tempPlayer = GameObject.FindGameObjectWithTag("Player");
             EDebug.Assert(tempPlayer != null, "Couldn't find player character", this);
             player = tempPlayer.GetComponent<LivingEntity>();
-            
             agent.speed = walkSpeed;
             runSpeed = Mathf.Max(walkSpeed, runSpeed);
             SearchForHome();
@@ -171,10 +177,10 @@ namespace Entity
             switch (curState)
             {
                 case EnemyState.Idle:
-                    agent.speed = walkSpeed;
+                    GetSelfAgent().speed = walkSpeed;
                     return;
                 case EnemyState.Chasing:
-                    agent.speed = runSpeed;
+                    GetSelfAgent().speed = runSpeed;
                     GoToDestination(MathUtils.RandomPos(0.25f, player.transform.position));
                     if (Vector3.Distance(player.transform.position, transform.position) <= attackRange)
                         StartCoroutine(AttackRoutine());
@@ -184,7 +190,7 @@ namespace Entity
                         curState = EnemyState.Idle;
                     else
                     {
-                        agent.speed = runSpeed * 1.25f;
+                        GetSelfAgent().speed = runSpeed * 1.25f;
                         GoToDestination(_home.position);
                     }
                     break;
@@ -195,7 +201,7 @@ namespace Entity
         {
             if (gameState != GameStates.Playing) return;
             Vector3 toPlayer = (player.transform.position - transform.position).normalized;
-            Vector3 localDirection = transform.InverseTransformDirection(agent.velocity.normalized);
+            Vector3 localDirection = transform.InverseTransformDirection(GetSelfAgent().velocity.normalized);
             float x = 0, y = 0;
             if (PlayerInRange()) {
                 Vector3 lookDirection = new Vector3(toPlayer.x, 0, toPlayer.z);
@@ -244,7 +250,7 @@ namespace Entity
         private IEnumerator KnockbackRoutine(Vector3 direction)
         {
             _isKnockedBack = true;
-            agent.isStopped = true;
+            GetSelfAgent().isStopped = true;
 
             float timer = 0f;
             Vector3 start = transform.position;
@@ -258,7 +264,7 @@ namespace Entity
             }
 
             transform.position = end;
-            agent.isStopped = false;
+            GetSelfAgent().isStopped = false;
             _isKnockedBack = false;
         }
         private IEnumerator DieRoutine()
@@ -285,7 +291,7 @@ namespace Entity
         /// <param name="destination">position to go to</param>
         public void GoToDestination(Vector3 destination)
         {
-            agent.SetDestination(destination);
+            GetSelfAgent().SetDestination(destination);
         }
 
         /// <summary>
@@ -307,11 +313,11 @@ namespace Entity
             curState = EnemyState.Dying;
 
             // ✅ Detener completamente el agente de navegación
-            if (agent != null)
+            if (GetSelfAgent() != null)
             {
-                agent.ResetPath();            // Borra la ruta actual
-                agent.isStopped = true;      // Detiene el movimiento
-                agent.enabled = false;       // Opcional: desactiva por completo
+                GetSelfAgent().ResetPath();            // Borra la ruta actual
+                GetSelfAgent().isStopped = true;      // Detiene el movimiento
+                GetSelfAgent().enabled = false;       // Opcional: desactiva por completo
             }
 
             if (_imDieCoroutine == null)
@@ -332,13 +338,17 @@ namespace Entity
         
         protected override void OnStateChange(GameStates state)
         {
+            if (!GetSelfAgent()) {
+                EDebug.LogError("Agent not ready or something when OnStateChange was called");
+                return;
+            }
             gameState = state;
             if(gameState != GameStates.Playing) {
-                agent.isStopped = true;
+                GetSelfAgent().isStopped = true;
                 Animator.enabled = false;
             }
             else {
-                agent.isStopped = false;
+                GetSelfAgent().isStopped = false;
                 Animator.enabled = true;
             }
         }

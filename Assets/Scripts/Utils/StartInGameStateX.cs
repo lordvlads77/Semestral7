@@ -10,13 +10,24 @@ namespace Utils
     {
         public GameStates gameStateToSetOnStart = GameStates.Idle;
         public bool isOn = true;
+        private Coroutine _coroutine = null;
 
-        void Start()
+        private void Start()
         {
+            _coroutine??= StartCoroutine(WaitAndSetGameState());
+        }
+
+        private IEnumerator WaitAndSetGameState()
+        {
+            while (!GameManager.Instance)
+            {
+                yield return null;
+            }
             if (isOn)
             {
                 GameManager.Instance.SetGameState(gameStateToSetOnStart);
             }
+            _coroutine = null;
         }
 
     }

@@ -10,6 +10,7 @@ namespace Utils
         private static readonly object _lock = new object();
         public static bool applicationIsQuitting = false;
         private static bool _isCreating = false;
+        private static bool _isDuplicate = false;
         
         public static bool HasInstance => applicationIsQuitting == false && _instance != null;
         public static T TryGetInstance() => HasInstance ? Instance : null;
@@ -76,18 +77,17 @@ namespace Utils
 
         protected virtual void Awake()
         {
-            if (_instance == null)
-            {
+            if (_instance && _instance != this) {
+                EDebug.LogError(StringUtils.AddColorToString($"[Singleton] Duplicate instance of {typeof(T)} found. Destroying: {gameObject.name}", Color.red));
+                _isDuplicate = true;
+                Destroy(gameObject);
+                return;
+            }
+            if (!_instance) {
                 _instance = this as T;
                 DontDestroyOnLoad(gameObject);
-                OnAwake();
             }
-            else if (_instance != this)
-            {
-                EDebug.LogError($"[Singleton] Duplicate instance of {typeof(T)} found. Destroying: {gameObject.name}");
-                Destroy(gameObject);
-            }
-            else OnAwake();
+            OnAwake();
         }
         
         protected virtual void OnAwake()
@@ -97,7 +97,7 @@ namespace Utils
 
         private void OnDestroy()
         {
-            applicationIsQuitting = true;
+            if (!_isDuplicate) applicationIsQuitting = true;
         }
 
         protected virtual void OnApplicationQuit()
