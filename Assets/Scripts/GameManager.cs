@@ -62,7 +62,7 @@ public sealed class GameManager : Singleton<GameManager>
         SetGameWindowAndResolution();
         LoadFModBank();
         SetGameState(GameStates.Joining);
-        Localization.SetLanguage(CurrentLanguage.ToString());
+        Localization.LoadLanguage(CurrentLanguage);
         CheckForMissingScripts();
         if (EnemySpawnHolder == null) GetOrCreateEnemySpawnHolder();
         InvokeRepeating(nameof(LazyUpdate), 1f, 1f);
@@ -175,7 +175,7 @@ public sealed class GameManager : Singleton<GameManager>
     {
         if (CurrentLanguage == language) return;
         CurrentLanguage = language;
-        Localization.SetLanguage(CurrentLanguage.ToString());
+        Localization.LoadLanguage(CurrentLanguage);
         EDebug.Log($"Language changed to: {language}");
     }
     

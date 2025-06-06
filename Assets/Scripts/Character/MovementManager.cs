@@ -107,6 +107,7 @@ namespace Character
             if (isDead)
             {
                 stateManager.EnterMovementState(MovementState.Dead, this);
+                StartCoroutine(RespawnAfterDelay());
                 return;
             }
             GetDirectionAndMove();
@@ -114,7 +115,26 @@ namespace Character
             HandleActions();
             stateManager.UpdateMovementState(this);
         }
+        private IEnumerator RespawnAfterDelay()
+        {
+            // Espera 1 segundo antes del respawn
+            yield return new WaitForSeconds(1f);
 
+            // Restaurar posición desde PlayerPrefs
+            float x = PlayerPrefs.GetFloat("SavedX", transform.position.x);
+            float y = PlayerPrefs.GetFloat("SavedY", transform.position.y);
+            float z = PlayerPrefs.GetFloat("SavedZ", transform.position.z);
+            transform.position = new Vector3(x, y, z);
+
+            // Restaurar vida
+            Heal(100f);
+            isDead = false;
+
+            // Reactivar colisiones o animaciones si se requiere
+            // anim.Rebind(); anim.Update(0f); // si usas Animator
+
+            Debug.Log("Jugador revivido en último punto de guardado.");
+        }
         private void FixedUpdate()
         {
             if (_cm.type == CameraTypes.FreeLook)
@@ -186,9 +206,11 @@ namespace Character
         {
             if (!isDodging)
             {
-                if (IInput.Jump && IsGrounded())
+                if (IInput.Jump)
                 {
-                    //LanguageControl.ToggleLanguage();
+                    var current = LanguageManager.Instance.currentLanguage;
+                    var next = current == Utils.Language.En ? Utils.Language.Es : Utils.Language.En;
+                    LanguageManager.Instance.setLanguage(next);
                 }
             }
             if (IInput.Doge && canDodge && !isDodging)

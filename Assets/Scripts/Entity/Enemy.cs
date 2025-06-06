@@ -355,7 +355,7 @@ namespace Entity
             {
                 EnemyTracker.Unregister(enemyID);
             }
-            Destroy(this.gameObject);
+            gameObject.SetActive(false);
         }
         
         protected override void OnStateChange(GameStates state)

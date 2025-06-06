@@ -29,7 +29,9 @@ public class LanguageManager : Utils.Singleton<LanguageManager>
     public void setLanguage(Utils.Language newLanguage)
     {
         currentLanguage = newLanguage;
-        if (ChangeLanguage != null) { ChangeLanguage.Invoke(currentLanguage); }
+
+        if (ChangeLanguage != null)
+            ChangeLanguage.Invoke(currentLanguage);
     }
 
     public void ForceCallSubscribe(Action _forcedChange)
