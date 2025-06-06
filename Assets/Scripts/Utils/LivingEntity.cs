@@ -18,6 +18,8 @@ namespace Utils
         public CustomDialogSprites dialogSprites;
         public HurtFXVars hurtFXVars;
         protected HurtFX HurtFX;
+        
+        
 
         [Header("Living Entity Variables")]
         public bool isPlayer;

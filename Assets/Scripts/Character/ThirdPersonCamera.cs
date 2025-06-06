@@ -83,6 +83,15 @@ namespace Character
     
         private void Awake()
         {
+            DontDestroyOnLoad(gameObject);
+            if (lookAt == null)
+            {
+                GameObject camTarget = GameObject.FindGameObjectWithTag("CamTarget");
+                if (camTarget != null)
+                {
+                    lockTarget = camTarget.transform;
+                }
+            }
             smoothedLookAtPosition = lookAt.position;
             _input = Input.Actions.Instance;
             if (_input == null) _input = gameObject.GetComponent<Input.Actions>();
@@ -113,11 +122,14 @@ namespace Character
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             // Reasigna al jugador
-            var player = GameObject.FindGameObjectWithTag("Player");
-            if (player)
+            if (lookAt == null)
             {
-                lookAt = player.transform;
-                SetCameraToOrigin();
+                GameObject camTarget = GameObject.FindGameObjectWithTag("CamTarget");
+                if (camTarget != null)
+                {
+                    lockTarget = camTarget.transform;
+                    SetCameraToOrigin();
+                }
             }
         }
 

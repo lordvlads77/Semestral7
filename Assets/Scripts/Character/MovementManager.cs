@@ -87,6 +87,7 @@ namespace Character
             IInput.OnAttackTriggeredEvent += Punch;
             GameManager.Instance.RegisterUnsubscribeAction(UnSubscribe);
             SceneManager.sceneLoaded += OnSceneLoaded;
+            LoadSavedPosition();
         }
 
         private void OnDisable()
@@ -187,15 +188,36 @@ namespace Character
             {
                 if (IInput.Jump && IsGrounded())
                 {
-                    Jump();
+                    //LanguageControl.ToggleLanguage();
                 }
             }
             if (IInput.Doge && canDodge && !isDodging)
             {
                 StartCoroutine(Dodge());
             }
+
+            if (IInput.Pause)
+            {
+                Application.Quit();
+            }
         }
 
+        public void LoadSavedPosition()
+        {
+            if (PlayerPrefs.HasKey("SavedX") && PlayerPrefs.HasKey("SavedY") && PlayerPrefs.HasKey("SavedZ"))
+            {
+                float x = PlayerPrefs.GetFloat("SavedX");
+                float y = PlayerPrefs.GetFloat("SavedY");
+                float z = PlayerPrefs.GetFloat("SavedZ");
+                transform.position = new Vector3(x, y, z);
+                Debug.Log("Posición cargada: " + transform.position);
+            }
+            else
+            {
+                Debug.LogWarning("No se encontró una posición guardada.");
+            }
+        }
+        
         private void GetDirectionAndMove()
         {
             horizontalInput = IInput.Movement.x;

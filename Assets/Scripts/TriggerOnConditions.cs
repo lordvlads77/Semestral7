@@ -22,7 +22,10 @@ public class TriggerOnConditions : MonoBehaviour
     [SerializeField] private ParticleSystem particleSys;
     [SerializeField] private bool playSound;
     [SerializeField] private PlayPersistent soundToPlay;
-
+    [Header("Trigger ID (Unique)")]
+    public string triggerID;
+    private bool Alreadytriggered;
+    public bool IsTriggered => Alreadytriggered;
     private bool _triggered;
     
     private void Awake()
@@ -62,5 +65,39 @@ public class TriggerOnConditions : MonoBehaviour
             if (playSound && soundToPlay != null)
                 MiscUtils.ActionToDo(null, null, null, 0, null, soundToPlay);
         }
+    }
+    public bool GetTriggeredState()
+    {
+        return _triggered;
+    }
+
+    public void SetTriggered(bool triggered)
+    {
+        _triggered = triggered;
+        if (_triggered)
+        {
+            ForceTrigger(); // activa el trigger si fue guardado como activo
+        }
+    }
+
+    private void ForceTrigger()
+    {
+        if (playAnimation && animator != null && !string.IsNullOrWhiteSpace(animationTriggerName))
+            MiscUtils.ActionToDo(animator, animationTriggerName, null, 0, null, null);
+
+        if (disableGameObject && objectToDoStuffOn != null)
+            MiscUtils.ActionToDo(null, null, objectToDoStuffOn, 0, null, null);
+
+        if (destroyGameObject && objectToDoStuffOn != null)
+            MiscUtils.ActionToDo(null, null, objectToDoStuffOn, 1, null, null);
+
+        if (enableGameObject && objectToDoStuffOn != null)
+            MiscUtils.ActionToDo(null, null, objectToDoStuffOn, 2, null, null);
+
+        if (playParticle && particleSys != null)
+            MiscUtils.ActionToDo(null, null, null, 0, particleSys, null);
+
+        if (playSound && soundToPlay != null)
+            MiscUtils.ActionToDo(null, null, null, 0, null, soundToPlay);
     }
 }

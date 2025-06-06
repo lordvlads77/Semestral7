@@ -40,6 +40,7 @@ namespace Entity
         [SerializeField, Range(2f, 50f)] private float detectionRange;
         [SerializeField] private NavMeshAgent agent;
         [SerializeField] private LivingEntity player;
+        [SerializeField] public string enemyID;
 
         [Header("Enemy properties")]
         public EnemyState curState = EnemyState.Idle;
@@ -64,7 +65,15 @@ namespace Entity
             // GameObject tempPlayer = GameObject.FindGameObjectWithTag("Player");
             // EDebug.Assert(tempPlayer != null, "Couldn't find player character", this);
             // player = tempPlayer.GetComponent<LivingEntity>();
-            
+            if (!string.IsNullOrEmpty(enemyID))
+            {
+                EnemyTracker.Register(enemyID);
+            }
+            if (!string.IsNullOrEmpty(enemyID) && PlayerPrefs.GetInt($"Enemy_{enemyID}_IsDead", 0) == 1)
+            {
+                Destroy(gameObject);
+                return;
+            }
             agent.speed = walkSpeed;
             runSpeed = Mathf.Max(walkSpeed, runSpeed);
             SearchForHome();
@@ -323,6 +332,12 @@ namespace Entity
                 agent.enabled = false;       // Opcional: desactiva por completo
             }
 
+            if (!string.IsNullOrEmpty(enemyID))
+            {
+                PlayerPrefs.SetInt($"Enemy_{enemyID}_IsDead", 1); // Guardamos que está muerto
+                PlayerPrefs.Save(); // Muy importante: guarda en disco
+            }
+            
             if (_imDieCoroutine == null)
                 _imDieCoroutine = StartCoroutine(OhImDieThankYouForever());
         }
@@ -335,6 +350,10 @@ namespace Entity
                     ParticleSystem newPs = Instantiate(ps, this.transform.position, this.transform.rotation);
                     newPs.Play();
                 }
+            }
+            if (!string.IsNullOrEmpty(enemyID))
+            {
+                EnemyTracker.Unregister(enemyID);
             }
             Destroy(this.gameObject);
         }

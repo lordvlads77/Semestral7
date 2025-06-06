@@ -13,6 +13,7 @@ TagManager:
   - EnemySpawnPoint
   - SoundTrigger
   - Loading_Script
+  - CamTarget
   layers:
   - Default
   - TransparentFX

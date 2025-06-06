@@ -17,5 +17,7 @@
   "RunTuto": "Use the LB or shift to run",
   "DogeTuto": "Use the X button o X key to dash",
   "ZTuto": "Use LT or right click to focus on an enemy",
-  "SaveTuto": "Use this to save the game"
+  "SaveTuto": "Use this to save the game",
+  "CrystalTuto": "Use this to know how many enemies are left",
+  "restart": "Touch this to restart your adventure teh next time you come"
 }
