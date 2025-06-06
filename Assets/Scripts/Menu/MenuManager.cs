@@ -322,7 +322,7 @@ public sealed class MenuManager : MonoBehaviour
         // (Rutina, basicamente lo que tenías en update pa' que se mueva solo si lo mantienes presionado)
         // La rutina debe checar el estado de "pressed" y matarse sola 
 
-        InvokeRepeating(nameof(ReapeatingOnWeaponRight), 0.5f, 1.0f);
+        //InvokeRepeating(nameof(ReapeatingOnWeaponRight), 0.5f, 1.0f);
     }
 
     private void OnWeaponLeft()
@@ -331,7 +331,7 @@ public sealed class MenuManager : MonoBehaviour
         if (MenuInputTypeUtils.haveAnyMatchingBits(MenuInputType.ANY_HORIZONTAL, blockedInput)) { return; }
         currentInputInUse |= MenuInputType.HORIZONTAL_LEFT;
 
-        InvokeRepeating(nameof(ReapeatingOnWeaponLeft), 0.5f, 1.0f);
+        ///InvokeRepeating(nameof(ReapeatingOnWeaponLeft), 0.5f, 1.0f);
     }
     /// <summary>
     /// TODO : REMOVE THIS FUNCTION
