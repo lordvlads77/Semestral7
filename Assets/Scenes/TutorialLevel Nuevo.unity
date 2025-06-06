@@ -9001,6 +9001,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   teleportDestination: {fileID: 0}
+  thirdPersonCamera: {fileID: 0}
 --- !u!54 &1669744720
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -15822,8 +15823,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6053024190455053106}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.00041047705, y: -0.9965445, z: 0.08291443, w: -0.004932444}
-  m_LocalPosition: {x: -2.2, y: 1.79, z: 10.379884}
+  m_LocalRotation: {x: -0.000410477, y: -0.9965445, z: 0.08291442, w: -0.004932444}
+  m_LocalPosition: {x: -2.2, y: 2.74, z: 10.379885}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

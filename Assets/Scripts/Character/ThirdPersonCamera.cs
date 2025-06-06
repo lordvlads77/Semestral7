@@ -1,13 +1,18 @@
 using System;
+using UI;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using Utils;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace Character
 {
     public class ThirdPersonCamera : MonoBehaviour
     {
         private Input.Actions _input;
+        
         
         public Camera cam;
         public CameraTypes type = CameraTypes.FreeLook;
@@ -35,6 +40,8 @@ namespace Character
         private float currentAlpha;
         private float currentTheta;
         private float smoothSpeed = 25f;
+
+        public static NewLoadingScreen NewLoadingScreen;
         
         [SerializeField]
         private float maxLockDistance = 10f;
@@ -42,6 +49,7 @@ namespace Character
         private bool _wasZTargetPressedLastFrame = false;
         private Collider[] _currentEnemies = new Collider[0];
     
+        private Vector3 smoothedLookAtPosition;
         [Serializable] public struct CameraSettings
         {
             [SerializeField] [Range(-1.0f, 1.0f)]
@@ -75,6 +83,7 @@ namespace Character
     
         private void Awake()
         {
+            smoothedLookAtPosition = lookAt.position;
             _input = Input.Actions.Instance;
             if (_input == null) _input = gameObject.GetComponent<Input.Actions>();
             if (_input == null) _input = gameObject.AddComponent<Input.Actions>();
@@ -86,11 +95,32 @@ namespace Character
             _trueLookAt = transform.Find("LookAtTransform");
             if(!_trueLookAt) _trueLookAt = new GameObject("LookAtTransform").transform;
             if (!lookAt) {
-                lookAt = GameObject.FindWithTag("Player").transform;
+                lookAt = transform;
+            }
+            SetCameraToOrigin();
+        }
+
+        private void OnEnable()
+        {
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
+        private void OnDisable()
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
+
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            // Reasigna al jugador
+            var player = GameObject.FindGameObjectWithTag("Player");
+            if (player)
+            {
+                lookAt = player.transform;
+                SetCameraToOrigin();
             }
         }
 
-        
         void Update()
         {
             if (GameManager.Instance.GameState != GameStates.Playing) return;
@@ -115,6 +145,7 @@ namespace Character
             {
                 _lockIndicator.SetActive(false);
             }
+            
         }
 
         void FindClosestTarget(Collider[] enemies)
@@ -151,6 +182,8 @@ namespace Character
             if (GameManager.Instance.GameState != GameStates.Playing) return;
             OrbitSphericalCoords();
             
+            smoothedLookAtPosition = Vector3.Lerp(smoothedLookAtPosition, lookAt.position, Time.deltaTime * 10f);
+            
             if (lockTarget && _lockIndicator) {
                 _lockIndicator.transform.position = lockTarget.position + Vector3.up;
                 _lockIndicator.SetActive(true);
@@ -172,6 +205,7 @@ namespace Character
             if (h != 0) _alpha += h * sensitivity * Time.deltaTime;
             if (v != 0)
             {
+                
                 Vector2 limitAnglesRads = settings.GetLimitVerticalAnglesRadians();
                 float maxAngle = ((float)Math.PI / 2) - limitAnglesRads.x;
                 float minAngle = ((float)Math.PI / 2) + limitAnglesRads.y;
@@ -179,22 +213,23 @@ namespace Character
                 _tTheta += v * sensitivity * Time.deltaTime;
                 _tTheta = Mathf.Clamp(_tTheta, 0f, 1f);
                 _theta = Mathf.Lerp(maxAngle, minAngle, _tTheta);
+                
             }
             // Smooth the angles
             currentAlpha = Mathf.Lerp(currentAlpha, (float)_alpha, Time.deltaTime * smoothSpeed);
             currentTheta = Mathf.Lerp(currentTheta, (float)_theta, Time.deltaTime * smoothSpeed);
 
             // Calc camera position
-            float x = lookAt.position.x + settings.GetCameraDistance() * Mathf.Sin(currentTheta) * Mathf.Cos(currentAlpha);
-            float y = lookAt.position.y + settings.GetCameraDistance() * Mathf.Cos(currentTheta);
-            float z = lookAt.position.z + settings.GetCameraDistance() * Mathf.Sin(currentTheta) * Mathf.Sin(currentAlpha);
+            float x = smoothedLookAtPosition.x + settings.GetCameraDistance() * Mathf.Sin(currentTheta) * Mathf.Cos(currentAlpha);
+            float y = smoothedLookAtPosition.y + settings.GetCameraDistance() * Mathf.Cos(currentTheta);
+            float z = smoothedLookAtPosition.z + settings.GetCameraDistance() * Mathf.Sin(currentTheta) * Mathf.Sin(currentAlpha);
         
             Vector3 newCameraPosition = new Vector3(x, y, z);
-            Vector3 offsetCameraPosition = newCameraPosition + settings.GetOffset().x * cam.transform.right + settings.GetOffset().y * cam.transform.up;
+            Vector3 offsetCameraPosition = newCameraPosition + settings.GetOffset().x * cam.transform.right + settings.GetOffset().y * Vector3.up;
             cam.transform.position = Vector3.Lerp(cam.transform.position, offsetCameraPosition, Time.deltaTime * lerpValue);
 
             // Look at
-            Vector3 targetLookAt = lookAt.transform.position + settings.GetOffset().x * cam.transform.right + settings.GetOffset().y * cam.transform.up;
+            Vector3 targetLookAt = smoothedLookAtPosition + settings.GetOffset().x * cam.transform.right + settings.GetOffset().y * Vector3.up;
             _trueLookAt.transform.position = Vector3.Lerp(_trueLookAt.transform.position, targetLookAt, Time.deltaTime * lerpValue);
             if (_input.ZTarget && lockTarget) {
                 Quaternion targetRotation = Quaternion.LookRotation(lockTarget.position - cam.transform.position);
