@@ -276,7 +276,15 @@ namespace Entity
             EDebug.Log(other.tag, this);
             if (other.CompareTag("Weapon"))
             {
-                CombatUtils.Attack(player, this);
+                Weapon weapon = other.GetComponent<Weapon>();
+                if (weapon != null && weapon.inUse)
+                {
+                    LivingEntity attacker = weapon.GetComponentInParent<LivingEntity>();
+                    if (attacker != null && attacker != this) // Asegura que no se golpee a sí mismo
+                    {
+                        CombatUtils.Attack(attacker, this);
+                    }
+                }
             }
         }
 
