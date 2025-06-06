@@ -2293,9 +2293,11 @@ MonoBehaviour:
   weapon: {fileID: 7774553400676192174}
   ohImDie:
   - {fileID: 3616568078490749277, guid: 7b4fa4b2369377d448ca95172f9be8c0, type: 3}
+  knockbackForce: 2
+  knockbackDuration: 0.25
   detectionRange: 5
   agent: {fileID: 7711951114276281909}
-  player: {fileID: 0}
+  player: {fileID: 430744304645301610, guid: e3c24e4f8e6ef224a9b56fad9ba3914e, type: 3}
   curState: 0
   walkSpeed: 1
   runSpeed: 2
