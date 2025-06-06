@@ -8,23 +8,14 @@
   "IntroductionMsg": "Hola caballero, estas aqui para entrenar tus habilidades, primero veamos como te mueves con esa armadura, usa la palanca izquierda o wasd para moverte",
   "CameraTuto": "Para ver a tu alrededor usa la palanca derecha o mueve to mouse",
   "movementTuto": "Usa WASD o tu stick izquierdo para moverte",
-  "CombatTuto": "Para desenfundar tu arma usa la flecha izquierda con tu mando o teclado y usa el boton derecho o click izquierdo para atacar",
+  "CombatTuto": "Para desenfundar tu arma usa la flecha izquierda con tu mando o arriba en teclado y usa el boton derecho o click izquierdo para atacar",
   "continueSignal": "Ir al pueblo",
-
   "DummyTuto": "Ahora golpea a estos dos muñecos, quieres",
   "pociom": "Si necesitas curarte recoge esta poción",
   "DefeatSignal": "Ahora derrota a estos dos para seguir",
-  "ContadorEnemigos": "Enemigos Restantes: "
-
-
-
-
-
-
-  "acabar": "Derrota a estos enemigos para continuar",
-
-  "adventure" : "¡Ve más allá de este letrero en busca de aventuras!!!!",
-
-  "level-1-intro" : "¡Matar todos los enemigos!"
-
+  "ContadorEnemigos": "Enemigos Restantes: ",
+  "RunTuto": "Usa LB o shift para correr",
+  "DogeTuto": "Usa el boton X o la tecla X para hacer un dash",
+  "ZTuto": "Usa LT o click derecho para enfocar a un enemigo",
+  "SaveTuto": "Usa esto para guardar"
 }

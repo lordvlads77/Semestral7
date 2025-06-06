@@ -28,8 +28,6 @@ namespace Objects
                 EDebug.Log(Utils.StringUtils.AddColorToString("Se Guardo la partida", Color.cyan), this);
             }
         }
-
-
     }
 }
 

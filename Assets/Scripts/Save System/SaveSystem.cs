@@ -33,7 +33,7 @@ namespace SaveSystem
 
         public const string EMPTY_SAVE_FILE = "NULL";
 
-        public const string SEPARATOR = "|*|";
+        const string SEPARATOR = "|*|";
 
         public static Action OnSaveData;
         public static Action OnLoadData;

@@ -32,6 +32,7 @@ namespace Character
             inputReceiver.OnPauseEvent -= OnPause;
         }
 
+
         #endregion
 
         #region EventMethods
