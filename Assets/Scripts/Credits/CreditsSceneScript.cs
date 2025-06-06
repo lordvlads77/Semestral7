@@ -40,6 +40,9 @@ namespace Credits
         private float currentSpeed = 1.0f;
         public float desiredSpeed = 1.0f;
 
+        public float delay = 0.5f;
+        public float time = 0.0f;
+
         public Actions inputReceiver;
 
         void Start()
@@ -51,6 +54,7 @@ namespace Credits
             EDebug.Assert(endPoint != null, $"need a {typeof(Transform)} for script to work", this);
 
             inputReceiver = GameManager.Instance.gameObject.GetComponent<Actions>();
+
             creditsState = CreditsState.loadCredits;
         }
 
@@ -60,10 +64,12 @@ namespace Credits
             leader.speed = currentSpeed;
             follower.speed = currentSpeed;
 
-            if (inputReceiver.Jump)
+            if (inputReceiver.Jump && time > delay)
             {
                 LoadingManager.Instance.LoadSceneByName("Nuevo Menu");
             }
+
+            time += Time.deltaTime;
 
 
             if (creditsState == CreditsState.None) { return; }
