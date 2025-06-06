@@ -8,8 +8,10 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Windows;
 using Random = UnityEngine.Random;
-
+using Color = UnityEngine.Color;
 using SCG = System.Collections.Generic;
+using Entity;
+using System.Linq;
 
 namespace Utils
 {
@@ -409,6 +411,47 @@ namespace Utils
             }
             if (sound != null) sound.enabled = true;
         }
+
+        public static int CountEnemiesInScene()
+        {
+            return GameObject.FindObjectsByType<Enemy>(FindObjectsSortMode.None).Length;
+        }
+
+        public static int CountEnemiesInScene(LivingEntity[] allEntities)
+        {
+            int result = 0;
+            for (int i = 0; i < allEntities.Length; ++i)
+            {
+                if (allEntities[i].TryGetComponent<Enemy>(out Enemy e))
+                {
+                    result++;
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="entities"></param>
+        /// <returns></returns>
+        public static List<Enemy> extractEnemiesFromLivingEntities(LivingEntity[] entities)
+        {
+            List<Enemy> result = new();
+
+            for (int i = 0; i < entities.Length; ++i)
+            {
+                if (entities[i].TryGetComponent<Enemy>(out Enemy e))
+                {
+                    result.Add(e);
+                }
+
+            }
+
+            return result;
+        }
+
     }
 
     [Serializable]
@@ -573,6 +616,24 @@ namespace Utils
             return result;
         }
 
+    };
+
+
+
+    public static class Array<T>
+    {
+        public static void RemoveAt<T>(ref T[] arr, int index)
+        {
+            for (int a = index; a < arr.Length - 1; a++)
+            {
+                // moving elements downwards, to fill the gap at [index]
+                arr[a] = arr[a + 1];
+            }
+            // finally, let's decrement Array's size by one
+            Array.Resize(ref arr, arr.Length - 1);
+        }
     }
+
+
 
 }

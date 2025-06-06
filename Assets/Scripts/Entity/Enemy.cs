@@ -8,9 +8,10 @@ using Random = UnityEngine.Random;
 namespace Entity
 {
     [RequireComponent(typeof(NavMeshAgent))]
+    [SelectionBase]
     public class Enemy : LivingEntity
     {
-        private readonly int _animDirV = Animator.StringToHash("DirV");
+         private readonly int _animDirV = Animator.StringToHash("DirV");
         private readonly int _animDirH = Animator.StringToHash("DirH");
         private readonly int _animSpeed = Animator.StringToHash("Speed");
         private readonly int _animHealth = Animator.StringToHash("Health%");
@@ -352,5 +353,6 @@ namespace Entity
         }
 
     }
+
 
 }

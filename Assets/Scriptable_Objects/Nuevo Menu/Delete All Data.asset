@@ -15,5 +15,5 @@ MonoBehaviour:
   languageContainers:
   - text: Delete All Data
     language: 0
-  - text: Borrar todas las partidas
+  - text: Borrar Cada Partida
     language: 1

@@ -41,6 +41,7 @@ namespace Input
         public bool ZTarget { get; private set; }
         public bool RightTrigger { get; private set; }
         public bool Pause { get; private set; }
+        public event Action<bool> OnPauseEvent;
 
         public bool AttackHeavy { get; private set; }
         public event Action OnAttackHeavySwing;
@@ -259,6 +260,7 @@ namespace Input
         private void OnPauseToggled(InputAction.CallbackContext context)
         {
             Pause = !Pause;
+            OnPauseEvent?.Invoke(Pause);
         }
 
         #endregion
