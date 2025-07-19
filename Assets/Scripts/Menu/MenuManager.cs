@@ -443,7 +443,7 @@ public sealed class MenuManager : MonoBehaviour
     {
         EDebug.Log("<color=orange>Tutorial</color>");
 
-        LoadingManager.Instance.LoadSceneByName("Scenes/TutorialLevel Nuevo");
+        LoadingManager.Instance.LoadSceneByName("Scenes/TutorialLevel");
     }
 
     public void Cargar()
